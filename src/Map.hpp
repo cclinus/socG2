@@ -1,3 +1,6 @@
+#ifndef MAP_HPP
+#define MAP_HPP
+
 #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -18,9 +21,9 @@ class Map {
 
     public:
 
-    Map(int a, int b){
-        width = a;
-        height = b;
+    Map(int w, int h){
+        width = w;
+        height = h;
         //FIXME: what is gate coordinates?
         gate.setX(0);
         gate.setY(0);
@@ -82,4 +85,4 @@ class Map {
 
 };
 
-
+#endif

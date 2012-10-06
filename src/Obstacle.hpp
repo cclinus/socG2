@@ -1,3 +1,6 @@
+#ifndef OBSTACLE_HPP
+#define OBSTACLE_HPP
+
 #include <stdio.h>
 #include <iostream>
 #include "Location.hpp"
@@ -19,3 +22,5 @@ class Obstacle {
     }
 
 };
+
+#endif
