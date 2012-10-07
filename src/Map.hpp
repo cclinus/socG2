@@ -85,6 +85,14 @@ class Map {
         return this->ballVector.front();
     }
 
+    int countBalls(void){
+        return this->ballVector.size();
+    }
+
+    int countObstacles(void){
+        return this->obstacleVector.size();
+    }
+
 };
 
 #endif

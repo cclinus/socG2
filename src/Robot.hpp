@@ -13,6 +13,8 @@ class Robot {
     
     public:
     
+    Robot(){}
+
     Robot (int a, int b, int No){
         location.setX(a);
         location.setY(b);
