@@ -21,7 +21,7 @@ int main () {
     while(1){// Assuming this is the timer for now
 
         // In every 1/x, we init all objs' locations and the map obj is updated
-        camOne.findObjects();
+        camOne.updateMap();
 
         /* ... some actions go here */
 

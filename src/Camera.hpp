@@ -25,7 +25,7 @@ class Camera {
     
     // Core processing function, init all balls, obstacles, robots to the map obj.
     // Feel free to create additional func within this class.
-    void findObjects(void){
+    void updateMap(void){
         /* Image Processing and Camera connections go here.
          * During the processing, once we find a ball for example,
          * we can do:
