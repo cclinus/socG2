@@ -76,9 +76,9 @@ class Map {
     }
 
     // Return the location of target gate
-    //Location getGateLocation(void){
-    //    return this->gate;
-    //}
+    Location getGateLocation(void){
+        return this->gate;
+    }
 
     // Return the nearest ball from our robot
     Ball getNearestBall(void){

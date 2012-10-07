@@ -16,7 +16,7 @@ class Camera {
     public:
 
     // The Camera obj has to be atteched to the map obj
-    Camera(int no, Map aMap){
+    Camera(int no, Map &aMap){
         cameraNo = no;
         // Init the map pointer to the map obj
         // Since then every operations on map will be on the actual map obj
@@ -25,7 +25,7 @@ class Camera {
     
     // Core processing function, init all balls, obstacles, robots to the map obj.
     // Feel free to create additional func within this class.
-    Map findObjects(void){
+    void findObjects(void){
         /* Image Processing and Camera connections go here.
          * During the processing, once we find a ball for example,
          * we can do:
@@ -35,10 +35,6 @@ class Camera {
          * Same to obstacles and robot, refer to Ball.hpp, Robot.hpp and Obstacle.hpp
          */
 
-        // test
-        //cout << this->map.getGateLocation().getX();
-
-        return this->map;
     }
 
 };
