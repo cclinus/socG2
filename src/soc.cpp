@@ -13,6 +13,9 @@ int main () {
     int mapHeight = 1000;
     Map map(mapWidth, mapHeight);
 
+    //Brain brain;
+    //ControlUnit control;
+
     // We put two cameras, they atteched to the only map obj here
     // FIXME: numbering the cams
     Camera camOne(1, map);
@@ -23,8 +26,18 @@ int main () {
 
         // In every 1/x, we init all objs' locations and the map obj is updated
         camOne.updateMap();
+        camTwo.updateMap();
 
-        /* ... some actions go here */
+        /*
+
+          brain.analyse(map);
+          int state = brain.getState()
+          Location targetPoint = brain.getTarget();
+          control.setTarget(targetPoint);
+          control.updateState(state);
+          control.send();
+         
+         */
 
     }
     

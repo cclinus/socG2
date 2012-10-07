@@ -22,6 +22,7 @@ class ControlUnit{
     Robot robot;
     WirelessUnit xbeeUnit;
     int state; 
+    Location target;
     
     public:
         
@@ -47,10 +48,15 @@ class ControlUnit{
             return this->state;
         }
 
+        int setTarget(Location target){
+            this->target = target;
+        }
+
         /*
          * Command: currentX,currentY,targetX,targetY,state
          */
-        void sendCommend(){
+        void send(){
+
         }
 
 };
