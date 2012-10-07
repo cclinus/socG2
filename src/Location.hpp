@@ -1,8 +1,8 @@
+#ifndef LOCATION_HPP
+#define LOCATION_HPP
+
 #include <iostream>
 #include <stdio.h>
-
-#ifndef LOCATION_H
-#define LOCATION_H
 
 using namespace std;
 
@@ -10,18 +10,29 @@ class Location{
     int x, y;
     
     public:
-
-        Location();
         
-        Location(int, int);
+        Location(){}
 
-        int getX(void);
+        Location(int a, int b){
+            x = a;
+            y = b;
+        }
 
-        int getY(void);
+        int getX(void){
+            return x;
+        }
 
-        void setX(int);
+        int getY(void){
+            return y;
+        }
 
-        void setY(int);
+        void setX(int a){
+            this->x = a;
+        }
+
+        void setY(int b){
+            this->y = b;
+        }
 };
 
 #endif

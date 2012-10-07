@@ -21,12 +21,14 @@ class Map {
 
     public:
 
+    Map(){}
+
     Map(int w, int h){
         width = w;
         height = h;
         //FIXME: what is gate coordinates?
-        gate.setX(0);
-        gate.setY(0);
+        this->gate.setX(0);
+        this->gate.setY(0);
     }
 
     void addBall(Ball aBall){
@@ -74,9 +76,9 @@ class Map {
     }
 
     // Return the location of target gate
-    Location getGateLocation(void){
-        return this->gate;
-    }
+    //Location getGateLocation(void){
+    //    return this->gate;
+    //}
 
     // Return the nearest ball from our robot
     Ball getNearestBall(void){
