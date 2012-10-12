@@ -1,0 +1,4 @@
+#! /bin/sh
+
+g++ -o cameraTest cameraTest.cpp ../src/*.hpp 
+

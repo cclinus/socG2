@@ -34,6 +34,11 @@ class Camera {
          * to add an ball obj to the map.
          * Same to obstacles and robot, refer to Ball.hpp, Robot.hpp and Obstacle.hpp
          */
+        Ball aBall(10,20,1);
+        map.addBall(aBall);
+
+        Ball bBall(15,25,2);
+        map.addBall(bBall);
 
     }
 
