@@ -2,37 +2,39 @@
 #define LOCATION_HPP
 
 #include <iostream>
+#include <math.h>
 #include <stdio.h>
 
 using namespace std;
 
 class Location{
     int x, y;
-    
+
     public:
-        
-        Location(){}
 
-        Location(int a, int b){
-            x = a;
-            y = b;
-        }
+    Location(){}
 
-        int getX(void){
-            return x;
-        }
+    Location(int a, int b){
+        x = a;
+        y = b;
+    }
 
-        int getY(void){
-            return y;
-        }
+    int getX(void){
+        return x;
+    }
 
-        void setX(int a){
-            this->x = a;
-        }
+    int getY(void){
+        return y;
+    }
 
-        void setY(int b){
-            this->y = b;
-        }
+    void setX(int a){
+        this->x = a;
+    }
+
+    void setY(int b){
+        this->y = b;
+    }
+
 };
 
 #endif

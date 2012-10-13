@@ -11,6 +11,7 @@ int main () {
     Map map(480, 480);
     vector<Ball> ballVector;
     vector<Obstacle> obstacleVector;
+    Brain brain;
 
     // Add some test objects
     Ball aBall(100,100,1);
@@ -19,18 +20,21 @@ int main () {
     map.addBall(bBall);
     Obstacle aObstacle(150,150);
     map.addObstacle(aObstacle);
+    Obstacle bObstacle(160,150);
+    map.addObstacle(bObstacle);
 
     ballVector = map.getBalls();
     obstacleVector = map.getObstacles();
 
     // Add our own robot
     Robot ourRobot(300,300,1);
+    map.addRobot(ourRobot);
 
-    cout << "Ball Count: " << map.countBalls() << "\n";
+    cout << "\n\n" << "Ball Count: " << map.countBalls() << "\n";
     cout << "Obstacle Count: " << map.countObstacles() << "\n";
 
-    cout << "Show all balls positions: \n";
-    // Get all balls position
+    // Get all positions of objects
+    cout << "\nShow all balls positions: \n";
     for(int i=0; i<ballVector.size(); i++){
         Ball ball = ballVector.at(i);
         Location ballLocation = ball.getLocation();
@@ -39,6 +43,34 @@ int main () {
         cout << " (" << x <<  "," << y << ") \n";
     }
 
-    return 0;
+    cout << "\nShow all obstacles positions: \n";
+    for(int i=0; i<obstacleVector.size(); i++){
+        Obstacle obstacle = obstacleVector.at(i);
+        Location obstacleLocation = obstacle.getLocation();
+        int x = obstacleLocation.getX();
+        int y = obstacleLocation.getY();
+        cout << " (" << x <<  "," << y << ") \n";
+    }
 
+    cout << "\nShow robot position:\n";
+    Location robotLocation = ourRobot.getLocation();
+    int x = robotLocation.getX();
+    int y = robotLocation.getY();
+    cout << " (" << x << "," << y << ")\n";
+
+    // Test getDistance(): get distance between aBall and ourRobot
+    //int distance = brain.getDistance(bBall.getLocation(), ourRobot.getLocation());
+    //cout << "\nDistance between aBall and ourRobot: " << distance << "\n";
+
+    // Test getNearestBall()
+    brain.analyse(map);
+    Location nearestBallLocation = brain.getTarget();
+    cout << "\nLocation of nearest ball: (" << nearestBallLocation.getX() << "," << nearestBallLocation.getY() << ")\n";
+
+    // Test getLineDistance()
+    int lineDistance = brain.getLineDistance(bObstacle.getLocation(), aBall.getLocation(), ourRobot.getLocation());
+    cout << "\nLine Distance:" << lineDistance << "\n";
+    
+
+    return 0;
 }

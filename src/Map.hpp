@@ -54,7 +54,8 @@ class Map {
     Robot getOurRobot(void){
         for(int i = 0; i < this->robotVector.size(); i++){
             // Our robot NO. is 1
-            if(this->robotVector.at(i).getNo() == 1){
+            Robot robot = this->robotVector.at(i);
+            if(robot.getNo() == 1){
                 return this->robotVector.at(i);
             }
         }
@@ -63,7 +64,8 @@ class Map {
     Robot getEnemyRobot(void){
         for(int i = 0; i < this->robotVector.size(); i++){
             // Enemy robot NO. is 2
-            if(this->robotVector.at(i).getNo() == 2){
+            Robot robot = this->robotVector.at(i);
+            if(robot.getNo() == 2){
                 return this->robotVector.at(i);
             }
         }
@@ -78,11 +80,6 @@ class Map {
     // Return the location of target gate
     Location getGateLocation(void){
         return this->gate;
-    }
-
-    // Return the nearest ball from our robot
-    Ball getNearestBall(void){
-        return this->ballVector.front();
     }
 
     int countBalls(void){
