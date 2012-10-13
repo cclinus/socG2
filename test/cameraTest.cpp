@@ -10,7 +10,7 @@ int main () {
     Map map(480, 240);
     Camera cameraOne(1,map);
 
-    cameraOne.updateMap();
+    map = cameraOne.updateMap();
 
     cout << "Ball Count: " << map.countBalls() << "\n";
 

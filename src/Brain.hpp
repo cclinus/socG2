@@ -25,6 +25,11 @@ class Brain{
         vector<Ball> ballVector = map.getBalls();
         vector<Obstacle> obstacleVector = map.getObstacles();
         Location nextTarget = getNearestBall();
+        // check if there is obj on its way
+        Location obstacleOnTheWay = getObstacleOnTheWay(nextTarget);
+        if(obstacleOnTheWay.getX() == nextTarget.getX() and obstacleOnTheWay.getY() == nextTarget.getY()){
+            //if there's no obj on the way
+        }
         this->targetPoint = nextTarget;
     }
 
@@ -52,22 +57,36 @@ class Brain{
 
     // Check if there is obj on the way and return the nearest one
     Location getObstacleOnTheWay(Location target){
-        
+        // check obstacles
+        int nearestObstacleDistance = 1000;
+        Location nearestObstacle = target;
+        Robot ourRobot = this->map.getOurRobot();
+        for(int i=0;this->map.getObstacles().size();i++){
+            Location obstacleLocation = this->map.getObstacles().at(i).getLocation();
+            double lineDistance = getLineDistance(obstacleLocation, ourRobot.getLocation(), target);
+            if(lineDistance < 23){
+                int distance = getDistance(ourRobot.getLocation(), obstacleLocation);
+                if(distance < nearestObstacleDistance){
+                    nearestObstacleDistance = distance;
+                    nearestObstacle = obstacleLocation;
+                }
+            }
+        }
+        return nearestObstacle;
     }
 
     // Get distance from A to line BC
-    int getLineDistance(Location A, Location B, Location C){
+    double getLineDistance(Location A, Location B, Location C){
         // calculate k
         int k = (B.getY()-C.getY())/(B.getX()-C.getX());
         // calculate b
         int b = B.getY()-k*B.getX();
-        cout << "K and B:" << k << "," << b;
         // calculate num
-        int num = k*B.getX()-B.getY()+(B.getY()-k*B.getX());
+        double num = k*A.getX()-A.getY()+(B.getY()-k*B.getX());
         if(num<0) num = 0-num;
         // calculate den
-        int den = sqrt((pow(k,2)+1));
-        int distance = num/den;
+        double den = sqrt((pow(k,2)+1));
+        double distance = num/den;
         return distance;
     }
     

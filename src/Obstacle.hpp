@@ -20,7 +20,7 @@ class Obstacle {
     Location getLocation(void){
         return location;
     }
-
+    
 };
 
 #endif
