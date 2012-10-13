@@ -1,0 +1,4 @@
+#! /bin/sh
+
+g++ -o brainTest brainTest.cpp ../src/*.hpp 
+
