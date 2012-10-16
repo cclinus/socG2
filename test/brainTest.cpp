@@ -22,6 +22,8 @@ int main () {
     map.addObstacle(aObstacle);
     Obstacle bObstacle(180,60);
     map.addObstacle(bObstacle);
+    Obstacle cObstacle(250,250);
+    map.addObstacle(cObstacle);
 
     ballVector = map.getBalls();
     obstacleVector = map.getObstacles();
@@ -62,15 +64,14 @@ int main () {
     int distance = brain.getDistance(bBall.getLocation(), ourRobot.getLocation());
     cout << "\nDistance between aBall and ourRobot: " << distance << "\n";
 
-    // Test getNearestBall()
+    // Test analyse()
     brain.analyse(map);
     Location nearestBallLocation = brain.getTarget();
-    cout << "\nLocation of nearest ball: (" << nearestBallLocation.getX() << "," << nearestBallLocation.getY() << ")\n";
+    cout << "\nTarget Point: (" << nearestBallLocation.getX() << "," << nearestBallLocation.getY() << ")\n";
 
     // Test getLineDistance()
     int lineDistance = brain.getLineDistance(bObstacle.getLocation(), aBall.getLocation(), ourRobot.getLocation());
-    cout << "\nLine Distance:" << lineDistance << "\n";
-    
+    cout << "\nLine Distance:" << lineDistance << "\n\n\n";
 
     return 0;
 }

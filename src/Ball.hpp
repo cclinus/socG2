@@ -9,6 +9,7 @@ using namespace std;
 
 class Ball {
     int ballNo;
+    int diameter;
     Location location;
     
     public:
@@ -17,6 +18,7 @@ class Ball {
         location.setX(a);
         location.setY(b);
         ballNo = No;
+	this->diameter = 23;
     }
 
     Location getLocation(void){
