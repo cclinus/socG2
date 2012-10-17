@@ -24,6 +24,8 @@ int main () {
     map.addObstacle(bObstacle);
     Obstacle cObstacle(250,250);
     map.addObstacle(cObstacle);
+    Obstacle dObstacle(319,260);
+    map.addObstacle(dObstacle);
 
     ballVector = map.getBalls();
     obstacleVector = map.getObstacles();

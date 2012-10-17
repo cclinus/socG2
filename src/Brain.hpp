@@ -9,7 +9,7 @@
 #include "Robot.hpp"
 
 #define OBSTACLE_DIAMETER 23
-#define SAFE_WALKAROUND 69
+#define SAFE_WALKAROUND 46
 
 using namespace std;
 
@@ -28,24 +28,35 @@ class Brain{
 	vector<Ball> ballVector = map.getBalls();
 	vector<Obstacle> obstacleVector = map.getObstacles();
 	Location nextTarget = getNearestBall();
+	Robot ourRobot = this->map.getOurRobot();
 	cout << "\nNearest Ball: ("<<nextTarget.getX()<<","<<nextTarget.getY()<<")\n";
 	// Check if there is obj on its way
 	int loopCounter = 0;
 	while(loopCounter < 10){
+	    cout << "\n\nLoop Count "<<loopCounter<<"\n";
 	    Location obstacleOnTheWay = getObstacleOnTheWay(nextTarget);
-	    cout << "\nObs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")\n";
+	    cout << "\nObs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")";
 	    if(obstacleOnTheWay.getX() == nextTarget.getX() and obstacleOnTheWay.getY() == nextTarget.getY()){
 		//If there's no obj on the way
 		break;
 	    }else{
 		// If there is obj, need walk around
 		// Go to another point
-		// Caculate A distance
-		int xa = obstacleOnTheWay.getX();
-		int ya = obstacleOnTheWay.getY();
-		int oa = sqrt( (pow(xa,2)+pow(ya,2)) );
-		int xd = ((oa+SAFE_WALKAROUND)*xa)/oa;
-		int yd = ((oa+SAFE_WALKAROUND)*ya)/oa;
+		// FIXME 
+		// What if go out of boundary? 
+		// What if ball has same location with an obstacle
+		int xa = obstacleOnTheWay.getX(); //250
+		int ya = obstacleOnTheWay.getY(); //250
+		double slop = getSlop(nextTarget, ourRobot.getLocation());
+		double k2 = slop*(-1);
+		cout << "\nslop, k2:"<<slop<<","<<k2;
+		int alpha = atan(k2);
+		double sinA = sin(alpha);
+		double cosA = cos(alpha);
+		cout << "\nsin,cos:"<<sinA<<cosA;
+		int xd = xa + SAFE_WALKAROUND*cosA;
+		int yd = ya + SAFE_WALKAROUND*sinA;
+		cout << "\nxd,yd:" << xd << "," << yd << "\n";
 		nextTarget.setX(xd);
 		nextTarget.setY(yd);
 	    }
@@ -56,6 +67,12 @@ class Brain{
 
     Location getTarget(){
 	return this->targetPoint;
+    }
+
+    // Get slop of BC
+    double getSlop(Location B, Location C){
+	double k = (B.getY()-C.getY())/(B.getX()-C.getX());
+	return k;
     }
 
     // Get nearest ball regarding on our Robot's location
@@ -99,7 +116,7 @@ class Brain{
     // Get distance from A to line BC
     double getLineDistance(Location A, Location B, Location C){
 	// calculate k
-	int k = (B.getY()-C.getY())/(B.getX()-C.getX());
+	double k = getSlop(B,C);
 	// calculate b
 	int b = B.getY()-k*B.getX();
 	// calculate num
