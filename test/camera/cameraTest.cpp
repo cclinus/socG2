@@ -1,16 +1,16 @@
 #include <iostream>
 #include <stdio.h>
-#include "../src/Camera.hpp"
-#include "../src/Map.hpp"
+#include "../../src/Camera.hpp"
+#include "../../src/Map.hpp"
 
 using namespace std;
 
 int main () {
 
     Map map(480, 240);
-    Camera cameraOne(1,map);
+    Camera cameraOne(0);
 
-    map = cameraOne.updateMap();
+    map = cameraOne.updateMap(map);
 
     cout << "Ball Count: " << map.countBalls() << "\n";
 
