@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+	<style> 
+	    #sog{
+	      margin:40px;
+	    }
+	</style>
+
+	<script>
+	    function drawBall(x,y,w,h){
+	      ctx.beginPath();
+	      ctx.fillStyle = "green";
+	      ctx.arc(x, y, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
+	    }
+
+	    function drawObs(x,y,w,h){
+	      ctx.beginPath();
+	      ctx.fillStyle = "yellow";
+	      ctx.arc(x, y, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
+	    }
+
+	    function drawRobot(x,y,w,h){
+	      ctx.fillStyle = "red";
+	      ctx.fillRect(x, y, w, h);
+	    }
+
+	</script>
+    </head>
+    <body>
+
+	<canvas id="sog" width="480" height="480" style="border:1px solid #c3c3c3;">
+	Your browser does not support the HTML5 canvas tag.
+	</canvas>
+
+	<script>
+	    var sog = document.getElementById("sog");
+	    var ctx = sog.getContext("2d");
+
+	    $.ajax({
+	      url: 'server.php',
+	      success: function(data) {
+		var json = jQuery.parseJSON(data);
+		$.each(json, function(key, val){
+		  console.log(val);
+		  //Print each obj to map
+		  $.each(val, function(key2, val2){
+		    if(val2.indexOf('r') != -1){
+		      // It's robot
+		      var position = val2.split("r");
+		      drawRobot(position[0], position[1], 15, 15);
+		    }
+
+		    if(val2.indexOf('b' != -1)){
+		      // It's ball
+		      var position = val2.split("b");
+		      drawBall(position[0], position[1], 7, 0);
+		    }
+
+		    if(val2.indexOf('o' != -1)){
+		      // It's obstacle
+		      var position = val2.split("o");
+		      drawObs(position[0], position[1], 10, 0);
+		    }
+		  });
+		});
+	      }
+	    });
+
+	</script>
+
+    </body>
+</html>
+
+
+

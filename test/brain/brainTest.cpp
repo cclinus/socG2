@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdio.h>
-#include "../src/Brain.hpp"
-#include "../src/Map.hpp"
+#include "../../src/Brain.hpp"
+#include "../../src/Map.hpp"
 
 using namespace std;
 

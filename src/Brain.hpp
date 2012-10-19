@@ -75,6 +75,18 @@ class Brain{
 	return k;
     }
 
+    // Check if the point is out of field
+    bool isOutOfField(Location aPoint){
+	if(aPoint.getX()>480 
+	or aPoint.getY()>480
+	or aPoint.getX()<0
+	or aPoint.getY()<0){
+	    return true;
+	}else{
+	    return false;
+	}
+    }
+
     // Get nearest ball regarding on our Robot's location
     Location getNearestBall(void){
 	Location shortestLocation;

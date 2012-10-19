@@ -1,0 +1,4 @@
+#! /bin/sh
+
+g++ -o aiTest aiTest.cpp ../../src/*.hpp 
+
