@@ -7,9 +7,10 @@ $objArray = array();
 $ballArray = array();
 $robotArray = array();
 $obsArray = array();
+$targetArray = array();
 
 foreach($convert as $key=>$element){
-  
+
   if($element == null){
     unset($convert[$key]);
   }
@@ -24,11 +25,15 @@ foreach($convert as $key=>$element){
   }else if(strpbrk($element, 'o')){
     //It's obstacle
     $obsArray[] = $element;
+  }else if(strpbrk($element, 't')){
+    //It's target
+    $targetArray[] = $element;
   }
 
   $objArray['r'] = $robotArray;
   $objArray['b'] = $ballArray;
   $objArray['o'] = $obsArray;
+  $objArray['t'] = $targetArray;
 
 }
 

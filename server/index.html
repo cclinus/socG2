@@ -16,6 +16,18 @@
 	      ctx.arc(x, y, w, h, Math.PI*2, true); 
 	      ctx.closePath();
 	      ctx.fill();
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+x+","+y+")", x, y);
+	    }
+
+	    function drawTarget(x,y,w,h){
+	      ctx.beginPath();
+	      ctx.fillStyle = "blue";
+	      ctx.arc(x, y, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+x+","+y+")", x, y);
 	    }
 
 	    function drawObs(x,y,w,h){
@@ -24,13 +36,75 @@
 	      ctx.arc(x, y, w, h, Math.PI*2, true); 
 	      ctx.closePath();
 	      ctx.fill();
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+x+","+y+")", x, y);
+	    }
+
+	    function drawArrow(fromx, fromy, tox, toy){
+	      ctx.beginPath();
+	      var headlen = 10;   // length of head in pixels
+	      var angle = Math.atan2(toy-fromy,tox-fromx);
+	      ctx.moveTo(fromx, fromy);
+	      ctx.lineTo(tox, toy);
+	      ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
+	      ctx.moveTo(tox, toy);
+	      ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6));
+	      ctx.stroke();
 	    }
 
 	    function drawRobot(x,y,w,h){
 	      ctx.fillStyle = "red";
 	      ctx.fillRect(x, y, w, h);
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+x+","+y+")", x, y);
 	    }
 
+	    function updateMap(){
+	      console.log("Updating ... ");
+	      sog = document.getElementById("sog");
+	      ctx = sog.getContext("2d");
+	      ctx.clearRect ( 0, 0, 480, 480);
+
+	      $.ajax({
+		url: 'server.php',
+		success: function(data) {
+		  var json = jQuery.parseJSON(data);
+		  $.each(json, function(key, val){
+		    console.log(val);
+		    //Print each obj to map
+		    $.each(val, function(key2, val2){
+
+		      if(val2.indexOf('r') != -1){
+			// It's robot
+			var position = val2.split("r");
+			robotPosition = position;
+			drawRobot(position[0], position[1], 15, 15);
+		      }
+
+		      if(val2.indexOf('b' != -1)){
+			// It's ball
+			var position = val2.split("b");
+			drawBall(position[0], position[1], 7, 0);
+		      }
+
+		      if(val2.indexOf('o' != -1)){
+			// It's obstacle
+			var position = val2.split("o");
+			drawObs(position[0], position[1], 10, 0);
+		      }
+
+		      if(val2.indexOf('t' != -1)){
+			// It's target point
+			var position = val2.split("t");
+			drawTarget(position[0], position[1], 2, 0);
+			drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
+		      }
+
+		    });
+		  });
+		}
+	      });
+	    }
 	</script>
     </head>
     <body>
@@ -40,39 +114,10 @@
 	</canvas>
 
 	<script>
-	    var sog = document.getElementById("sog");
-	    var ctx = sog.getContext("2d");
-
-	    $.ajax({
-	      url: 'server.php',
-	      success: function(data) {
-		var json = jQuery.parseJSON(data);
-		$.each(json, function(key, val){
-		  console.log(val);
-		  //Print each obj to map
-		  $.each(val, function(key2, val2){
-		    if(val2.indexOf('r') != -1){
-		      // It's robot
-		      var position = val2.split("r");
-		      drawRobot(position[0], position[1], 15, 15);
-		    }
-
-		    if(val2.indexOf('b' != -1)){
-		      // It's ball
-		      var position = val2.split("b");
-		      drawBall(position[0], position[1], 7, 0);
-		    }
-
-		    if(val2.indexOf('o' != -1)){
-		      // It's obstacle
-		      var position = val2.split("o");
-		      drawObs(position[0], position[1], 10, 0);
-		    }
-		  });
-		});
-	      }
-	    });
-
+	    var sog;
+	    var ctx;
+	    var robotPosition;
+	    setInterval("updateMap();", 1000);
 	</script>
 
     </body>
