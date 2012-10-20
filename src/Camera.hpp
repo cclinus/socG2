@@ -16,46 +16,9 @@
 using namespace cv;
 using namespace std;
 
-/* Image processing code */
-class Camera {
-
-    int cameraNo;
-    Map map;
-    VideoCapture cap;
 
 
-    public:
-
-    // The Camera obj has to be atteched to the map obj
-    Camera(int no){
-	this->cameraNo = no;
-    }
-
-    // Core processing function, init all balls, obstacles, robots to the map obj.
-    // Feel free to create additional func within this class.
-    Map updateMap(Map aMap){
-	/* Image Processing and Camera connections go here.
-	 * During the processing, once we find a ball for example,
-	 * we can do:
-	 *      Ball aBall(x, y, ballNo);
-	 *      map.addBall(aBall);
-	 * to add an ball obj to the map.
-	 * Same to obstacles and robot, refer to Ball.hpp, Robot.hpp and Obstacle.hpp
-	 */
-
-	this->map = aMap;
-
-	cap.open(this->cameraNo);
-
-	if(!cap.isOpened()){
-	    cout<< "Can not find camera "<<this->cameraNo<<"\n";
-	    return this->map;
-	}else
-
-	cap.set(CV_CAP_PROP_FRAME_WIDTH,640);
-	cap.set(CV_CAP_PROP_FRAME_HEIGHT,480);
-
-
+    	VideoCapture cap;
 	vector<Mat> slices;
 	// Cross Element for Erosion/Dilation
 	Mat cross = getStructuringElement(MORPH_CROSS, Size(5,5));
@@ -90,25 +53,56 @@ class Camera {
 	    erosionCount = 15,
 	    blurSize = 15;
 
-	cap >> camImage;
+/* Image processing code */
+class Camera {
 
+    int cameraNo;
+    Map map;
+
+
+    public:
+
+    // The Camera obj has to be atteched to the map obj
+    Camera(int no){
+	this->cameraNo = no;
+	cap.open(this->cameraNo);
+	if(!cap.isOpened()){
+	    cout<< "Can not find camera "<<this->cameraNo<<"\n";
+	}
+	cap.set(CV_CAP_PROP_FRAME_WIDTH,640);
+	cap.set(CV_CAP_PROP_FRAME_HEIGHT,480);	
+	cross = getStructuringElement(MORPH_CROSS, Size(5,5));
+    }
+    
+    // Core processing function, init all balls, obstacles, robots to the map obj.
+    // Feel free to create additional func within this class.
+    Map updateMap(Map aMap){
+	/* Image Processing and Camera connections go here.
+	 * During the processing, once we find a ball for example,
+	 * we can do:
+	 *      Ball aBall(x, y, ballNo);
+	 *      map.addBall(aBall);
+	 * to add an ball obj to the map.
+	 * Same to obstacles and robot, refer to Ball.hpp, Robot.hpp and Obstacle.hpp
+	 */
+
+	cap >> camImage;
 	if(blurSize == 0)
 	    blurSize = 1;
 
 	blur(camImage, blurImage, Size(blurSize,blurSize));
 
 	cvtColor(camImage, hsvImage,CV_RGB2HSV);
-
+	printf("88\n");
 	split(hsvImage,slices);
-
+	printf("99\n");
 	slices[0].copyTo (hue);
 	slices[1].copyTo(sat);
 	slices[2].copyTo(val);
-
+	printf("10\n");
 	threshold(hue,hue1,HuethresL,255,CV_THRESH_BINARY);
 	threshold(hue,hue2,HuethresH,255,CV_THRESH_BINARY_INV);
 	hue3 = hue1 &hue2; //multiply 2 matrix to get the color range;
-
 	// apply thresshold for Sat channel
 	threshold (sat,sat1,SatthresL,255, CV_THRESH_BINARY); // get lower bound
 	threshold (sat, sat2,SatthresH,255, CV_THRESH_BINARY_INV); // get upper bound
@@ -118,19 +112,20 @@ class Camera {
 	threshold (val,val1,ValthresL,255, CV_THRESH_BINARY); // get lower bound
 	threshold (val, val2,ValthresH,255, CV_THRESH_BINARY_INV); // get upper bound
 	val3 = val1 & val2; // multiply 2 matrix to get the color range
-
-	erode(HnS,erd,cross,Point(-1,-1),erosionCount); // do erode
-	dilate(HnS,dia,cross,Point(-1,-1),erosionCount);// do dialate
+	//erode(HnS,erd,cross,Point(-1,-1),erosionCount); // do erode
+	//dilate(HnS,dia,cross,Point(-1,-1),erosionCount);// do dialate
 	// combine sat, val and hue filter together
 	HSV = sat3 & hue3 & val3;
 
 	// erode and dialation to reduce noise
 	erode(HSV,erd,cross,Point(-1,-1),erosionCount); // do erode
 	dilate(HSV,dia,cross,Point(-1,-1),erosionCount); // do dialate
-
 	int ballCnt = circleObj(HSV);	
-
-	printf("Ball Number = %i", ballCnt);
+	
+	imshow("Webcam Orignal", camImage);
+	imshow("HSV",HSV);
+	imshow("erd",erd);
+	//printf("Ball Number = %i", ballCnt);
 	return this->map;
     }
 
