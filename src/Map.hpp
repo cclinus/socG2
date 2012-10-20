@@ -51,6 +51,16 @@ class Map {
         return this->obstacleVector;
     }
 
+    // For testing
+    void moveRobot(Location target){
+        for(int i = 0; i < this->robotVector.size(); i++){
+            // Our robot NO. is 1
+            if( this->robotVector.at(i).getNo() == 1 ){
+                this->robotVector.at(i).moveHalf(target);
+            }
+        }
+    }
+
     Robot getOurRobot(void){
         for(int i = 0; i < this->robotVector.size(); i++){
             // Our robot NO. is 1

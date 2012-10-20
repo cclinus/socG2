@@ -53,10 +53,18 @@
 	    }
 
 	    function drawRobot(x,y,w,h){
+	      //ctx.fillStyle = "red";
+	      //ctx.fillRect(x, y, w, h);
+	      //ctx.fillStyle = "black";
+	      //ctx.fillText("("+x+","+y+")", x, y);
+	      ctx.beginPath();
 	      ctx.fillStyle = "red";
-	      ctx.fillRect(x, y, w, h);
+	      ctx.arc(x, y, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
 	      ctx.fillStyle = "black";
 	      ctx.fillText("("+x+","+y+")", x, y);
+
 	    }
 
 	    function updateMap(){
@@ -78,7 +86,7 @@
 			// It's robot
 			var position = val2.split("r");
 			robotPosition = position;
-			drawRobot(position[0], position[1], 15, 15);
+			drawRobot(position[0], position[1], 20, 20);
 		      }
 
 		      if(val2.indexOf('b' != -1)){
@@ -90,7 +98,7 @@
 		      if(val2.indexOf('o' != -1)){
 			// It's obstacle
 			var position = val2.split("o");
-			drawObs(position[0], position[1], 10, 0);
+			drawObs(position[0], position[1], 14, 0);
 		      }
 
 		      if(val2.indexOf('t' != -1)){

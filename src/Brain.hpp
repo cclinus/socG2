@@ -8,8 +8,8 @@
 #include "Obstacle.hpp"
 #include "Robot.hpp"
 
-#define OBSTACLE_DIAMETER 23
-#define SAFE_WALKAROUND 46
+#define SAFE_WALKAROUND 55
+#define DANGER_DISTANCE 33
 
 using namespace std;
 
@@ -23,64 +23,66 @@ class Brain{
 
     Brain(){}
 
-    void analyse(Map map){
-	this->map = map;
+    void analyse(Map aMap){
+	this->map = aMap;
 	vector<Ball> ballVector = map.getBalls();
-	vector<Obstacle> obstacleVector = map.getObstacles();
+	vector<Obstacle> obstacleVector = this->map.getObstacles();
 	Location nextTarget = getNearestBall();
 	Robot ourRobot = this->map.getOurRobot();
-	cout << "\nNearest Ball: ("<<nextTarget.getX()<<","<<nextTarget.getY()<<")\n";
 	// Check if there is obj on its way
 	int loopCounter = 0;
 	while(loopCounter < 10){
-	    cout << "\n\nLoop Count "<<loopCounter<<"\n";
+	    cout << "\n*****Loop Count "<<loopCounter<<"*****\n";
 	    Location obstacleOnTheWay = getObstacleOnTheWay(nextTarget);
-	    cout << "\nObs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")";
+	    cout << "Nearest Ball (target): ("<<nextTarget.getX()<<","<<nextTarget.getY()<<")\n";
+	    cout << "Robot Location: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
 	    if(obstacleOnTheWay.getX() == nextTarget.getX() and obstacleOnTheWay.getY() == nextTarget.getY()){
 		//If there's no obj on the way
 		break;
 	    }else{
+		cout << "Obs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")\n";
 		// If there is obj, need walk around
 		// Go to another point
 		// FIXME 
 		// What if go out of boundary? 
 		// What if ball has same location with an obstacle
-		int xa = obstacleOnTheWay.getX(); //250
-		int ya = obstacleOnTheWay.getY(); //250
+		int xa = obstacleOnTheWay.getX(); 
+		int ya = obstacleOnTheWay.getY();
 		double slop = getSlop(nextTarget, ourRobot.getLocation());
 		double k2 = slop*(-1);
-		cout << "\nslop, k2:"<<slop<<","<<k2;
-		int alpha = atan(k2);
+		cout << "slop, k2:"<<slop<<","<<k2<<"\n";
+		double alpha = atan(k2);
 		double sinA = sin(alpha);
 		double cosA = cos(alpha);
-		cout << "\nsin,cos:"<<sinA<<cosA;
+		cout << "sin,cos:"<<sinA<<","<<cosA<<"\n";
 		int xd = xa + SAFE_WALKAROUND*cosA;
 		int yd = ya + SAFE_WALKAROUND*sinA;
-		cout << "\nxd,yd:" << xd << "," << yd << "\n";
+		cout << "xd,yd:" << xd << "," << yd << "\n";
 		nextTarget.setX(xd);
 		nextTarget.setY(yd);
 	    }
 	    loopCounter++;
 	}
 	this->targetPoint = nextTarget;
+	cout << "\n---------------------------------------------------\n";
     }
 
     Location getTarget(){
 	return this->targetPoint;
     }
 
-    // Get slop of BC
+    // Get slop of CB
     double getSlop(Location B, Location C){
-	double k = (B.getY()-C.getY())/(B.getX()-C.getX());
+	double k = ((double)B.getY()-(double)C.getY())/((double)B.getX()-(double)C.getX());
 	return k;
     }
 
     // Check if the point is out of field
     bool isOutOfField(Location aPoint){
 	if(aPoint.getX()>480 
-	or aPoint.getY()>480
-	or aPoint.getX()<0
-	or aPoint.getY()<0){
+		or aPoint.getY()>480
+		or aPoint.getX()<0
+		or aPoint.getY()<0){
 	    return true;
 	}else{
 	    return false;
@@ -106,23 +108,35 @@ class Brain{
     }
 
     // Check if there is obj on the way and return the nearest one
+    // If it's clear on its way then return the target
     Location getObstacleOnTheWay(Location target){
 	// check obstacles
-	int nearestObstacleDistance = 1000;
+	int minDistance = 1000;//getDistance(this->map.getOurRobot().getLocation(), target);
 	Location nearestObstacle = target;
 	Robot ourRobot = this->map.getOurRobot();
+	// FIXME also need to check the other robot
 	for(int i=0;i<this->map.getObstacles().size();i++){
 	    Location obstacleLocation = this->map.getObstacles().at(i).getLocation();
 	    double lineDistance = getLineDistance(obstacleLocation, ourRobot.getLocation(), target);
-	    if(lineDistance < OBSTACLE_DIAMETER){// Obstacle diameter
+	    if(lineDistance < DANGER_DISTANCE and !isOutOfLine(ourRobot.getLocation(), target, obstacleLocation) ){// FOUND OBSTACLE: Obstacle radius + Robot width
+		// We need find the nearest obstacle that on the way
 		int distance = getDistance(ourRobot.getLocation(), obstacleLocation);
-		if(distance < nearestObstacleDistance){
-		    nearestObstacleDistance = distance;
+		if(distance < minDistance){
+		    minDistance = distance;
 		    nearestObstacle = obstacleLocation;
 		}
 	    }
 	}
 	return nearestObstacle;
+    }
+
+    // Check if the obstacle is out of real line range: A is robot, B is target, C is obstacle
+    bool isOutOfLine(Location A, Location B, Location C){
+	double d_ab = getDistance(A,B);
+	double d_ac = getDistance(A,C);
+	double d_bc = getDistance(B,C);
+	if( d_ac > d_ab or d_bc > d_ab ) return true;
+	else return false;
     }
 
     // Get distance from A to line BC
@@ -150,9 +164,18 @@ class Brain{
 	int y = y1-y2;                                                                
 	int xp = pow(x,2);                                                            
 	int yp = pow(y,2);                                                            
+	//FIXME xp or yp could be 0
 	return sqrt(xp+yp);                                                           
     }   
 
+    double getAngle(Location A, Location B, Location C){
+	double k1 = getSlop(C,B);
+	double k2 = getSlop(B,A);
+	double tanAngle = (k1-k2)/(1+k1*k2);
+	if(tanAngle<0) tanAngle = tanAngle*(-1);
+	double angle = atan(tanAngle);
+	return angle;
+    }
 };
 
 #endif
