@@ -8,7 +8,7 @@
 #include "Obstacle.hpp"
 #include "Robot.hpp"
 
-#define SAFE_WALKAROUND 65
+#define SAFE_WALKAROUND 80
 #define DANGER_DISTANCE 35
 
 using namespace std;
@@ -17,11 +17,15 @@ using namespace std;
 class Brain{
     Map map;
     Location targetPoint;
+    Location targetBall;
+    int targetLock;
     int state;
 
     public:
 
-    Brain(){}
+    Brain(){
+	this->targetLock = 0;
+    }
 
     void analyse(Map aMap){
 	this->map = aMap;
@@ -31,102 +35,129 @@ class Brain{
 	Location nextTarget = getNearestBall();
 	Robot ourRobot = this->map.getOurRobot();
 
-	// Check if there is obj on its way
-	int loopCounter = 0;
-	while(loopCounter < 10){
-	    cout << "\n*****Loop Count "<<loopCounter<<"*****\n";
-	    Location obstacleOnTheWay = getObstacleOnTheWay(nextTarget);
-	    cout << "Nearest Ball (target): ("<<nextTarget.getX()<<","<<nextTarget.getY()<<")\n";
-	    cout << "Robot Location: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
-	    if(obstacleOnTheWay.getX() == nextTarget.getX() and obstacleOnTheWay.getY() == nextTarget.getY()){
-		//If there's no obj on the way
-		break;
+	if(this->targetLock == 1){
+	    // Check if the nearest ball is still the one
+	    if(nextTarget.getX() == this->targetBall.getX() and nextTarget.getY() == this->targetBall.getY()){
+		// Check if the path is still clear
+		Location obstacleOnTheWay = getObstacleOnTheWay(this->targetPoint);
+		if(obstacleOnTheWay.getX()==this->targetPoint.getX() and obstacleOnTheWay.getY()==this->targetPoint.getY()){
+		    // Check if it is closed already
+		    int distance = getDistance(this->targetPoint, ourRobot.getLocation());
+		    if(distance<DANGER_DISTANCE){
+			this->targetLock = 0;
+		    }else{
+			cout << "Target Distance:"<<distance<<"\n";
+		    }
+		    return;
+		}else{
+		    this->targetLock = 0;
+		}
+
 	    }else{
-		cout << "Obs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")\n";
-		// If there is obj, need walk around
-		// Go to another point
-		// FIXME 
-		// What if go out of boundary? 
-		// What if ball has same location with an obstacle
-		int xa = obstacleOnTheWay.getX(); 
-		int ya = obstacleOnTheWay.getY();
-		double k1 = getSlop(nextTarget, ourRobot.getLocation());
-		double k2 = (-1)/k1;
-		double alpha1 = atan(k1);
-		// k1 could be negative
-		if(alpha1<0) {
-		    alpha1 *= (-1);
-		    alpha1 += 90;
-		}
-		double alpha2 = atan(k2);
-		double sinA = sin(alpha2);
-		double cosA = cos(alpha2);
-		if(sinA<0) sinA *= (-1);
-		if(cosA<0) cosA *= (-1);
-		cout << "sin,cos:"<< sinA <<","<< cosA <<"\n";
-		cout << "alpha1,alpha2:"<<alpha1<<","<<alpha2<<"\n";
-		// Decide which way to turn
-		double k3 = getSlop(obstacleOnTheWay, ourRobot.getLocation());
-		cout << "k1, k2, k3:"<< k1 <<","<< k2 << "," << k3 <<"\n";
-		// We can walk around if alpha2 is too small
-		int xw = SAFE_WALKAROUND*cosA;
-		int yw = SAFE_WALKAROUND*sinA;
-		int xd, yd;
-
-		if(alpha1>=90 and alpha1<180){
-		    if(ourRobot.getLocation().getX()<nextTarget.getX()){
-			if(k3>k1){
-			    cout<<"case1:"<<xw<<","<<yw<<"\n";
-			    xd = xa - xw;
-			    yd = ya - yw;
-			}else{
-			    cout<<"case2:"<<xw<<","<<yw<<"\n";
-			    xd = xa + xw;
-			    yd = ya + yw;
-			}
-		    }else{
-			if(k3<k1){
-			    cout<<"case3:"<<xw<<","<<yw<<"\n";
-			    xd = xa - xw;
-			    yd = ya - yw;
-			}else{
-			    cout<<"case4:"<<xw<<","<<yw<<"\n";
-			    xd = xa + xw;
-			    yd = ya + yw;
-			}
-		    }
-		}else if(alpha1<90 and alpha1>0){
-		    if(ourRobot.getLocation().getX()<nextTarget.getX()){
-			if(k3>k1){
-			    cout<<"case5:"<<xw<<","<<yw<<"\n";
-			    xd = xa + xw;
-			    yd = ya - yw;
-			}else{
-			    cout<<"case6:"<<xw<<","<<yw<<"\n";
-			    xd = xa - xw;
-			    yd = ya + yw;
-			}
-		    }else{
-			if(k3<k1){
-			    cout<<"case7:"<<xw<<","<<yw<<"\n";
-			    xd = xa + xw;
-			    yd = ya - yw;
-			}else{
-			    cout<<"case8:"<<xw<<","<<yw<<"\n";
-			    xd = xa - xw;
-			    yd = ya + yw;
-			}
-		    }
-		}
-		cout << "xd,yd:" <<xd<<","<<yd<<"\n";
-		nextTarget.setX(xd);
-		nextTarget.setY(yd);
-
+		this->targetLock = 0;
 	    }
-	    loopCounter++;
+
+	}else{
+
+	    this->targetBall = nextTarget;
+	    // Check if there is obj on its way
+	    int loopCounter = 0;
+	    while(loopCounter < 30){
+		cout << "\n*****Loop Count "<<loopCounter<<"*****\n";
+		Location obstacleOnTheWay = getObstacleOnTheWay(nextTarget);
+		cout << "Nearest Ball (target): ("<<nextTarget.getX()<<","<<nextTarget.getY()<<")\n";
+		cout << "Robot Location: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
+		if(obstacleOnTheWay.getX() == nextTarget.getX() and obstacleOnTheWay.getY() == nextTarget.getY()){
+		    //If there's no obj on the way
+		    break;
+		}else{
+		    cout << "Obs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")\n";
+		    // If there is obj, need walk around
+		    // Go to another point
+		    // FIXME 
+		    // What if go out of boundary? 
+		    // What if ball has same location with an obstacle
+		    int xa = obstacleOnTheWay.getX(); 
+		    int ya = obstacleOnTheWay.getY();
+		    double k1 = getSlop(nextTarget, ourRobot.getLocation());
+		    double k2 = (-1)/k1;
+		    double alpha1 = atan(k1);
+		    // k1 could be negative
+		    if(alpha1<0) {
+			alpha1 *= (-1);
+			alpha1 += 90;
+		    }
+		    double alpha2 = atan(k2);
+		    double sinA = sin(alpha2);
+		    double cosA = cos(alpha2);
+		    if(sinA<0) sinA *= (-1);
+		    if(cosA<0) cosA *= (-1);
+		    cout << "sin,cos:"<< sinA <<","<< cosA <<"\n";
+		    cout << "alpha1,alpha2:"<<alpha1<<","<<alpha2<<"\n";
+		    // Decide which way to turn
+		    double k3 = getSlop(obstacleOnTheWay, ourRobot.getLocation());
+		    cout << "k1, k2, k3:"<< k1 <<","<< k2 << "," << k3 <<"\n";
+		    // We can walk around if alpha2 is too small
+		    int xw = SAFE_WALKAROUND*cosA;
+		    int yw = SAFE_WALKAROUND*sinA;
+		    int xd, yd;
+
+		    if(alpha1>=90 and alpha1<180){
+			if(ourRobot.getLocation().getX()<nextTarget.getX()){
+			    if(k3>k1){
+				cout<<"case1:"<<xw<<","<<yw<<"\n";
+				xd = xa - xw;
+				yd = ya - yw;
+			    }else{
+				cout<<"case2:"<<xw<<","<<yw<<"\n";
+				xd = xa + xw;
+				yd = ya + yw;
+			    }
+			}else{
+			    if(k3<k1){
+				cout<<"case3:"<<xw<<","<<yw<<"\n";
+				xd = xa - xw;
+				yd = ya - yw;
+			    }else{
+				cout<<"case4:"<<xw<<","<<yw<<"\n";
+				xd = xa + xw;
+				yd = ya + yw;
+			    }
+			}
+		    }else if(alpha1<90 and alpha1>0){
+			if(ourRobot.getLocation().getX()<nextTarget.getX()){
+			    if(k3>k1){
+				cout<<"case5:"<<xw<<","<<yw<<"\n";
+				xd = xa + xw;
+				yd = ya - yw;
+			    }else{
+				cout<<"case6:"<<xw<<","<<yw<<"\n";
+				xd = xa - xw;
+				yd = ya + yw;
+			    }
+			}else{
+			    if(k3<k1){
+				cout<<"case7:"<<xw<<","<<yw<<"\n";
+				xd = xa + xw;
+				yd = ya - yw;
+			    }else{
+				cout<<"case8:"<<xw<<","<<yw<<"\n";
+				xd = xa - xw;
+				yd = ya + yw;
+			    }
+			}
+		    }
+		    cout << "xd,yd:" <<xd<<","<<yd<<"\n";
+		    nextTarget.setX(xd);
+		    nextTarget.setY(yd);
+		    this->targetLock = 1;
+
+		}
+		loopCounter++;
+	    }
+	    this->targetPoint = nextTarget;
+	    cout << "\n---------------------------------------------------\n";
 	}
-	this->targetPoint = nextTarget;
-	cout << "\n---------------------------------------------------\n";
     }
 
     Location getTarget(){

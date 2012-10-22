@@ -31,12 +31,12 @@ Map getMap(){
 
     Ball aBall(random_in_range(30,450), random_in_range(400,450), 1);
     map.addBall(aBall);
-/*    Ball bBall(random_in_range(30,450), random_in_range(30,450),2);
+    Ball bBall(random_in_range(30,450), random_in_range(400,450),2);
     map.addBall(bBall);
 
     Obstacle aObs(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(aObs);
-
+/*
     Robot ourRobot(random_in_range(30,450), random_in_range(30,140),1);
     map.addRobot(ourRobot);
 
@@ -51,10 +51,8 @@ Map getMap(){
 
     Obstacle bObstacle(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(bObstacle);
-/*
     Obstacle cObstacle(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(cObstacle);
-  */
 /*
     Ball aBall(171,320,1);
     map.addBall(aBall);
