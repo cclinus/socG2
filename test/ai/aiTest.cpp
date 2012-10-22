@@ -28,53 +28,49 @@ int random_in_range (unsigned int min, unsigned int max){
 Map getMap(){
 
     Map map(480,480);
-/*
-    Ball aBall(random_in_range(30,450), random_in_range(30,450), 1);
+
+    Ball aBall(random_in_range(30,450), random_in_range(400,450), 1);
     map.addBall(aBall);
-*/
-    Ball bBall(random_in_range(30,450), random_in_range(30,450),2);
+/*    Ball bBall(random_in_range(30,450), random_in_range(30,450),2);
     map.addBall(bBall);
 
-    Obstacle aObs(random_in_range(30,450), random_in_range(30,450));
+    Obstacle aObs(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(aObs);
 
-    Robot ourRobot(random_in_range(30,450), random_in_range(30,450),1);
+    Robot ourRobot(random_in_range(30,450), random_in_range(30,140),1);
     map.addRobot(ourRobot);
-/*
-    Ball cBall(random_in_range(30,450), random_in_range(30,450), 3);
+
+    Ball cBall(random_in_range(30,450), random_in_range(320,450), 3);
     map.addBall(cBall);
 
-    Ball dBall(random_in_range(30,450), random_in_range(30,450),4);
+    Ball dBall(random_in_range(30,450), random_in_range(320,450),4);
     map.addBall(dBall);
 */
-    Obstacle aObstacle(random_in_range(30,450), random_in_range(30,450));
+    Obstacle aObstacle(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(aObstacle);
 
-    Obstacle bObstacle(random_in_range(30,450), random_in_range(30,450));
+    Obstacle bObstacle(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(bObstacle);
-
-    Obstacle cObstacle(random_in_range(30,450), random_in_range(30,450));
-    map.addObstacle(cObstacle);
-    
 /*
-    Ball aBall(100,200,1);
+    Obstacle cObstacle(random_in_range(30,450), random_in_range(160,320));
+    map.addObstacle(cObstacle);
+  */
+/*
+    Ball aBall(171,320,1);
     map.addBall(aBall);
-
     Ball bBall(300,240,2);
     map.addBall(bBall);
-
-    Obstacle aObs(200,300);
+    Obstacle aObs(339,188);
     map.addObstacle(aObs);
-
-    Robot ourRobot(310,460,1);
-    map.addRobot(ourRobot);
-
-    Obstacle aObstacle(300,340);
-    map.addObstacle(aObstacle);
-
-    Obstacle bObstacle(240,50);
-    map.addObstacle(bObstacle);
 */
+    Robot ourRobot(250,10,1);
+    map.addRobot(ourRobot);
+//    Obstacle aObstacle(380,170);
+//    map.addObstacle(aObstacle);
+
+//    Obstacle bObstacle(240,50);
+//    map.addObstacle(bObstacle);
+
     return map;
 }
 
@@ -87,7 +83,7 @@ int main () {
 
     // Init map
     ofstream guiFile;
-    guiFile.open ("../../server/data");
+    guiFile.open ("/home/cclinus/workplace/375/socG2/server/data");
 
     // Add robot
     Robot ourRobot = map.getOurRobot();
@@ -109,7 +105,7 @@ int main () {
 
     guiFile.close();
 
-    sleep(2);
+    sleep(1);
 
     while(1){
 
@@ -143,7 +139,7 @@ int main () {
 
 	guiFile.close();
 
-	sleep(2);
+	sleep(1);
     }
 
     return 0;

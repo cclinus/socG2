@@ -14,7 +14,6 @@ class Robot {
     Location location;
     
     public:
-    
     Robot(){
 	this->width = 25;
 	this->length = 25;
@@ -39,8 +38,8 @@ class Robot {
 
     // For testing
     void moveHalf(Location target){
-	int xt = ( target.getX() + this->location.getX() ) / 2;
-	int yt = ( target.getY() + this->location.getY() ) / 2;
+	int xt = ( target.getX() - this->location.getX() ) / 10 + this->location.getX();
+	int yt = ( target.getY() - this->location.getY() ) / 10 + this->location.getY();
 	this->location.setX(xt);
 	this->location.setY(yt);
     }

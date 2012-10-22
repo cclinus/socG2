@@ -8,8 +8,8 @@
 #include "Obstacle.hpp"
 #include "Robot.hpp"
 
-#define SAFE_WALKAROUND 55
-#define DANGER_DISTANCE 33
+#define SAFE_WALKAROUND 65
+#define DANGER_DISTANCE 35
 
 using namespace std;
 
@@ -27,8 +27,10 @@ class Brain{
 	this->map = aMap;
 	vector<Ball> ballVector = map.getBalls();
 	vector<Obstacle> obstacleVector = this->map.getObstacles();
+
 	Location nextTarget = getNearestBall();
 	Robot ourRobot = this->map.getOurRobot();
+
 	// Check if there is obj on its way
 	int loopCounter = 0;
 	while(loopCounter < 10){
@@ -48,18 +50,78 @@ class Brain{
 		// What if ball has same location with an obstacle
 		int xa = obstacleOnTheWay.getX(); 
 		int ya = obstacleOnTheWay.getY();
-		double slop = getSlop(nextTarget, ourRobot.getLocation());
-		double k2 = slop*(-1);
-		cout << "slop, k2:"<<slop<<","<<k2<<"\n";
-		double alpha = atan(k2);
-		double sinA = sin(alpha);
-		double cosA = cos(alpha);
-		cout << "sin,cos:"<<sinA<<","<<cosA<<"\n";
-		int xd = xa + SAFE_WALKAROUND*cosA;
-		int yd = ya + SAFE_WALKAROUND*sinA;
-		cout << "xd,yd:" << xd << "," << yd << "\n";
+		double k1 = getSlop(nextTarget, ourRobot.getLocation());
+		double k2 = (-1)/k1;
+		double alpha1 = atan(k1);
+		// k1 could be negative
+		if(alpha1<0) {
+		    alpha1 *= (-1);
+		    alpha1 += 90;
+		}
+		double alpha2 = atan(k2);
+		double sinA = sin(alpha2);
+		double cosA = cos(alpha2);
+		if(sinA<0) sinA *= (-1);
+		if(cosA<0) cosA *= (-1);
+		cout << "sin,cos:"<< sinA <<","<< cosA <<"\n";
+		cout << "alpha1,alpha2:"<<alpha1<<","<<alpha2<<"\n";
+		// Decide which way to turn
+		double k3 = getSlop(obstacleOnTheWay, ourRobot.getLocation());
+		cout << "k1, k2, k3:"<< k1 <<","<< k2 << "," << k3 <<"\n";
+		// We can walk around if alpha2 is too small
+		int xw = SAFE_WALKAROUND*cosA;
+		int yw = SAFE_WALKAROUND*sinA;
+		int xd, yd;
+
+		if(alpha1>=90 and alpha1<180){
+		    if(ourRobot.getLocation().getX()<nextTarget.getX()){
+			if(k3>k1){
+			    cout<<"case1:"<<xw<<","<<yw<<"\n";
+			    xd = xa - xw;
+			    yd = ya - yw;
+			}else{
+			    cout<<"case2:"<<xw<<","<<yw<<"\n";
+			    xd = xa + xw;
+			    yd = ya + yw;
+			}
+		    }else{
+			if(k3<k1){
+			    cout<<"case3:"<<xw<<","<<yw<<"\n";
+			    xd = xa - xw;
+			    yd = ya - yw;
+			}else{
+			    cout<<"case4:"<<xw<<","<<yw<<"\n";
+			    xd = xa + xw;
+			    yd = ya + yw;
+			}
+		    }
+		}else if(alpha1<90 and alpha1>0){
+		    if(ourRobot.getLocation().getX()<nextTarget.getX()){
+			if(k3>k1){
+			    cout<<"case5:"<<xw<<","<<yw<<"\n";
+			    xd = xa + xw;
+			    yd = ya - yw;
+			}else{
+			    cout<<"case6:"<<xw<<","<<yw<<"\n";
+			    xd = xa - xw;
+			    yd = ya + yw;
+			}
+		    }else{
+			if(k3<k1){
+			    cout<<"case7:"<<xw<<","<<yw<<"\n";
+			    xd = xa + xw;
+			    yd = ya - yw;
+			}else{
+			    cout<<"case8:"<<xw<<","<<yw<<"\n";
+			    xd = xa - xw;
+			    yd = ya + yw;
+			}
+		    }
+		}
+		cout << "xd,yd:" <<xd<<","<<yd<<"\n";
 		nextTarget.setX(xd);
 		nextTarget.setY(yd);
+
 	    }
 	    loopCounter++;
 	}

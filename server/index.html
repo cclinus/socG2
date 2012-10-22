@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="../lib/jquery/jquery-1.7.1.js"></script>
 
 	<style> 
 	    #sog{
 	      margin:40px;
+	    }
+
+	    #btn_restart{
+	      margin-left:40px;
+	      width:200px;
+	      height:50px;
 	    }
 	</style>
 
@@ -65,67 +71,76 @@
 	      ctx.fillStyle = "black";
 	      ctx.fillText("("+x+","+y+")", x, y);
 
-	    }
+	      }
 
-	    function updateMap(){
+	      function updateMap(){
 	      console.log("Updating ... ");
 	      sog = document.getElementById("sog");
 	      ctx = sog.getContext("2d");
 	      ctx.clearRect ( 0, 0, 480, 480);
 
 	      $.ajax({
-		url: 'server.php',
-		success: function(data) {
-		  var json = jQuery.parseJSON(data);
-		  $.each(json, function(key, val){
-		    console.log(val);
-		    //Print each obj to map
-		    $.each(val, function(key2, val2){
+	      url: 'server.php',
+	      success: function(data) {
+	      var json = jQuery.parseJSON(data);
+	      $.each(json, function(key, val){
+	      console.log(val);
+	      //Print each obj to map
+	      $.each(val, function(key2, val2){
 
-		      if(val2.indexOf('r') != -1){
-			// It's robot
-			var position = val2.split("r");
-			robotPosition = position;
-			drawRobot(position[0], position[1], 20, 20);
-		      }
+	      if(val2.indexOf('r') != -1){
+		// It's robot
+		var position = val2.split("r");
+		robotPosition = position;
+		drawRobot(position[0], position[1], 20, 20);
+	      }
 
-		      if(val2.indexOf('b' != -1)){
-			// It's ball
-			var position = val2.split("b");
-			drawBall(position[0], position[1], 7, 0);
-		      }
+	      if(val2.indexOf('b' != -1)){
+		// It's ball
+		var position = val2.split("b");
+		drawBall(position[0], position[1], 7, 0);
+	      }
 
-		      if(val2.indexOf('o' != -1)){
-			// It's obstacle
-			var position = val2.split("o");
-			drawObs(position[0], position[1], 14, 0);
-		      }
+	      if(val2.indexOf('o' != -1)){
+		// It's obstacle
+		var position = val2.split("o");
+		drawObs(position[0], position[1], 14, 0);
+	      }
 
-		      if(val2.indexOf('t' != -1)){
-			// It's target point
-			var position = val2.split("t");
-			drawTarget(position[0], position[1], 2, 0);
-			drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
-		      }
+	      if(val2.indexOf('t' != -1)){
+		// It's target point
+		var position = val2.split("t");
+		drawTarget(position[0], position[1], 2, 0);
+		drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
+	      }
 
-		    });
-		  });
-		}
-	      });
-	    }
-	</script>
+	    });
+	  });
+	}
+      });
+    }
+
+    function restart(){
+      $.ajax({
+	url: 'restart.php'
+      });
+    }
+
+</script>
     </head>
     <body>
 
 	<canvas id="sog" width="480" height="480" style="border:1px solid #c3c3c3;">
 	Your browser does not support the HTML5 canvas tag.
-	</canvas>
+	</canvas></br>
+
+	<button onclick="restart();" id='btn_restart'>Restart</button>
 
 	<script>
 	    var sog;
 	    var ctx;
 	    var robotPosition;
-	    setInterval("updateMap();", 1000);
+	    setInterval("updateMap();", 750);
 	</script>
 
     </body>
