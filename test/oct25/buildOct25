@@ -1,0 +1,3 @@
+#! /bin/sh
+
+g++ -ggdb `pkg-config --cflags opencv` -o oct25 oct25.cpp ../../src/*.hpp `pkg-config --libs opencv`;
