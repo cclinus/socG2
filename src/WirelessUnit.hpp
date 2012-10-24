@@ -2,13 +2,16 @@
 #define WIRELESSUNIT_HPP
 
 #include <stdio.h>
+#include <string>
 
 using namespace std;
 
 class WirelessUnit{
 
+    public:
     /* xbee control goes here*/
-    void send(){
+    void send(string msg){
+	// Add code here
     
     }
 };
