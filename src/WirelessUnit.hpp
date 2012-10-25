@@ -1,19 +1,39 @@
 #ifndef WIRELESSUNIT_HPP
 #define WIRELESSUNIT_HPP
 
-#include <stdio.h>
 #include <string>
+#include <stdio.h>
+#include <iostream>
+#include "rs232.h"
+#include "rs232.c"
+
 
 using namespace std;
 
 class WirelessUnit{
+	public:
+		WirelessUnit(){
+		}
 
-    public:
-    /* xbee control goes here*/
-    void send(string msg){
-	// Add code here
-    
-    }
+		int send(string angle){
+
+			int i, n,
+			    cport_nr=17,        /* /dev/ttyS0 (COM1 on windows) */
+			    bdrate=57600;       /* 57600 baud */
+
+			if(OpenComport(cport_nr, bdrate)){
+				printf("Can not open comport\n");
+				return 0;
+			}
+
+			int TempNumOne = angle.size();
+			unsigned char msg[4096];
+			for (int i=0; i<=TempNumOne; i++)
+			{
+				msg[i] = angle[i];
+			}
+
+			return SendBuf(cport_nr, msg, 4095);
+		}
 };
-
 #endif
