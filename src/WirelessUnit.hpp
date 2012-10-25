@@ -18,8 +18,8 @@ class WirelessUnit{
 		int send(string angle){
 
 			int i, n,
-			    cport_nr=17,        /* /dev/ttyS0 (COM1 on windows) */
-			    bdrate=57600;       /* 57600 baud */
+			    cport_nr=16,        /* /dev/ttyS0 (COM1 on windows) */
+			    bdrate = 9600;       /* 57600 baud */
 
 			if(OpenComport(cport_nr, bdrate)){
 				printf("Can not open comport\n");
