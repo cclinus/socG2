@@ -81,7 +81,9 @@
 
 	      $.ajax({
 	      url: 'server.php',
+	      type: "json",
 	      success: function(data) {
+console.log(data);
 	      var json = jQuery.parseJSON(data);
 	      $.each(json, function(key, val){
 	      console.log(val);
@@ -98,6 +100,7 @@
 	      if(val2.indexOf('b' != -1)){
 		// It's ball
 		var position = val2.split("b");
+		console.log(position[0]);
 		drawBall(position[0], position[1], 7, 0);
 	      }
 
