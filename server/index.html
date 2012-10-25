@@ -71,69 +71,81 @@
 	      ctx.fillStyle = "black";
 	      ctx.fillText("("+x+","+y+")", x, y);
 
-	      }
+	    }
 
-	      function updateMap(){
+	    function updateMap(){
 	      console.log("Updating ... ");
 	      sog = document.getElementById("sog");
 	      ctx = sog.getContext("2d");
 	      ctx.clearRect ( 0, 0, 480, 480);
 
 	      $.ajax({
-	      url: 'server.php',
-	      type: "json",
-	      success: function(data) {
-console.log(data);
-	      var json = jQuery.parseJSON(data);
-	      $.each(json, function(key, val){
-	      console.log(val);
-	      //Print each obj to map
-	      $.each(val, function(key2, val2){
+		url: 'server.php',
+		type: "json",
+		success: function(data) {
+		  console.log(data);
+		  var json = jQuery.parseJSON(data);
+		  $.each(json, function(key, val){
+		    console.log(val);
+		    //Print each obj to map
+		    $.each(val, function(key2, val2){
 
-	      if(val2.indexOf('r') != -1){
-		// It's robot
-		var position = val2.split("r");
-		robotPosition = position;
-		drawRobot(position[0], position[1], 20, 20);
-	      }
+		      if(val2.indexOf('r') != -1){
+			// It's robot
+			var position = val2.split("r");
+			robotPosition = position;
+			drawRobot(position[0], position[1], 20, 20);
+		      }
 
-	      if(val2.indexOf('b' != -1)){
-		// It's ball
-		var position = val2.split("b");
-		console.log(position[0]);
-		drawBall(position[0], position[1], 7, 0);
-	      }
+		      if(val2.indexOf('b' != -1)){
+			// It's ball
+			var position = val2.split("b");
+			console.log(position[0]);
+			drawBall(position[0], position[1], 7, 0);
+		      }
 
-	      if(val2.indexOf('o' != -1)){
-		// It's obstacle
-		var position = val2.split("o");
-		drawObs(position[0], position[1], 14, 0);
-	      }
+		      if(val2.indexOf('o' != -1)){
+			// It's obstacle
+			var position = val2.split("o");
+			drawObs(position[0], position[1], 14, 0);
+		      }
 
-	      if(val2.indexOf('t' != -1)){
-		// It's target point
-		var position = val2.split("t");
-		drawTarget(position[0], position[1], 2, 0);
-		drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
-	      }
+		      if(val2.indexOf('t' != -1)){
+			// It's target point
+			var position = val2.split("t");
+			drawTarget(position[0], position[1], 2, 0);
+			drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
+		      }
 
-	    });
-	  });
-	}
-      });
-    }
+		    });
+		  });
+		}
+	      });
 
-    function restart(){
-      $.ajax({
-	url: 'restart.php'
-      });
-    }
+	      ctx.strokeStyle = "black";
+	      ctx.strokeRect(150,0,180,60);
+	      
+	      ctx.strokeStyle = "black";
+	      ctx.strokeRect(150,420,180,60);
 
-</script>
+	      ctx.fillStyle = "green";
+	      ctx.fillRect(210,0,60,5);
+
+	      ctx.fillStyle = "green";
+	      ctx.fillRect(210,475,60,5);
+	    }
+
+	    function restart(){
+	      $.ajax({
+		url: 'restart.php'
+	      });
+	    }
+
+	</script>
     </head>
     <body>
 
-	<canvas id="sog" width="480" height="480" style="border:1px solid #c3c3c3;">
+	<canvas id="sog" width="480" height="480" style="border:2px solid black;">
 	Your browser does not support the HTML5 canvas tag.
 	</canvas></br>
 
