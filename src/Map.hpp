@@ -27,7 +27,7 @@ class Map {
         width = w;
         height = h;
         //FIXME: what is gate coordinates?
-        this->gate.setX(0);
+        this->gate.setX(240);
         this->gate.setY(0);
     }
 

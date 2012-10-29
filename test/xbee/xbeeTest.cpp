@@ -18,6 +18,6 @@ int main () {
 
 	int dataSize = xbee.send(angle, cycle);
 	cout << dataSize << "\n";
-	sleep(2);
+	sleep(1);
     }
 }

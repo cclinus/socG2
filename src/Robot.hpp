@@ -11,7 +11,8 @@ class Robot {
     int width;
     int length;
     int robotNo;
-    Location location;
+    Location locationA; //We treat this point as the center of the robot
+    Location locationB;
     
     public:
     Robot(){
@@ -20,12 +21,17 @@ class Robot {
     }
 
     Robot (int a, int b, int No){
-        this->location.setX(a);
-        this->location.setY(b);
+        this->locationA.setX(a);
+        this->locationA.setY(b);
         // Our robot NO. is 1
         robotNo = No;
 	this->width = 25;
 	this->length = 25;
+    }
+
+    void addLocationB(int a, int b){
+	this->locationB.setX(a);
+	this->locationB.setY(b);
     }
 
     int getNo(void){
@@ -33,22 +39,22 @@ class Robot {
     }
 
     Location getLocation(void){
-        return location;
+        return locationA;
     }
 
     // For testing
     void moveHalf(Location target){
-	int xt = ( target.getX() - this->location.getX() ) / 5 + this->location.getX();
-	int yt = ( target.getY() - this->location.getY() ) / 5 + this->location.getY();
-	this->location.setX(xt);
-	this->location.setY(yt);
+	int xt = ( target.getX() - this->locationA.getX() ) / 5 + this->locationA.getX();
+	int yt = ( target.getY() - this->locationA.getY() ) / 5 + this->locationA.getY();
+	this->locationA.setX(xt);
+	this->locationA.setY(yt);
     }
 
     void moveFull(Location target){
 	int xt = target.getX();
 	int yt = target.getY();
-	this->location.setX(xt);
-	this->location.setY(yt);
+	this->locationA.setX(xt);
+	this->locationA.setY(yt);
     }
 
 };

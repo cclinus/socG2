@@ -28,15 +28,15 @@ class WirelessUnit{
 	    }
 
 	    char angleChar[4];
-	    char cycleChar[3];
-	    sprintf(angleChar, "%d", angle);
-	    sprintf(cycleChar, "%d", cycle);
+	    char cycleChar[2];
+	    sprintf(angleChar, "%3d", angle);
+	    sprintf(cycleChar, "%2d", cycle);
 	    
 	    angleChar[3] = ' ';
-	    cycleChar[2] = ' ';
+	    //cycleChar[2] = ' ';
 
-	    unsigned char msg[7];
-	    for (int i=0; i<=6; i++){
+	    unsigned char msg[6];
+	    for (int i=0; i<=5; i++){
 		if(i <= 3){
 		    msg[i] = angleChar[i];
 		}else if(i > 3){
@@ -44,7 +44,7 @@ class WirelessUnit{
 		}
 	    }
 
-	    return SendBuf(cport_nr, msg, 7);
+	    return SendBuf(cport_nr, msg, 6);
 	}
 };
 #endif

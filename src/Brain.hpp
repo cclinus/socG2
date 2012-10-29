@@ -8,18 +8,19 @@
 #include "Obstacle.hpp"
 #include "Robot.hpp"
 
-#define SAFE_WALKAROUND 80
-#define DANGER_DISTANCE 35
+#define SAFE_WALKAROUND 80 // This value is used to walk around a obstacle without any collision
+#define DANGER_DISTANCE 35 // This value is used to tell whether the robot is too closed to any obstacles
+#define GRABBING_BALL_DISTANCE 20 // This value is used to tell the robot is already to grab a ball
 
 using namespace std;
 
 /* AI */
 class Brain{
     Map map;
-    Location targetPoint;
-    Location targetBall;
-    int targetLock;
-    int state;
+    Location targetPoint; // The point that the robot need to go to as a final goal
+    Location targetBall; // A temp value used in analyse(), basically this holds the ball we want to reach
+    int targetLock; // A temp value used in analyse() to see if need change target
+    int state; // The state need to look at in analyse() and will return to outside the brain class
 
     public:
 
@@ -27,15 +28,44 @@ class Brain{
 	this->targetLock = 0;
     }
 
+    // Update the state of the robot based on the events, locations from the map obj
+    void updateState(Robot ourRobot){
+	//STATES: 
+	//0.Idle
+	//1.Navigating to the ball
+	//2.Grabbing the ball
+	//3.Navigating to the gate
+	//4.Shooting
+
+	if( this->state == 1){
+	    int distanceToBall = getDistance(this->targetBall, ourRobot.getLocation());
+	    if( distanceToBall <= GRABBING_BALL_DISTANCE){
+		// If the current robot location is closed to the ball, update the state to 2
+		this->state = 2;
+	    }
+	}else if( this->state == 2){
+	    // See if the ball is grabbed
+	    // See the target ball is moved or disappeared
+	}else if( this->state == 3){
+	    // Set the gate as target and adjust angle when arrived
+	}else if( this->state == 4){
+	    // Trigger the shooting mechanism and return to state 1 at the end
+	}
+
+
+    }
+
+    // Find where the robot need to go based on the state
     void analyse(Map aMap){
-	this->map = aMap;
+	this->map = aMap; // Update a new map for this cycle
 	vector<Ball> ballVector = map.getBalls();
 	vector<Obstacle> obstacleVector = this->map.getObstacles();
-
-	Location nextTarget = getNearestBall();
 	Robot ourRobot = this->map.getOurRobot();
 
-	if(this->targetLock == 1){
+	//TODO Change here to change the target according to the state
+	Location nextTarget = getNearestBall();
+
+	if(this->targetLock == 1){ // Target is locked, do not need to change target
 	    // Check if the nearest ball is still the one
 	    if(nextTarget.getX() == this->targetBall.getX() and nextTarget.getY() == this->targetBall.getY()){
 		// Check if the path is still clear
@@ -57,7 +87,7 @@ class Brain{
 		this->targetLock = 0;
 	    }
 
-	}else{
+	}else{ // Target is unlocked so we recalculate target
 
 	    this->targetBall = nextTarget;
 	    // Check if there is obj on its way
