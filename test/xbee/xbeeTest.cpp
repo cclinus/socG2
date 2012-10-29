@@ -7,24 +7,17 @@ using namespace std;
 int main () {
     WirelessUnit xbee;
 
-    int angle = 0;
-    int cycle = 0;
+    int angle = 010;
+    int cycle = 01;
 
     for(int i=0; i<20; i++){
 	angle++;
 	cycle++;
+	printf("Angle: %d\n", angle);
+	printf("Cycle: %d\n", cycle);
 
-	char msg1[3];
-	sprintf(msg1, "%d", angle);
-
-	char msg2[2];
-	sprintf(msg2, "%d", cycle);
-
-	strcat(msg1, " ");
-	strcat(msg1, msg2);
-
-	int dataSize = xbee.send(msg1);
+	int dataSize = xbee.send(angle, cycle);
 	cout << dataSize << "\n";
-	sleep(1);
+	sleep(2);
     }
 }

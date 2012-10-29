@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include "rs232.h"
 #include "rs232.c"
@@ -15,7 +16,7 @@ class WirelessUnit{
 	WirelessUnit(){
 	}
 
-	int send(string angle){
+	int send(int angle, int cycle){
 
 	    int i, n,
 		cport_nr=16,        /* /dev/ttyS0 (COM1 on windows) */
@@ -26,13 +27,24 @@ class WirelessUnit{
 		return 0;
 	    }
 
-	    int TempNumOne = angle.size();
-	    unsigned char msg[TempNumOne];
-	    for (int i=0; i<=TempNumOne; i++){
-		msg[i] = angle[i];
+	    char angleChar[4];
+	    char cycleChar[3];
+	    sprintf(angleChar, "%d", angle);
+	    sprintf(cycleChar, "%d", cycle);
+	    
+	    angleChar[3] = ' ';
+	    cycleChar[2] = ' ';
+
+	    unsigned char msg[7];
+	    for (int i=0; i<=6; i++){
+		if(i <= 3){
+		    msg[i] = angleChar[i];
+		}else if(i > 3){
+		    msg[i] = cycleChar[i-4];
+		}
 	    }
 
-	    return SendBuf(cport_nr, msg, TempNumOne);
+	    return SendBuf(cport_nr, msg, 7);
 	}
 };
 #endif
