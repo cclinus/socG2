@@ -16,8 +16,8 @@
 
             #hero-box{
               display:table;
-              margin:0;
-              width:100%;
+              margin:auto;
+              width:85%;
               height:600px;
             }
 
@@ -27,12 +27,13 @@
             }
 
             #right-box{
-              width:50%;
+              width:220px;
               display:table-cell;
             }
 
             #color-box{
               width:180px;
+              height:255px;
               position:absolute;
               top:50px;
               border:1px solid #ddd;
@@ -42,6 +43,50 @@
             .color-selector{
               width: 175px;
             }
+
+            #button-box{
+              width: 180px;
+              height: 160px;
+              border:1px solid #DDD;
+              position: absolute;
+              top:350px;
+              padding:10px;
+            }
+
+            .command-btn{
+              width:80%;
+              height:40px;
+              margin-top: 10px;
+              margin-left: 15px;
+            }
+
+            #side-box{
+              width:180px;
+              height:460px;
+              display:table-cell;
+              top:50px;
+              position:absolute;
+              padding:10px;
+              border:1px solid #ddd;
+            }
+
+            #status-box{
+              width:150px;
+              height:100px;
+              padding:15px;
+            }
+
+            #event-box{
+              width:150px;
+              height:100px;
+              padding:15px;
+              margin-top:25px;
+            }
+
+            /*
+            button, select{
+              border-radius:5px;
+            }*/
 
         </style>
 
@@ -106,77 +151,77 @@
             }
 
             function updateMap(){
-              console.log("Updating ... ");
-              sog = document.getElementById("sog");
-              ctx = sog.getContext("2d");
-              ctx.clearRect ( 0, 0, 480, 480);
+            console.log("Updating ... ");
+            sog = document.getElementById("sog");
+            ctx = sog.getContext("2d");
+            ctx.clearRect ( 0, 0, 480, 480);
 
-              $.ajax({
-                url: 'server.php',
-                type: "json",
-                success: function(data) {
-                  console.log(data);
-                  var json = jQuery.parseJSON(data);
-                  $.each(json, function(key, val){
-                    console.log(val);
-                    //Print each obj to map
-                    $.each(val, function(key2, val2){
+            $.ajax({
+            url: 'server.php',
+            type: "json",
+            success: function(data) {
+            console.log(data);
+            var json = jQuery.parseJSON(data);
+            $.each(json, function(key, val){
+            console.log(val);
+            //Print each obj to map
+            $.each(val, function(key2, val2){
 
-                      if(val2.indexOf('r') != -1){
-                        // It's robot
-                        var position = val2.split("r");
-                        robotPosition = position;
-                        //drawRobot(position[0], position[1], 20, 20);
-                      }
+            if(val2.indexOf('r') != -1){
+            // It's robot
+            var position = val2.split("r");
+            robotPosition = position;
+            //drawRobot(position[0], position[1], 20, 20);
+            }
 
-                      if(val2.indexOf('n') != -1){
-                        // It's robot locationB
-                        var position = val2.split("n");
-                        drawRobot(robotPosition[0],robotPosition[1],position[0], position[1], 20, 20);
-                      }
+            if(val2.indexOf('n') != -1){
+            // It's robot locationB
+            var position = val2.split("n");
+            drawRobot(robotPosition[0],robotPosition[1],position[0], position[1], 20, 20);
+            }
 
-                      if(val2.indexOf('b' != -1)){
-                        // It's ball
-                        var position = val2.split("b");
-                        console.log(position[0]);
-                        drawBall(position[0], position[1], 7, 0);
-                      }
+            if(val2.indexOf('b' != -1)){
+            // It's ball
+            var position = val2.split("b");
+            console.log(position[0]);
+            drawBall(position[0], position[1], 7, 0);
+            }
 
-                      if(val2.indexOf('o' != -1)){
-                        // It's obstacle
-                        var position = val2.split("o");
-                        drawObs(position[0], position[1], 14, 0);
-                      }
+            if(val2.indexOf('o' != -1)){
+            // It's obstacle
+            var position = val2.split("o");
+            drawObs(position[0], position[1], 14, 0);
+            }
 
-                      if(val2.indexOf('t' != -1)){
-                        // It's target point
-                        var position = val2.split("t");
-                        drawTarget(position[0], position[1], 2, 0);
-                        drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
-                      }
+            if(val2.indexOf('t' != -1)){
+            // It's target point
+            var position = val2.split("t");
+            drawTarget(position[0], position[1], 2, 0);
+            drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
+            }
 
-                    });
-                  });
-                }
-              });
+            });
+            });
+            }
+            });
 
-              ctx.strokeStyle = "black";
-              ctx.strokeRect(150,0,180,60);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(150,0,180,60);
 
-              ctx.strokeStyle = "black";
-              ctx.strokeRect(150,420,180,60);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(150,420,180,60);
 
-              ctx.fillStyle = "green";
-              ctx.fillRect(210,0,60,5);
+            ctx.fillStyle = "green";
+            ctx.fillRect(210,0,60,5);
 
-              ctx.fillStyle = "green";
-              ctx.fillRect(210,475,60,5);
+            ctx.fillStyle = "green";
+            ctx.fillRect(210,475,60,5);
             }
 
             function restart(){
-              $.ajax({
-                url: 'restart.php'
-              });
+            $.ajax({
+            url: 'restart.php'
+            });
             }
 
         </script>
@@ -193,7 +238,7 @@
             <div id='right-box'>
 
                 <div id='color-box'>
-                    <h5>Robot Colors</h5>
+                    <h5 style="font-style:italic;">Robot Colors</h5>
                     <select class='color-selector'>
                         <option value="1"  style="color:red;">Our Robot Head: Red</option>
                         <option value="2"  style="color:green;">Our Robot Head: Green</option>
@@ -219,7 +264,44 @@
                     <button>Confirm</button>
                     <br/><br/>
                 </div>
+
+
+                <div id='button-box'>
+                    <button class='command-btn'> Start </button><br/>
+                    <button class='command-btn'> Stop </button><br/>
+                    <button class='command-btn'> Restart </button>
+                </div>
+
             </div>
+
+            <div id='side-box'>
+                <h5 style="font-style:italic;">Robot Status</h5>
+
+                <div id='status-box'>
+                    <img src='image/stall.jpg' width=150 height=100 />
+                    <h5 align=center>Navigating to the ball</h5>
+                </div>
+
+                <div id='event-box'>
+                    <h5>Ball Count:
+                        <div id='ball-count'>4</div>
+                    </h5>
+
+                    <h5>Obstacle Count:
+                        <div id='obstacle-count'>4</div>
+                    </h5>
+
+                    <h5>Shooting Attempts:
+                        <div id='shooting-attempts'>0</div>
+                    </h5>
+
+                    <h5>Time Left:
+                        <div id='time-left'>0:00</div>
+                    </h5>
+
+                </div>
+            </div>
+
         </div>
 
         <script>
