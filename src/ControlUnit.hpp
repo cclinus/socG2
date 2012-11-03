@@ -8,12 +8,12 @@
 #include <stdlib.h>
 #include "WirelessUnit.hpp"
 #include "Map.hpp"
-#include "Brain.hpp"
 #include <math.h>
 
 using namespace std;
 
 #define PI 3.1415926
+#define ANGLE_TOLERANCE 5
 
 /*
  *  STATES:
@@ -29,25 +29,28 @@ class ControlUnit{
     WirelessUnit xbee;
     Location target;
     Map map;
-    int angle;
-    int state;
 
     public:
 
-    ControlUnit(){
-	this->state = 0;
-	this->angle = 0;
-    }
+    ControlUnit(){}
 
     // Based on the path, see if we need send command to robot
     // Call after brain analyse()
-    void adjust(Map aMap, Location aTarget, int state){
+    void adjust(Map aMap, Location aTarget){
 	this->map = aMap;
 	this->target = aTarget;
 	// Check if angle is too different
 	Robot ourRobot = this->map.getOurRobot();
 	double angle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), aTarget);
 	cout << "\n\nAngle difference: "<<angle<<"\n\n";
+	if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
+	    // Out of path, we need update the robot the right angle
+	    int distance = getDistance(ourRobot.getLocation(), aTarget);
+	    int cycle = distance;//FIXME calculate the correct cycle
+	    send(angle,cycle);
+	    // We need give the robot some time to adjust
+	    sleep(1);
+	}
 
     }
 
@@ -55,33 +58,46 @@ class ControlUnit{
     // Return the angle difference between robot direction and robot-target
     double getAngle(Location rA, Location rB, Location C){
 	double x1 = rA.getX();
-	cout<<"\nx1:"<<x1<<"\n";
+	//cout<<"\nx1:"<<x1<<"\n";
 	double y1 = rA.getY();
-	cout<<"\ny1:"<<y1<<"\n";
+	//cout<<"\ny1:"<<y1<<"\n";
 	double x2 = rB.getX();
-	cout<<"\nx2:"<<x2<<"\n";
+	//cout<<"\nx2:"<<x2<<"\n";
 	double y2 = rB.getY();
-	cout<<"\ny2:"<<y2<<"\n";
+	//cout<<"\ny2:"<<y2<<"\n";
 	double x3 = C.getX();
-	cout<<"\nx3:"<<x3<<"\n";
+	//cout<<"\nx3:"<<x3<<"\n";
 	double y3 = C.getY();
-	cout<<"\ny3:"<<y3<<"\n";
-
+	//cout<<"\ny3:"<<y3<<"\n";
 	double a1 = atan2(y1-y2,x1-x2)*180/PI;
 	if(a1<0) a1=360+a1;
 	double a2 = atan2(y3-y2,x3-x2)*180/PI;
 	if(a2<0) a2=360+a2;
-
 	return a1-a2;
     }
 
 
     /*
      * Command: angle(>360: state update) cycle
+     * Send to xbee
      */
     void send(int angle, int cycle){
 	int dataSize = this->xbee.send(angle, cycle);
-	cout << "\n\n$$$$$\nXbee send: " << dataSize << "\n$$$$$\n\n";
+	cout << "\n\n$$$$$\nXbee send to update angle and cycle: " << dataSize << "\n$$$$$\n\n";
+    }
+
+    // Get distance from A and B
+    int getDistance(Location A, Location B){
+	int x1 = A.getX();
+	int y1 = A.getY();
+	int x2 = B.getX();
+	int y2 = B.getY();
+	int x = x1-x2;
+	int y = y1-y2;
+	int xp = pow(x,2);
+	int yp = pow(y,2);
+	//FIXME xp or yp could be 0
+	return sqrt(xp+yp);
     }
 
 };

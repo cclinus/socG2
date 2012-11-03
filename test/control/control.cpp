@@ -128,7 +128,11 @@ int main () {
 
 	brain.analyse(map);
 	Location target = brain.getTarget();
-	control.adjust(map, target, brain.getState());
+	int state = brain.getState();
+	// We only need adjust path with state 1 or 3
+	if(state==1 or state==3){
+	    control.adjust(map, target);
+	}
 
 	// For random testing
 	map.moveRobot(target);
