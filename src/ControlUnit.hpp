@@ -58,9 +58,9 @@ class ControlUnit{
 	cout<<"\nx1:"<<x1<<"\n";
 	double y1 = rA.getY();
 	cout<<"\ny1:"<<y1<<"\n";
-	double x2 = 240;//rB.getX();
+	double x2 = rB.getX();
 	cout<<"\nx2:"<<x2<<"\n";
-	double y2 = 10;//rB.getY();
+	double y2 = rB.getY();
 	cout<<"\ny2:"<<y2<<"\n";
 	double x3 = C.getX();
 	cout<<"\nx3:"<<x3<<"\n";
