@@ -1,7 +1,8 @@
 #include <iostream>
-#include "../../src/WirelessUnit.hpp"
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../src/WirelessUnit.hpp"
+
 using namespace std;
 
 int main () {
@@ -18,6 +19,6 @@ int main () {
 
 	int dataSize = xbee.send(angle, cycle);
 	cout << dataSize << "\n";
-	sleep(1);
+	sleep(0.3);
     }
 }

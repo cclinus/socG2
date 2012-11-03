@@ -22,6 +22,11 @@
 using namespace cv;
 using namespace std;
 
+
+
+int thresh = 228, N = 1;
+
+
 /* Image processing code */
 class Camera {
 
@@ -29,6 +34,7 @@ class Camera {
     Map map;
     VideoCapture cap;
     vector<Mat> slices;
+    vector<vector<Point> >offset;
     // Cross Element for Erosion/Dilation
     Mat cross;
     // create matrices to hold image
@@ -61,6 +67,7 @@ class Camera {
 	ValthresL,
 	ValthresH,
 	erosionCount,
+	diaCount,
 	blurSize;
 
     public:
@@ -78,17 +85,17 @@ class Camera {
 	cap.set(CV_CAP_PROP_FRAME_WIDTH,640);
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT,480);	
 	// threshold values
-	HuethresH =85; 
-	HuethresL =69;
-	SatthresL =53;
+	HuethresH =86; 
+	HuethresL =65;
+	SatthresL =65;
 	SatthresH = 255;
-	ValthresL =80;
+	ValthresL =78;
 	ValthresH = 255;
 	erosionCount = 2;
-	blurSize = 15;
-	//FIXME
-
-	cvNamedWindow("Color Tune",CV_WINDOW_NORMAL);		
+	diaCount = 3;
+	blurSize = 7;
+	/*
+	   cvNamedWindow("Color Tune",CV_WINDOW_NORMAL);		
 
 	//cvNamedWindow("Color Tune",CV_WINDOW_NORMAL);
 	cvCreateTrackbar( "Hue UpperT","Color Tune", &HuethresH, 255, 0 );
@@ -98,20 +105,15 @@ class Camera {
 	cvCreateTrackbar( "Val UpperT","Color Tune", &ValthresH, 255, 0 );
 	cvCreateTrackbar( "Val LowerT","Color Tune", &ValthresL, 255, 0 );
 	cvCreateTrackbar ("EroTime","Color Tune", &erosionCount,15, 0);
-	cvCreateTrackbar ("BlurSize","Color Tune", &blurSize,15, 0);		
+	cvCreateTrackbar ("dialate","Color Tune", &diaCount,15, 0);
+	cvCreateTrackbar ("BlurSize","Color Tune", &blurSize,15, 0);
+	 */		
     }
 
     // Core processing function, init all balls, obstacles, robots to the map obj.
     // Feel free to create additional func within this class.
     Map updateMap(Map aMap){
-	/* Image Processing and Camera connections go here.
-	 * During the processing, once we find a ball for example,
-	 * we can do:
-	 *      Ball aBall(x, y, ballNo);
-	 *      map.addBall(aBall);
-	 * to add an ball obj to the map.
-	 * Same to obstacles and robot, refer to Ball.hpp, Robot.hpp and Obstacle.hpp
-	 */
+
 	this->map = aMap;
 	cap >> camImage;
 	if(blurSize == 0)
@@ -120,15 +122,15 @@ class Camera {
 	//get homography for the map first
 	vector<Point2f>cornersOff( 4 );
 	vector<Point2f>cornersReal( 4 );
-	cornersOff[0].x = 77; cornersOff[0].y = 56;
-	cornersOff[1].x = 562; cornersOff[1].y = 34;
-	cornersOff[2].x = 2; cornersOff[2].y = 200;
-	cornersOff[3].x = 627; cornersOff[3].y = 184;
+	cornersOff[0].x = this->offset[0][1].x; cornersOff[0].y = this->offset[0][1].y;
+	cornersOff[1].x = this->offset[0][2].x; cornersOff[1].y = this->offset[0][2].y;
+	cornersOff[2].x = this->offset[0][0].x; cornersOff[2].y = this->offset[0][0].y;
+	cornersOff[3].x = this->offset[0][3].x; cornersOff[3].y = this->offset[0][3].y;
 
-	cornersReal[0].x = 0; cornersReal[0].y = 0;
-	cornersReal[1].x = 480; cornersReal[1].y = 0;
-	cornersReal[2].x = 0; cornersReal[2].y = 240;
-	cornersReal[3].x = 480; cornersReal[3].y = 240;
+	cornersReal[0].x = 155; cornersReal[0].y = 0;
+	cornersReal[1].x = 325; cornersReal[1].y = 0;
+	cornersReal[2].x = 155; cornersReal[2].y = 55;
+	cornersReal[3].x = 325; cornersReal[3].y = 55;
 
 
 	Mat H = findHomography(cornersOff,cornersReal,CV_RANSAC);
@@ -140,6 +142,184 @@ class Camera {
 	if(blurSize == 0)
 	    blurSize = 1;
 	blur(hsvImage, hsvImage, Size(blurSize,blurSize));
+
+	//looping thru the to update each object 1=ball, 2=obstacle, 3=robot_color1, 4=robot_color2
+	for(int i=1; i<=3; i++){
+	    getObj(i,H);
+	}
+	return this->map;
+    }
+
+
+    vector<vector<Point> > initMap(){
+	cap>>camImage;
+
+	vector<vector<Point> > squares;
+	findSquares(camImage, squares);
+	int width;
+	int length;
+	int max=0;
+	vector<vector<Point> >corners(1);
+
+	vector<int> area( squares.size() );
+
+	for(size_t i=0; i<squares.size(); i++){
+	    if(squares[i][0].y<=240){
+		width = sqrt((squares[i][0].x-squares[i][1].x)^2-(squares[i][0].y-squares[i][1].y)^2);
+		length = sqrt((squares[i][1].x-squares[i][2].x)^2-(squares[i][1].y-squares[i][2].y)^2);
+		area[i]=width*length;
+
+		if(area[i]>=max){
+		    max=area[i];
+		    //for(int j=0;j<4;j++){
+		    corners[0] = squares[i];
+		    //}
+		}
+	    }
+	}
+
+	drawSquares(camImage, corners);
+
+	this->offset = corners;
+    }
+
+    static double angle( Point pt1, Point pt2, Point pt0 ){
+	double dx1 = pt1.x - pt0.x;
+	double dy1 = pt1.y - pt0.y;
+	double dx2 = pt2.x - pt0.x;
+	double dy2 = pt2.y - pt0.y;
+	return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
+    }
+
+    // returns sequence of squares detected on the image.
+    // the sequence is stored in the specified memory storage
+    static void findSquares( const Mat& image, vector<vector<Point> >& squares )
+    {
+	squares.clear();
+	//Mat image8U(image.size(),CV_8U);
+	vector<vector<Point> > contours;
+
+	Mat gray0(image.size(),CV_8U),gray;
+
+
+	//cvtColor(image, imageRGB, CV_HSV2RGB);
+	// down-scale and upscale the image to filter out the noise
+	//pyrDown(image, pyr, Size(image.cols/2, image.rows/2));
+	//pyrUp(pyr, timg, image.size());
+
+	// find squares in every color plane of the image
+	for( int c = 0; c < 3; c++ )
+	{	
+	    int ch[] = {c, 0};
+	    mixChannels(&image, 1, &gray0, 1, ch, 1);
+
+
+	    // try several threshold levels
+	    for( int l = 0; l < N; l++ )
+	    {
+		// hack: use Canny instead of zero threshold level.
+		// Canny helps to catch squares with gradient shading
+		if( l == 0 )
+		{
+		    // apply Canny. Take the upper threshold from slider
+		    // and set the lower to 0 (which forces edges merging)
+		    Canny(gray0, gray, 0, thresh, 3);
+		    // dilate canny output to remove potential
+		    // holes between edge segments
+		    dilate(gray, gray, Mat(), Point(-1,-1));
+		}
+		else
+		{
+		    // apply threshold if l!=0:
+		    //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
+		    gray = gray0 >= (l+1)*255/N;
+		}
+
+		// find contours and store them all as a list
+		findContours(gray, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+		vector<Point> approx;
+
+		// test each contour
+		for( size_t i = 0; i < contours.size(); i++ )
+		{
+		    // approximate contour with accuracy proportional
+		    // to the contour perimeter
+		    approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
+
+		    // square contours should have 4 vertices after approximation
+		    // relatively large area (to filter out noisy contours)
+		    // and be convex.
+		    // Note: absolute value of an area is used because
+		    // area may be positive or negative - in accordance with the
+		    // contour orientation
+		    if( approx.size() == 4 &&
+			    fabs(contourArea(Mat(approx))) > 1000 &&
+			    isContourConvex(Mat(approx)) )
+		    {
+			double maxCosine = 0;
+
+			for( int j = 2; j < 5; j++ )
+			{
+			    // find the maximum cosine of the angle between joint edges
+			    double cosine = fabs(angle(approx[j%4], approx[j-2], approx[j-1]));
+			    maxCosine = MAX(maxCosine, cosine);
+			}
+
+			// if cosines of all angles are small
+			// (all angles are ~90 degree) then write quandrange
+			// vertices to resultant sequence
+			if( maxCosine < 0.3 )
+			    squares.push_back(approx);
+		    }
+		}
+	    }
+	}
+    }
+
+    // the function draws all the squares in the image
+    static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
+    {
+	for( size_t i = 0; i < squares.size(); i++ )
+	{
+	    const Point* p = &squares[i][0];
+	    int n = (int)squares[i].size();
+	    polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
+	}
+
+    }
+
+
+    void getObj(int i, Mat H){
+	if(i == 1){
+	    HuethresH =89; HuethresL =65;
+	    SatthresL =65; SatthresH = 255;
+	    ValthresL =78; ValthresH = 255;
+	    erosionCount = 2;
+	    diaCount = 3;
+	    blurSize = 7;
+	}else if(i == 2){
+	    HuethresH =48; HuethresL =0;
+	    SatthresL =65; SatthresH = 255;
+	    ValthresL =78; ValthresH = 255;
+	    erosionCount = 2;
+	    diaCount = 3;
+	    blurSize = 7;
+	}else if(i == 3){
+	    HuethresH =141; HuethresL =112;
+	    SatthresL =65; SatthresH = 255;
+	    ValthresL =78; ValthresH = 255;
+	    erosionCount = 2;
+	    diaCount = 3;
+	    blurSize = 7;
+	}else if(i == 4){
+	    HuethresH =45; HuethresL =69;
+	    SatthresL =76; SatthresH = 255;
+	    ValthresL =78; ValthresH = 255;
+	    erosionCount = 1;
+	    diaCount = 3;
+	    blurSize = 5;
+	}
 
 	split(hsvImage,slices);
 	slices[0].copyTo (hue);
@@ -158,24 +338,24 @@ class Camera {
 	threshold (val,val1,ValthresL,255, CV_THRESH_BINARY); // get lower bound
 	threshold (val, val2,ValthresH,255, CV_THRESH_BINARY_INV); // get upper bound
 	val3 = val1 & val2; // multiply 2 matrix to get the color range
-	//erode(HnS,erd,cross,Point(-1,-1),erosionCount); // do erode
-	//dilate(HnS,dia,cross,Point(-1,-1),erosionCount);// do dialate
-	// combine sat, val and hue filter together
 	HSV = sat3 & hue3 & val3;
 
 	// erode and dialation to reduce noise
 	erode(HSV,erd,cross,Point(-1,-1),erosionCount); // do erode
-	dilate(HSV,dia,cross,Point(-1,-1),erosionCount); // do dialate
-	int ballCnt = circleObj(erd,H);
+	dilate(erd,dia,cross,Point(-1,-1),diaCount); // do dialate
 
-	imshow("Webcam Orignal", camImage);
-	imshow("HSV",HSV);
-	imshow("erd",erd);
-	cvWaitKey(5);
-	return this->map;
+	//draw circle around object
+	int ballCnt = circleObj(dia,H,i);
+
+	//imshow("Webcam Orignal", camImage);
+	//imshow("HSV",HSV);
+	//imshow("erd",dia);
+	//cvWaitKey(5);
+	//return this->map;
+
     }
 
-    int circleObj(Mat hsv,Mat homo){
+    int circleObj(Mat hsv,Mat homo,int ii){
 	Mat h=hsv;
 	Mat hm = homo;
 	RNG rng(12345);
@@ -189,7 +369,6 @@ class Camera {
 	findContours(threshold_out, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
 	int contoursSize;
 	contoursSize=contours.size();
-	//printf("ball number = %i\n", contoursSize);
 	/// Approximate contours to polygons + get bounding rects and circles
 	vector<vector<Point> > contours_poly( contours.size() );
 	vector<Rect> boundRect( contours.size() );
@@ -204,27 +383,37 @@ class Camera {
 	    minEnclosingCircle( contours_poly[i], center[i], radius[i] );
 	    if(radius[i]>=1.5){
 		ObjCtr[0] = center[i];
-		cout<<cnt<<"origin ="<<"( "<<center[i].x<<","<<center[i].y<<" )"<<" ";
+		//cout<<cnt<<"origin ="<<"( "<<center[i].x<<","<<center[i].y<<" )"<<" ";
 		perspectiveTransform(ObjCtr, ObjCtrFix, hm);
-		Ball aBall((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y,cnt);
-		this->map.addBall(aBall);
+		if(ii == 1){
+		    Ball aBall((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y,cnt);
+		    this->map.addBall(aBall);
+		}else if(ii == 2){
+		    if(ObjCtrFix[0].x <= 240 && ObjCtrFix[0].y <= 240){
+			ObjCtrFix[0].x = ObjCtrFix[0].x+20;
+			ObjCtrFix[0].y = ObjCtrFix[0].y+20;
+		    }
+		    Obstacle aObstacle((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y);
+		    this->map.addObstacle(aObstacle);
+		}else if(ii == 3){
+		    Robot aRobot((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y,cnt);
+		    this->map.addRobot(aRobot);
+		}
+
 		cnt++;
 	    }
 	}
-	printf("\n");
-	//printf("%i\n",contoursSize);	
 	/// Draw polygonal contour + bonding rects + circles
-	Mat drawing = Mat::zeros( threshold_out.size(), CV_8UC3 );
-	for( int i = 0; i< contoursSize; i++ )
-	{
-	    Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-	    //drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
-	    //rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
-	    circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
-	}
+	/*
+	   Mat drawing = Mat::zeros( threshold_out.size(), CV_8UC3 );
+	   for( int i = 0; i< contoursSize; i++ )
+	   {
+	   Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+	   circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
+	   }
 
-	imshow( "Contours", drawing );	
-
+	   imshow( "Contours", drawing );	
+	 */
 	return 	contoursSize;
 
     }

@@ -8,7 +8,6 @@
 #include "rs232.h"
 #include "rs232.c"
 
-
 using namespace std;
 
 class WirelessUnit{

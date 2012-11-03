@@ -11,6 +11,7 @@
 #define SAFE_WALKAROUND 80 // This value is used to walk around a obstacle without any collision
 #define DANGER_DISTANCE 35 // This value is used to tell whether the robot is too closed to any obstacles
 #define GRABBING_BALL_DISTANCE 20 // This value is used to tell the robot is already to grab a ball
+#define SHOOTING_DISTANCE 40 // This value is used to tell the robot is to shoot when it arrives to the gate
 
 using namespace std;
 
@@ -26,10 +27,12 @@ class Brain{
 
     Brain(){
 	this->targetLock = 0;
+	this->state = 0;
     }
 
     // Update the state of the robot based on the events, locations from the map obj
     void updateState(Robot ourRobot){
+
 	//STATES: 
 	//0.Idle
 	//1.Navigating to the ball
@@ -37,21 +40,37 @@ class Brain{
 	//3.Navigating to the gate
 	//4.Shooting
 
+	if(this->state == 0) this->state = 1;
+
+	cout << "\n\n*****\n" << "Current State: " << this->state << "\n*****\n\n";
+
 	if( this->state == 1){
 	    int distanceToBall = getDistance(this->targetBall, ourRobot.getLocation());
 	    if( distanceToBall <= GRABBING_BALL_DISTANCE){
 		// If the current robot location is closed to the ball, update the state to 2
 		this->state = 2;
+		cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
 	    }
 	}else if( this->state == 2){
 	    // See if the ball is grabbed
 	    // See the target ball is moved or disappeared
+	    // FIXME need confirm the ball is in
+	    sleep(10);
+	    this->state = 3;
+	    cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
 	}else if( this->state == 3){
 	    // Set the gate as target and adjust angle when arrived
+	    int distanceToGate = getDistance(this->map.getGateLocation(), ourRobot.getLocation());
+	    if( distanceToGate <= SHOOTING_DISTANCE){
+		this->state = 4;
+		cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
+	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
+	    sleep(10);
+	    this->state = 1;
+	    cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
 	}
-
 
     }
 
@@ -61,9 +80,15 @@ class Brain{
 	vector<Ball> ballVector = map.getBalls();
 	vector<Obstacle> obstacleVector = this->map.getObstacles();
 	Robot ourRobot = this->map.getOurRobot();
+	Location nextTarget = ourRobot.getLocation();
 
-	//TODO Change here to change the target according to the state
-	Location nextTarget = getNearestBall();
+	// Change the target according to the state
+	updateState(ourRobot);
+	if(this->state == 1){
+	    nextTarget = getNearestBall();
+	}else if(this->state == 3){
+	    nextTarget = this->map.getGateLocation();
+	}
 
 	if(this->targetLock == 1){ // Target is locked, do not need to change target
 	    // Check if the nearest ball is still the one

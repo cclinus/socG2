@@ -39,7 +39,7 @@
 
 
 int Cport[22],
-    error;
+    errorX;
 
 struct termios new_port_settings,
        old_port_settings[22];
@@ -120,8 +120,8 @@ int OpenComport(int comport_number, int baudrate)
     return(1);
   }
 
-  error = tcgetattr(Cport[comport_number], old_port_settings + comport_number);
-  if(error==-1)
+  errorX = tcgetattr(Cport[comport_number], old_port_settings + comport_number);
+  if(errorX==-1)
   {
     close(Cport[comport_number]);
     perror("unable to read portsettings ");
@@ -135,8 +135,8 @@ int OpenComport(int comport_number, int baudrate)
   new_port_settings.c_lflag = 0;
   new_port_settings.c_cc[VMIN] = 0;      /* block untill n bytes are received */
   new_port_settings.c_cc[VTIME] = 0;     /* block untill a timer expires (n * 100 mSec.) */
-  error = tcsetattr(Cport[comport_number], TCSANOW, &new_port_settings);
-  if(error==-1)
+  errorX = tcsetattr(Cport[comport_number], TCSANOW, &new_port_settings);
+  if(errorX==-1)
   {
     close(Cport[comport_number]);
     perror("unable to adjust portsettings ");

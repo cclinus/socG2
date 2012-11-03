@@ -42,6 +42,10 @@ class Robot {
         return locationA;
     }
 
+    Location getLocationB(void){
+	return locationB;
+    }
+
     // For testing
     void moveHalf(Location target){
 	int xt = ( target.getX() - this->locationA.getX() ) / 5 + this->locationA.getX();

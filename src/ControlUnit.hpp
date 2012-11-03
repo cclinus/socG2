@@ -4,7 +4,10 @@
 #include <stdio.h>
 #include "Location.hpp"
 #include "Robot.hpp"
+#include <iostream>
+#include <stdlib.h>
 #include "WirelessUnit.hpp"
+#include "Robot.hpp"
 
 using namespace std;
 
@@ -19,44 +22,28 @@ using namespace std;
  */
 
 class ControlUnit{
-    Robot robot;
-    WirelessUnit xbeeUnit;
-    int state; 
+    WirelessUnit xbee;
     Location target;
+    Map map;
     
     public:
         
-        ControlUnit(Robot robot){
-            this->robot = robot;
-            this->state = 0; // init to idle
-            // TODO: init xbee
-        }
+        ControlUnit(){}
 
-        void startRobot(void){
-            this->state = 1;
-        }
+	// Based on the path, see if we need send command to robot
+	void adjust(Map map, Location target){
+	    this->map = map;
+	    this->target = target;
+	    
+	}
 
-        void stopRobot(void){
-            this->state = 0;
-        }
-
-        void updateState(int stateNo){
-            this->state = stateNo;
-        }
-
-        int getState(void){
-            return this->state;
-        }
-
-        int setTarget(Location target){
-            this->target = target;
-        }
 
         /*
-         * Command: currentX,currentY,targetX,targetY,state
+         * Command: angle(>360: state update) cycle
          */
-        void send(){
-
+        void send(int angle, int cycle){
+	    int dataSize = this->xbee.send(angle, cycle);
+	    cout << "\n\n$$$$$\nXbee send: " << dataSize << "\n$$$$$\n\n";
         }
 
 };
