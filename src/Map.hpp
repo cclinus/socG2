@@ -21,14 +21,17 @@ class Map {
 
     public:
 
-    Map(){}
+    Map(){
+        this->gate.setX(240);
+        this->gate.setY(10);
+    }
 
     Map(int w, int h){
         width = w;
         height = h;
         //FIXME: what is gate coordinates?
         this->gate.setX(240);
-        this->gate.setY(0);
+        this->gate.setY(10);
     }
 
     void addBall(Ball aBall){

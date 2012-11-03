@@ -20,9 +20,11 @@ class Robot {
 	this->length = 25;
     }
 
-    Robot (int a, int b, int No){
+    Robot (int a, int b, int c, int d, int No){
         this->locationA.setX(a);
         this->locationA.setY(b);
+	this->locationB.setX(c);
+	this->locationB.setY(d);
         // Our robot NO. is 1
         robotNo = No;
 	this->width = 25;
@@ -31,7 +33,7 @@ class Robot {
 
     void addLocationA(int a, int b){
 	this->locationA.setX(a);
-	this->locationB.setY(b);
+	this->locationA.setY(b);
     }
 
     void addLocationB(int a, int b){

@@ -12,7 +12,7 @@
 using namespace std;
 
 Brain brain;
-Robot ourRobot(240,0,1);
+Robot ourRobot(240,0,240,10,1);
 
 int random_in_range (unsigned int min, unsigned int max){
     int base_random = rand(); /* in [0, RAND_MAX] */
@@ -42,9 +42,6 @@ Map getMap(){
 
     Obstacle aObs(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(aObs);
-
-    Robot ourRobot(random_in_range(30,450), random_in_range(30,140),1);
-    map.addRobot(ourRobot);
 
     Ball cBall(random_in_range(30,450), random_in_range(320,450), 3);
     map.addBall(cBall);
@@ -106,7 +103,6 @@ void updateGui(Map map){
 	ourRobot = map.getOurRobot();
 	// Fake the locationB of the robot
 	//ourRobot.addLocationB(ourRobot.getLocation().getX(), ourRobot.getLocation().getY());
-	ourRobot.addLocationB(map.getGateLocation().getX(), map.getGateLocation().getY());
 
 	cout << "--->Robot Location in Test: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
 	guiFile<<ourRobot.getLocation().getX()<<"r"<<ourRobot.getLocation().getY()<<"\n";

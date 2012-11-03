@@ -396,7 +396,7 @@ class Camera {
 		    Obstacle aObstacle((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y);
 		    this->map.addObstacle(aObstacle);
 		}else if(ii == 3){
-		    Robot aRobot((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y,cnt);
+		    Robot aRobot((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y, 240, 10,cnt);
 		    this->map.addRobot(aRobot);
 		}
 
