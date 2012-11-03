@@ -29,6 +29,11 @@ class Robot {
 	this->length = 25;
     }
 
+    void addLocationA(int a, int b){
+	this->locationA.setX(a);
+	this->locationB.setY(b);
+    }
+
     void addLocationB(int a, int b){
 	this->locationB.setX(a);
 	this->locationB.setY(b);

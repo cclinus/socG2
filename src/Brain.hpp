@@ -74,6 +74,10 @@ class Brain{
 
     }
 
+    int getState(){
+	return this->state;
+    }
+
     // Find where the robot need to go based on the state
     void analyse(Map aMap){
 	this->map = aMap; // Update a new map for this cycle

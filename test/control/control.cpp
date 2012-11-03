@@ -105,7 +105,9 @@ void updateGui(Map map){
 	// Add robot and locationB
 	ourRobot = map.getOurRobot();
 	// Fake the locationB of the robot
-	ourRobot.addLocationB(ourRobot.getLocation().getX(), ourRobot.getLocation().getY());
+	//ourRobot.addLocationB(ourRobot.getLocation().getX(), ourRobot.getLocation().getY());
+	ourRobot.addLocationB(map.getGateLocation().getX(), map.getGateLocation().getY());
+
 	cout << "--->Robot Location in Test: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
 	guiFile<<ourRobot.getLocation().getX()<<"r"<<ourRobot.getLocation().getY()<<"\n";
 	guiFile<<ourRobot.getLocationB().getX()<<"n"<<ourRobot.getLocationB().getY()<<"\n";
@@ -130,7 +132,7 @@ int main () {
 
 	brain.analyse(map);
 	Location target = brain.getTarget();
-	control.adjust(map.getOurRobot(), target);
+	control.adjust(map, target, brain.getState());
 
 	// For random testing
 	map.moveRobot(target);
