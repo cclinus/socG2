@@ -68,8 +68,9 @@ class ControlUnit{
 	cout<<"\ny3:"<<y3<<"\n";
 
 	double a1 = atan2(y1-y2,x1-x2)*180/PI;
+	if(a1<0) a1=360+a1;
 	double a2 = atan2(y3-y2,x3-x2)*180/PI;
-	cout << "\n\nAngles etc:"<<a1<<","<<a2<<"\n\n";
+	if(a2<0) a2=360+a2;
 
 	return a1-a2;
     }
