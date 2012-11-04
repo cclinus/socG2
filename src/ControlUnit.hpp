@@ -42,7 +42,7 @@ class ControlUnit{
 	// Check if angle is too different
 	Robot ourRobot = this->map.getOurRobot();
 	double angle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), aTarget);
-	cout << "\n\nAngle difference: "<<angle<<"\n\n";
+	cout << "\n\n====>:Angle difference: "<<angle<<"\n\n";
 	if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
 	    // Out of path, we need update the robot the right angle
 	    int distance = getDistance(ourRobot.getLocation(), aTarget);
@@ -83,7 +83,7 @@ class ControlUnit{
      */
     void send(int angle, int cycle){
 	int dataSize = this->xbee.send(angle, cycle);
-	cout << "\n\n$$$$$\nXbee send to update angle and cycle: " << dataSize << "\n$$$$$\n\n";
+	cout << "\n$$$$$\nXbee send to update angle and cycle: " << dataSize << "\n$$$$$\n";
     }
 
     // Get distance from A and B

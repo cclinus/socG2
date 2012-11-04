@@ -8,12 +8,10 @@ using namespace std;
 int main () {
     WirelessUnit xbee;
 
-    int angle = 010;
-    int cycle = 01;
+    int angle = 140;
+    int cycle = 10;
 
     //for(int i=0; i<20; i++){
-    angle++;
-    cycle++;
     printf("Angle: %d\n", angle);
     printf("Cycle: %d\n", cycle);
 

@@ -34,7 +34,7 @@ class Brain{
 
     void sendState(int state){
 	int dataSize = this->xbee.send(400+state, 0);
-	cout << "\n\n$$$$$\nXbee send to update state: " << dataSize << "\n$$$$$\n\n";
+	cout << "\n$$$$$\nXbee send to update state: " << dataSize << "\n$$$$$\n";
     }
 
     // Update the state of the robot based on the events, locations from the map obj
@@ -49,7 +49,7 @@ class Brain{
 
 	if(this->state == 0) this->state = 1;
 
-	cout << "\n\n*****\n" << "Current State: " << this->state << "\n*****\n\n";
+	cout << "\n*****\n" << "Current State: " << this->state << "\n*****\n";
 
 	if( this->state == 1){
 	    int distanceToBall = getDistance(this->targetBall, ourRobot.getLocation());
@@ -57,7 +57,7 @@ class Brain{
 		// If the current robot location is closed to the ball, update the state to 2
 		this->state = 2;
 		sendState(this->state);
-		cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
+		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
 	}else if( this->state == 2){
 	    // See if the ball is grabbed
@@ -66,21 +66,21 @@ class Brain{
 	    sleep(1);
 	    this->state = 3;
 	    sendState(this->state);
-	    cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
+	    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	}else if( this->state == 3){
 	    // Set the gate as target and adjust angle when arrived
 	    int distanceToGate = getDistance(this->map.getGateLocation(), ourRobot.getLocation());
 	    if( distanceToGate <= SHOOTING_DISTANCE){
 		this->state = 4;
 		sendState(this->state);
-		cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
+		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
 	    sleep(1);
 	    this->state = 1;
 	    sendState(this->state);
-	    cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
+	    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	}
 
     }
