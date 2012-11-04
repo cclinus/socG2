@@ -63,7 +63,7 @@ class Brain{
 	    // See if the ball is grabbed
 	    // See the target ball is moved or disappeared
 	    // FIXME need confirm the ball is in
-	    sleep(10);
+	    sleep(1);
 	    this->state = 3;
 	    sendState(this->state);
 	    cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";
@@ -77,7 +77,7 @@ class Brain{
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
-	    sleep(10);
+	    sleep(1);
 	    this->state = 1;
 	    sendState(this->state);
 	    cout << "\n\n*****\n" << "Update State to: " << this->state << "\n*****\n\n";

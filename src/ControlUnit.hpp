@@ -49,7 +49,7 @@ class ControlUnit{
 	    int cycle = distance;//FIXME calculate the correct cycle
 	    send(angle,cycle);
 	    // We need give the robot some time to adjust
-	    sleep(1);
+	    //sleep(1);
 	}
 
     }
@@ -71,7 +71,7 @@ class ControlUnit{
 	//cout<<"\ny3:"<<y3<<"\n";
 	double a1 = atan2(y1-y2,x1-x2)*180/PI;
 	if(a1<0) a1=360+a1;
-	double a2 = atan2(y3-y2,x3-x2)*180/PI;
+	double a2 = atan2(y3-y1,x3-x1)*180/PI;
 	if(a2<0) a2=360+a2;
 	return a1-a2;
     }
