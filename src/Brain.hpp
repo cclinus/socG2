@@ -110,6 +110,10 @@ class Brain{
 	Robot ourRobot = this->map.getOurRobot();
 	Location nextTarget = ourRobot.getLocation();
 
+	// TODO Remove objs with negative x,y
+	// Need filter all negative
+	if(ourRobot.getLocation().getX()<0 or ourRobot.getLocation().getY()<0) return;
+
 	// Change the target according to the state
 	updateState(ourRobot);
 	if(this->state == 1){
