@@ -1,0 +1,3 @@
+#! /bin/sh
+
+g++ -ggdb `pkg-config --cflags opencv` -o twoCam twoCam.cpp ../../src/*.hpp `pkg-config --libs opencv`;
