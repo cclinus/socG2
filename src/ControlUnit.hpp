@@ -44,13 +44,13 @@ class ControlUnit{
 	Robot ourRobot = this->map.getOurRobot();
 	double angle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), aTarget);
 	cout << "\n\n====>:Angle difference: "<<angle<<"\n\n";
+	// See if it is out of path, we need update the robot the right angle
 	if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
-	    // Out of path, we need update the robot the right angle
 	    int distance = getDistance(ourRobot.getLocation(), aTarget);
 	    int cycle = distance/CYCLE_DISTANCE;
 	    send(angle,cycle);
 	    // We need give the robot some time to adjust
-	    //sleep(1);
+	    sleep(1.5);
 	}
 
     }
