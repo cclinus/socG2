@@ -77,7 +77,7 @@ int main () {
 
 	updateGui(map);
 
-	sleep(0.1);
+	sleep(0.5);
     }
 
     return 0;

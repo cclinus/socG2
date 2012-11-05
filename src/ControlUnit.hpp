@@ -98,7 +98,7 @@ class ControlUnit{
 	int xp = pow(x,2);
 	int yp = pow(y,2);
 	//FIXME xp or yp could be 0
-	return sqrt(xp+yp);
+	return abs(sqrt(xp+yp));
     }
 
 };
