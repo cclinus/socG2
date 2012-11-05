@@ -186,14 +186,14 @@ class Camera {
 		drawSquares(camImage, corners);
 		//imshow("camImage",camImage);
 		for(int i=0; i <corners[0].size();i++){
-			cout<<i<<"( "<<corners[0][i].x<<" "<<corners[0][i].y<<" ) ";
+			//cout<<i<<"( "<<corners[0][i].x<<" "<<corners[0][i].y<<" ) ";
 			//if(corners[0].size()>0)
 			//break;
 		}
 		if(corners[0].size()>0){
 			cornerFlag=1;
 		}
-		cout<<endl;	
+		//cout<<endl;	
 	
 		cvWaitKey(5);	
 		//return corners;
@@ -446,7 +446,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 	    			this->map.addBall(aBall);
 			}else if(cameraNo==2 && ObjCtrFix[0].y>240){
 				//FIXME
-				cout<<"ball ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
+				//cout<<"ball ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
 				if(ObjCtrFix[0].x <0){
 					ObjCtrFix[0].x=5;
 				}else if(ObjCtrFix[0].y<0){
@@ -479,11 +479,11 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 		}else if(ii == 3){
 			ObjCtrFix[0].y = ObjCtrFix[0].y*0.929+82.0354;
 			if(cameraNo == 1 && ObjCtrFix[0].y<=240){
-				cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
+				//cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
 				redX =(int)ObjCtrFix[0].x;
 				redY =(int)ObjCtrFix[0].y;
 			}else if(cameraNo == 2 && ObjCtrFix[0].y>240){
-				cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
+				//cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
 				redX =(int)ObjCtrFix[0].x;
 				redY =(int)ObjCtrFix[0].y;
 			}
@@ -493,14 +493,14 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
 			
-				cout<<redX<<" "<<redY<<" "<<greX<<" "<<greY<<endl;
+				//cout<<redX<<" "<<redY<<" "<<greX<<" "<<greY<<endl;
 				Robot aRobot(redX, redY, greX, greY, cnt);
 				this->map.addRobot(aRobot);
 			}else if(cameraNo == 2 && ObjCtrFix[0].y>240){
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
 			
-				cout<<redX<<" "<<redY<<" "<<greX<<" "<<greY<<endl;
+				//cout<<redX<<" "<<redY<<" "<<greX<<" "<<greY<<endl;
 				Robot aRobot(redX, redY, greX, greY, cnt);
 				this->map.addRobot(aRobot);
 			}			
