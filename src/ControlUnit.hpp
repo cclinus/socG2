@@ -14,6 +14,7 @@ using namespace std;
 
 #define PI 3.1415926
 #define ANGLE_TOLERANCE 5
+#define CYCLE_DISTANCE 49
 
 /*
  *  STATES:
@@ -46,7 +47,7 @@ class ControlUnit{
 	if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
 	    // Out of path, we need update the robot the right angle
 	    int distance = getDistance(ourRobot.getLocation(), aTarget);
-	    int cycle = distance;//FIXME calculate the correct cycle
+	    int cycle = distance/CYCLE_DISTANCE;
 	    send(angle,cycle);
 	    // We need give the robot some time to adjust
 	    //sleep(1);

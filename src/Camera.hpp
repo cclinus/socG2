@@ -328,9 +328,9 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 		diaCount = 3;
 		blurSize = 7;
 	}else if(i == 4){
-	        HuethresH =66; HuethresL =11;
+	        HuethresH =66; HuethresL =34;
 		SatthresL =119; SatthresH = 255;
-		ValthresL =62; ValthresH = 255;
+		ValthresL =0; ValthresH = 255;
 		erosionCount = 1;
 		diaCount = 3;
 		blurSize = 7;

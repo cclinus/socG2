@@ -63,10 +63,17 @@ class Brain{
 	    // See if the ball is grabbed
 	    // See the target ball is moved or disappeared
 	    // FIXME need confirm the ball is in
-	    sleep(1);
-	    this->state = 3;
-	    sendState(this->state);
-	    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+	    for(int i=0; i<100; i++){
+		sleep(0.1);
+		unsigned char* msg = this->xbee.receive();
+		if(msg[0] == '2'){
+		    this->state = 3;
+		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+		}else if(i == 99){
+		    this->state =  1;
+		}
+	    }
+
 	}else if( this->state == 3){
 	    // Set the gate as target and adjust angle when arrived
 	    int distanceToGate = getDistance(this->map.getGateLocation(), ourRobot.getLocation());
@@ -77,10 +84,16 @@ class Brain{
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
-	    sleep(1);
-	    this->state = 1;
-	    sendState(this->state);
-	    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+	    for(int i=0; i<100; i++){
+		sleep(0.1);
+		unsigned char* msg = this->xbee.receive();
+		if(msg[0] == 4){
+		    this->state = 1;
+		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+		}else if(i == 99){
+		    this->state =  1;
+		}
+	    }
 	}
 
     }

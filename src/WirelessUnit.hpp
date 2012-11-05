@@ -30,7 +30,7 @@ class WirelessUnit{
 	    char cycleChar[2];
 	    sprintf(angleChar, "%3d", angle);
 	    sprintf(cycleChar, "%2d", cycle);
-	    
+
 	    angleChar[3] = ' ';
 	    //cycleChar[2] = ' ';
 
@@ -45,5 +45,25 @@ class WirelessUnit{
 
 	    return SendBuf(cport_nr, msg, 6);
 	}
+
+	unsigned char* receive(void){
+	    int i, n,
+		cport_nr=16,        /* /dev/ttyS0 (COM1 on windows) */
+		bdrate=57600;       /* 9600 baud */
+	    unsigned char buf[1];
+	    if(OpenComport(cport_nr, bdrate)){
+		printf("Can not open comport\n");
+	    }else{
+		while(1){
+		    n = PollComport(cport_nr, buf, 1);
+		    if(n > 0){
+			buf[n] = 0;   /* always put a "null" at the end of a string! */
+			//printf("received %i bytes: %s\n", n, (char *)buf);
+		    }
+		}
+	    }
+	    return (unsigned char *)buf;
+	}
+
 };
 #endif
