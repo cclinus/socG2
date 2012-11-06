@@ -161,6 +161,7 @@ class Brain{
 		    cout << "Obs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")\n";
 		    // If there is obj, need walk around
 		    // Go to another point
+
 		    // FIXME 
 		    // What if go out of boundary? 
 		    // What if ball has same location with an obstacle

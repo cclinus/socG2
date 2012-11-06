@@ -30,10 +30,13 @@ class ControlUnit{
     WirelessUnit xbee;
     Location target;
     Map map;
+    int controlCounter;
 
     public:
 
-    ControlUnit(){}
+    ControlUnit(){
+	this->controlCounter = 0;
+    }
 
     // Based on the path, see if we need send command to robot
     // Call after brain analyse()
@@ -50,8 +53,6 @@ class ControlUnit{
 	    int cycle = distance/CYCLE_DISTANCE;
 	    cout << "\n\n(Control)distance,cycle:"<<distance<<","<<cycle<<"\n\n";
 	    send(angle,cycle);
-	    // We need give the robot some time to adjust
-	    sleep(5);
 	}
 
     }
