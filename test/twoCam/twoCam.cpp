@@ -54,14 +54,14 @@ int main () {
 
 	//srand(time(NULL));
 	Camera cameraOne(1);
-	Camera cameraTwo(2);
+	//Camera cameraTwo(2);
 	//Map map = getMap();
 	//map.addRobot(ourRobot);
 	int cornerFlag;
 	ControlUnit control;
-	for(int j=0;j<100;j++){
-	//while(1){
-		cornerFlag = cameraOne.initMap();
+	//for(int j=0;j<100;j++){
+	while(1){
+		//cornerFlag = cameraOne.initMap();
 		cornerFlag = cameraTwo.initMap();
 		//if(cornerFlag == 1)
 			//break;

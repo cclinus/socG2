@@ -129,10 +129,10 @@ class Camera {
 		cornersOff[2].x = this->offset[0][3].x; cornersOff[2].y = this->offset[0][3].y;
 		cornersOff[3].x = this->offset[0][2].x; cornersOff[3].y = this->offset[0][2].y;
 
-		cornersReal[0].x = 155; cornersReal[0].y = 475;
-		cornersReal[1].x = 325; cornersReal[1].y = 475;
-		cornersReal[2].x = 155; cornersReal[2].y = 415;
-		cornersReal[3].x = 325; cornersReal[3].y = 415;
+		cornersReal[0].x = 155; cornersReal[0].y = 415;
+		cornersReal[1].x = 325; cornersReal[1].y = 415;
+		cornersReal[2].x = 155; cornersReal[2].y = 475;
+		cornersReal[3].x = 325; cornersReal[3].y = 475;
 	}
 
 	Mat H = findHomography(cornersOff,cornersReal,CV_RANSAC);
@@ -184,16 +184,16 @@ class Camera {
 		}
 		int cornerFlag=0;
 		drawSquares(camImage, corners);
-		//imshow("camImage",camImage);
+		imshow("camImage",camImage);
 		for(int i=0; i <corners[0].size();i++){
-			//cout<<i<<"( "<<corners[0][i].x<<" "<<corners[0][i].y<<" ) ";
+			cout<<i<<"( "<<corners[0][i].x<<" "<<corners[0][i].y<<" ) ";
 			//if(corners[0].size()>0)
 			//break;
 		}
 		if(corners[0].size()>0){
 			cornerFlag=1;
 		}
-		//cout<<endl;	
+		cout<<endl;	
 	
 		cvWaitKey(5);	
 		//return corners;
@@ -351,7 +351,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			HuethresH =32; HuethresL =0;
 			SatthresL =85; SatthresH = 255;
 			ValthresL =78; ValthresH = 255;
-			erosionCount = 2;
+			erosionCount = 1;
 			diaCount = 3;
 			blurSize = 0;
 		}else if(i == 3){
@@ -456,12 +456,19 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 	    			this->map.addBall(aBall);
 			}
 	    	}else if(ii == 2){
-			if(ObjCtrFix[0].x<213){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.876+53.43;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.873+105.6;
-			}else{
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.774+75.097;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.873+105.6;
+			cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
+			if(ObjCtrFix[0].x<254.544 && ObjCtrFix[0].y<299.014 ){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.70654+64.1237;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.6105+87.631;
+			}else if(ObjCtrFix[0].x>=254.544 && ObjCtrFix[0].y<299.014){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.9267+9.3198;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.6807+93.2176;
+			}else if(ObjCtrFix[0].x<254.544 && ObjCtrFix[0].y>=299.014){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.5492+102.518;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.5586+100.3243;
+			}else if(ObjCtrFix[0].x>=254.544 && ObjCtrFix[0].y>=299.014){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.9293+7.356;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.5941+111.885;
 			}
 			//cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
 			
