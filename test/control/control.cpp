@@ -104,7 +104,7 @@ void updateGui(Map map){
 	// Fake the locationB of the robot
 	//ourRobot.addLocationB(ourRobot.getLocation().getX(), ourRobot.getLocation().getY());
 
-	cout << "--->Robot Location in Test: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
+	//cout << "--->Robot Location in Test: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
 	guiFile<<ourRobot.getLocation().getX()<<"r"<<ourRobot.getLocation().getY()<<"\n";
 	guiFile<<ourRobot.getLocationB().getX()<<"n"<<ourRobot.getLocationB().getY()<<"\n";
 

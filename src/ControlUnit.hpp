@@ -41,19 +41,27 @@ class ControlUnit{
     // Based on the path, see if we need send command to robot
     // Call after brain analyse()
     void adjust(Map aMap, Location aTarget){
-	this->map = aMap;
-	this->target = aTarget;
-	// Check if angle is too different
-	Robot ourRobot = this->map.getOurRobot();
-	double angle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), aTarget);
-	cout << "\n\n(Control)Angle difference: "<<angle<<"\n\n";
-	// See if it is out of path, we need update the robot the right angle
-	if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
-	    int distance = getDistance(ourRobot.getLocation(), aTarget);
-	    int cycle = distance/CYCLE_DISTANCE;
-	    cout << "\n\n(Control)distance,cycle:"<<distance<<","<<cycle<<"\n\n";
-	    send(angle,cycle);
+	// Make sure it gives sometime to robot to adjust
+	cout << "\n(Control)Control counter: "<<this->controlCounter<<"\n";
+
+	if( this->controlCounter % 2 == 0 ){
+	    this->map = aMap;
+	    this->target = aTarget;
+	    // Check if angle is too different
+	    Robot ourRobot = this->map.getOurRobot();
+	    double angle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), aTarget);
+	    cout << "\n(Control)Angle difference: "<<angle<<"\n";
+	    // See if it is out of path, we need update the robot the right angle
+	    if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
+		int distance = getDistance(ourRobot.getLocation(), aTarget);
+		int cycle = distance/CYCLE_DISTANCE;
+		cout << "\n(Control)distance,cycle:"<<distance<<","<<cycle<<"\n";
+		// We need convert the negative value
+		if(angle<0) angle += 360;
+		send(angle,cycle);
+	    }
 	}
+	this->controlCounter++;
 
     }
 

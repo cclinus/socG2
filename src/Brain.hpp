@@ -24,12 +24,15 @@ class Brain{
     int targetLock; // A temp value used in analyse() to see if need change target
     int state; // The state need to look at in analyse() and will return to outside the brain class
     WirelessUnit xbee;
+    int brainCounter2, brainCounter4;
 
     public:
 
     Brain(){
 	this->targetLock = 0;
 	this->state = 0;
+	this->brainCounter2 = 0;
+	this->brainCounter4 = 0;
     }
 
     void sendState(int state){
@@ -49,7 +52,7 @@ class Brain{
 
 	if(this->state == 0) this->state = 1;
 
-	cout << "\n*****\n" << "Current State: " << this->state << "\n*****\n";
+	//cout << "\n*****\n" << "Current State: " << this->state << "\n*****\n";
 
 	if( this->state == 1){
 	    int distanceToBall = getDistance(this->targetBall, ourRobot.getLocation());
@@ -64,15 +67,21 @@ class Brain{
 	    // See the target ball is moved or disappeared
 	    // FIXME need confirm the ball is in
 	    for(int i=0; i<100; i++){
-		sleep(0.1);
+		sleep(0.01);
 		unsigned char* msg = this->xbee.receive();
 		if(msg[0] == '2'){
 		    this->state = 3;
 		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
-		}else if(i == 99){
-		    this->state =  1;
 		}
+
 	    }
+
+	    //FIXME need set a timeout
+	    if(this->brainCounter2 == 30){
+		this->brainCounter2 = 1;
+		this->state = 1;
+	    }
+	    this->brainCounter2++;
 
 	}else if( this->state == 3){
 	    // Set the gate as target and adjust angle when arrived
@@ -85,15 +94,18 @@ class Brain{
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
 	    for(int i=0; i<100; i++){
-		sleep(0.1);
+		sleep(0.01);
 		unsigned char* msg = this->xbee.receive();
 		if(msg[0] == 4){
 		    this->state = 1;
 		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
-		}else if(i == 99){
-		    this->state =  1;
 		}
 	    }
+	    if(this->brainCounter4 == 30){
+		this->brainCounter4 = 0;
+		this->state = 1;
+	    }
+	    this->brainCounter4++;
 	}
 
     }
@@ -133,7 +145,7 @@ class Brain{
 		    if(distance<DANGER_DISTANCE){
 			this->targetLock = 0;
 		    }else{
-			cout << "Target Distance:"<<distance<<"\n";
+			//cout << "Target Distance:"<<distance<<"\n";
 		    }
 		    return;
 		}else{
@@ -150,15 +162,15 @@ class Brain{
 	    // Check if there is obj on its way
 	    int loopCounter = 0;
 	    while(loopCounter < 30){
-		cout << "\n*****Loop Count "<<loopCounter<<"*****\n";
+		//cout << "\n*****Loop Count "<<loopCounter<<"*****\n";
 		Location obstacleOnTheWay = getObstacleOnTheWay(nextTarget);
-		cout << "Nearest Ball (target): ("<<nextTarget.getX()<<","<<nextTarget.getY()<<")\n";
-		cout << "Robot Location: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
+		//cout << "Nearest Ball (target): ("<<nextTarget.getX()<<","<<nextTarget.getY()<<")\n";
+		//cout << "Robot Location: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
 		if(obstacleOnTheWay.getX() == nextTarget.getX() and obstacleOnTheWay.getY() == nextTarget.getY()){
 		    //If there's no obj on the way
 		    break;
 		}else{
-		    cout << "Obs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")\n";
+		    // cout << "Obs on the way: (" << obstacleOnTheWay.getX() << "," << obstacleOnTheWay.getY() << ")\n";
 		    // If there is obj, need walk around
 		    // Go to another point
 
@@ -180,11 +192,11 @@ class Brain{
 		    double cosA = cos(alpha2);
 		    if(sinA<0) sinA *= (-1);
 		    if(cosA<0) cosA *= (-1);
-		    cout << "sin,cos:"<< sinA <<","<< cosA <<"\n";
-		    cout << "alpha1,alpha2:"<<alpha1<<","<<alpha2<<"\n";
+		    //cout << "sin,cos:"<< sinA <<","<< cosA <<"\n";
+		    //cout << "alpha1,alpha2:"<<alpha1<<","<<alpha2<<"\n";
 		    // Decide which way to turn
 		    double k3 = getSlop(obstacleOnTheWay, ourRobot.getLocation());
-		    cout << "k1, k2, k3:"<< k1 <<","<< k2 << "," << k3 <<"\n";
+		    //cout << "k1, k2, k3:"<< k1 <<","<< k2 << "," << k3 <<"\n";
 		    // We can walk around if alpha2 is too small
 		    int xw = SAFE_WALKAROUND*cosA;
 		    int yw = SAFE_WALKAROUND*sinA;
@@ -193,21 +205,21 @@ class Brain{
 		    if(alpha1>=90 and alpha1<180){
 			if(ourRobot.getLocation().getX()<nextTarget.getX()){
 			    if(k3>k1){
-				cout<<"case1:"<<xw<<","<<yw<<"\n";
+				//cout<<"case1:"<<xw<<","<<yw<<"\n";
 				xd = xa - xw;
 				yd = ya - yw;
 			    }else{
-				cout<<"case2:"<<xw<<","<<yw<<"\n";
+				//cout<<"case2:"<<xw<<","<<yw<<"\n";
 				xd = xa + xw;
 				yd = ya + yw;
 			    }
 			}else{
 			    if(k3<k1){
-				cout<<"case3:"<<xw<<","<<yw<<"\n";
+				//cout<<"case3:"<<xw<<","<<yw<<"\n";
 				xd = xa - xw;
 				yd = ya - yw;
 			    }else{
-				cout<<"case4:"<<xw<<","<<yw<<"\n";
+				//cout<<"case4:"<<xw<<","<<yw<<"\n";
 				xd = xa + xw;
 				yd = ya + yw;
 			    }
@@ -215,27 +227,27 @@ class Brain{
 		    }else if(alpha1<90 and alpha1>0){
 			if(ourRobot.getLocation().getX()<nextTarget.getX()){
 			    if(k3>k1){
-				cout<<"case5:"<<xw<<","<<yw<<"\n";
+				//cout<<"case5:"<<xw<<","<<yw<<"\n";
 				xd = xa + xw;
 				yd = ya - yw;
 			    }else{
-				cout<<"case6:"<<xw<<","<<yw<<"\n";
+				//cout<<"case6:"<<xw<<","<<yw<<"\n";
 				xd = xa - xw;
 				yd = ya + yw;
 			    }
 			}else{
 			    if(k3<k1){
-				cout<<"case7:"<<xw<<","<<yw<<"\n";
+				//cout<<"case7:"<<xw<<","<<yw<<"\n";
 				xd = xa + xw;
 				yd = ya - yw;
 			    }else{
-				cout<<"case8:"<<xw<<","<<yw<<"\n";
+				//cout<<"case8:"<<xw<<","<<yw<<"\n";
 				xd = xa - xw;
 				yd = ya + yw;
 			    }
 			}
 		    }
-		    cout << "xd,yd:" <<xd<<","<<yd<<"\n";
+		    //cout << "xd,yd:" <<xd<<","<<yd<<"\n";
 		    nextTarget.setX(xd);
 		    nextTarget.setY(yd);
 		    this->targetLock = 1;
@@ -244,7 +256,7 @@ class Brain{
 		loopCounter++;
 	    }
 	    this->targetPoint = nextTarget;
-	    cout << "\n---------------------------------------------------\n";
+	    //cout << "\n---------------------------------------------------\n";
 	}
     }
 

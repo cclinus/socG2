@@ -8,13 +8,17 @@ using namespace std;
 int main () {
     WirelessUnit xbee;
 
-    int angle = 404;
-    int cycle = 3;
+    while(1){
+	int angle;
+	int cycle;
+	cout << "Enter angle and cycle:\n";
+	scanf("%d", &angle);
+	scanf("%d", &cycle);
 
-    printf("Angle: %d\n", angle);
-    printf("Cycle: %d\n", cycle);
+	printf("Angle: %d\n", angle);
+	printf("Cycle: %d\n", cycle);
 
-    int dataSize = xbee.send(angle, cycle);
-    cout << dataSize << "\n";
-    sleep(0.3);
+	int dataSize = xbee.send(angle, cycle);
+	cout << dataSize << "\n";
+    }
 }
