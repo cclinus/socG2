@@ -56,6 +56,7 @@ int main () {
     Camera cameraTwo(2);
     int cornerFlag;
     ControlUnit control;
+    //while(1){
     for(int j=0;j<100;j++){
 	cornerFlag = cameraOne.initMap();
 	cornerFlag = cameraTwo.initMap();
@@ -67,17 +68,17 @@ int main () {
 	Map map(480,480);
 	map = cameraOne.updateMap(map);
 	map = cameraTwo.updateMap(map);
-	brain.analyse(map);
-	Location target = brain.getTarget();
-	int state = brain.getState();
+	//brain.analyse(map);
+	//Location target = brain.getTarget();
+	//int state = brain.getState();
 	// We only need adjust path with state 1 or 3
-	if(state==1 or state==3){
-	    control.adjust(map, target);
-	}
+	//if(state==1 or state==3){
+	    //control.adjust(map, target);
+	//}
 
 	updateGui(map);
 
-	sleep(0.5);
+	sleep(0.1);
     }
 
     return 0;
