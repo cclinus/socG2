@@ -17,7 +17,7 @@ Brain brain;
 void updateGui(Map map){
 
     ofstream guiFile;
-    guiFile.open ("/home/opencvdev/workplace6/socG2/server/data");
+    guiFile.open ("/home/cclinus/workplace/socG2/server/data");
 
     // Add to gui
     // Add Balls
@@ -52,11 +52,11 @@ void updateGui(Map map){
 
 int main () {
 
-    Camera cameraOne(1);
-    Camera cameraTwo(2);
+    Camera cameraOne(0);
+    Camera cameraTwo(1);
     int cornerFlag;
     ControlUnit control;
-    //while(1){
+  //  while(1){
     for(int j=0;j<100;j++){
 	cornerFlag = cameraOne.initMap();
 	cornerFlag = cameraTwo.initMap();

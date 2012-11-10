@@ -22,7 +22,8 @@
 using namespace cv;
 using namespace std;
 
-
+#define CAMERANO1 0
+#define CAMERANO2 1
 
 int thresh = 228, N = 1;
 
@@ -112,7 +113,7 @@ class Camera {
 	vector<Point2f>cornersOff( 4 );
 	vector<Point2f>cornersReal( 4 );
 	
-	if(cameraNo == 1){
+	if(cameraNo == CAMERANO1){
 		cornersOff[0].x = this->offset[0][2].x; cornersOff[0].y = this->offset[0][2].y;
 		cornersOff[1].x = this->offset[0][3].x; cornersOff[1].y = this->offset[0][3].y;
 		cornersOff[2].x = this->offset[0][1].x; cornersOff[2].y = this->offset[0][1].y;
@@ -122,7 +123,7 @@ class Camera {
 		cornersReal[1].x = 325; cornersReal[1].y = 0;
 		cornersReal[2].x = 155; cornersReal[2].y = 55;
 		cornersReal[3].x = 325; cornersReal[3].y = 55;
-	}else if(cameraNo == 2){
+	}else if(cameraNo == CAMERANO2){
 		//FIXME
 		cornersOff[0].x = this->offset[0][0].x; cornersOff[0].y = this->offset[0][0].y;
 		cornersOff[1].x = this->offset[0][1].x; cornersOff[1].y = this->offset[0][1].y;
@@ -309,7 +310,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 
     
     void getObj(int i, Mat H){
-	if(cameraNo == 1){
+	if(cameraNo == CAMERANO1){
 		if(i == 1){
 			HuethresH =89; HuethresL =65;
 			SatthresL =65; SatthresH = 255;
@@ -339,7 +340,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			diaCount = 3;
 			blurSize = 0;
 		}
-	}else if(cameraNo == 2){
+	}else if(cameraNo == CAMERANO2){
 		if(i == 1){
 			HuethresH =89; HuethresL =69;
 			SatthresL =85; SatthresH = 255;
@@ -436,7 +437,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 		//cout<<cnt<<"origin ="<<"( "<<center[i].x<<","<<center[i].y<<" )"<<" ";
 		perspectiveTransform(ObjCtr, ObjCtrFix, hm);
 		if(ii == 1){
-			if(cameraNo==1 && ObjCtrFix[0].y<=240){
+			if(cameraNo==CAMERANO1 && ObjCtrFix[0].y<=240){
 				if(ObjCtrFix[0].x <0){
 					ObjCtrFix[0].x=5;
 				}else if(ObjCtrFix[0].y<0){
@@ -444,7 +445,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				}
 				Ball aBall((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y,cnt);
 	    			this->map.addBall(aBall);
-			}else if(cameraNo==2 && ObjCtrFix[0].y>240){
+			}else if(cameraNo==CAMERANO2 && ObjCtrFix[0].y>240){
 				//FIXME
 				//cout<<"ball ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
 				if(ObjCtrFix[0].x <0){
@@ -472,12 +473,12 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			}
 			//cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
 			
-			if(cameraNo == 1 && ObjCtrFix[0].y<=240){
+			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				//if(ObjCtrFix[0].x <= 213){
 				//}
 				Obstacle aObstacle((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y);
 				this->map.addObstacle(aObstacle);
-			}else if(cameraNo == 2 && ObjCtrFix[0].y>240){
+			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>240){
 				//if(ObjCtrFix[0].x <= 213){
 				//}
 				Obstacle aObstacle((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y);
@@ -485,25 +486,25 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			}
 		}else if(ii == 3){
 			ObjCtrFix[0].y = ObjCtrFix[0].y*0.929+82.0354;
-			if(cameraNo == 1 && ObjCtrFix[0].y<=240){
+			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				//cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
 				redX =(int)ObjCtrFix[0].x;
 				redY =(int)ObjCtrFix[0].y;
-			}else if(cameraNo == 2 && ObjCtrFix[0].y>240){
+			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>240){
 				//cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
 				redX =(int)ObjCtrFix[0].x;
 				redY =(int)ObjCtrFix[0].y;
 			}
 		}else if(ii == 4){
 			ObjCtrFix[0].y = ObjCtrFix[0].y*0.929+82.0354;
-			if(cameraNo == 1 && ObjCtrFix[0].y<=240){
+			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
 			
 				//cout<<redX<<" "<<redY<<" "<<greX<<" "<<greY<<endl;
 				Robot aRobot(redX, redY, greX, greY, cnt);
 				this->map.addRobot(aRobot);
-			}else if(cameraNo == 2 && ObjCtrFix[0].y>240){
+			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>240){
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
 			
