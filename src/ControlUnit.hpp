@@ -14,8 +14,9 @@ using namespace std;
 
 #define PI 3.1415926
 #define ANGLE_TOLERANCE 5
+#define DISTANCE_TOLERANCE 20
 #define CYCLE_DISTANCE 49
-#define ADJUST_FREQUENCY 3000
+#define ADJUST_FREQUENCY 70
 
 /*
  *  STATES:
@@ -51,10 +52,12 @@ class ControlUnit{
 	    // Check if angle is too different
 	    Robot ourRobot = this->map.getOurRobot();
 	    double angle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), aTarget);
+	    int distance = getDistance(ourRobot.getLocation(), aTarget);
 	    //cout << "\n(Control)Angle difference: "<<angle<<"\n";
 	    // See if it is out of path, we need update the robot the right angle
-	    if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
-		int distance = getDistance(ourRobot.getLocation(), aTarget);
+	    if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE
+		//or distance < DISTANCE_TOLERANCE 
+		){
 		int cycle = distance/CYCLE_DISTANCE;
 		cout << "\n(Control)distance,cycle:"<<distance<<","<<cycle<<"\n";
 		// We need convert the negative value

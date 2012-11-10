@@ -10,9 +10,9 @@
 #include "Robot.hpp"
 
 #define SAFE_WALKAROUND 80 // This value is used to walk around a obstacle without any collision
-#define DANGER_DISTANCE 35 // This value is used to tell whether the robot is too closed to any obstacles
-#define GRABBING_BALL_DISTANCE 20 // This value is used to tell the robot is already to grab a ball
-#define SHOOTING_DISTANCE 40 // This value is used to tell the robot is to shoot when it arrives to the gate
+#define DANGER_DISTANCE 25 // This value is used to tell whether the robot is too closed to any obstacles
+#define GRABBING_BALL_DISTANCE 25 // This value is used to tell the robot is already to grab a ball
+#define SHOOTING_DISTANCE 10 // This value is used to tell the robot is to shoot when it arrives to the gate
 
 using namespace std;
 
@@ -57,6 +57,9 @@ class Brain{
 	if( this->state == 1){
 	    int distanceToBall = getDistance(this->targetBall, ourRobot.getLocation());
 	    if( distanceToBall <= GRABBING_BALL_DISTANCE){
+		cout << "Target Ball position:"<<this->targetBall.getX()<<","<<this->targetBall.getY()<<"\n";
+		cout << "Ball count:"<<this->map.countBalls()<<"\n";
+		cout << "Distance to ball:" << distanceToBall << "\n";
 		// If the current robot location is closed to the ball, update the state to 2
 		this->state = 2;
 		sendState(this->state);
@@ -130,6 +133,9 @@ class Brain{
 	updateState(ourRobot);
 	if(this->state == 1){
 	    nextTarget = getNearestBall();
+	    if(nextTarget.getX() < 0 or nextTarget.getY() < 0){
+	    	return;
+	    }
 	}else if(this->state == 3){
 	    nextTarget = this->map.getGateLocation();
 	}
@@ -145,7 +151,7 @@ class Brain{
 		    if(distance<DANGER_DISTANCE){
 			this->targetLock = 0;
 		    }else{
-			//cout << "Target Distance:"<<distance<<"\n";
+			cout << "Target Distance:"<<distance<<"\n";
 		    }
 		    return;
 		}else{
@@ -285,16 +291,20 @@ class Brain{
     // Get nearest ball regarding on our Robot's location
     Location getNearestBall(void){
 	Location shortestLocation;
-	int shortestDistance = 1000; // distance can never reach 1000
+	int shortestDistance = 10000; // distance can never reach 1000
 	for(int i=0; i<this->map.getBalls().size();i++){
 	    Ball someBall = this->map.getBalls().at(i);
 	    Location ballLocation = someBall.getLocation();
 	    Robot ourRobot = this->map.getOurRobot();
 	    Location robotLocation = ourRobot.getLocation();
-	    int distance = getDistance(ballLocation, robotLocation);
-	    if(distance < shortestDistance){
-		shortestDistance = distance;
-		shortestLocation = someBall.getLocation();
+	    if(ballLocation.getX() >= 0 and ballLocation.getY() >= 0){
+	    	int distance = getDistance(ballLocation, robotLocation);
+	    	if(distance < shortestDistance){
+			shortestDistance = distance;
+			shortestLocation = someBall.getLocation();
+	    	}
+	    }else{
+		printf("Found negative ball\n");
 	    }
 	}
 	return shortestLocation;

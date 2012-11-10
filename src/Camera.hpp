@@ -150,7 +150,7 @@ class Camera {
 
 	//looping thru the to update each object 1=ball, 2=obstacle, 3=robot_color1, 4=robot_color2
 	for(int i=1; i<=4; i++){
-		printf("round %i\n",i);
+		//printf("round %i\n",i);
 		getObj(i,H);
 	}
 	return this->map;
@@ -312,7 +312,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
     void getObj(int i, Mat H){
 	//if(cameraNo == CAMERANO1){
 		if(i == 1){
-			HuethresH =89; HuethresL =65;
+			HuethresH =90; HuethresL =65;
 			SatthresL =65; SatthresH = 255;
 			ValthresL =78; ValthresH = 255;
 			erosionCount = 2;
@@ -457,7 +457,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 	    			this->map.addBall(aBall);
 			}
 	    	}else if(ii == 2){
-			cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
+			//cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
 			if(ObjCtrFix[0].x<254.544 && ObjCtrFix[0].y<299.014 ){
 				ObjCtrFix[0].x = ObjCtrFix[0].x*0.70654+64.1237;
 				ObjCtrFix[0].y = ObjCtrFix[0].y*0.6105+87.631;
@@ -485,6 +485,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				this->map.addObstacle(aObstacle);	
 			}
 		}else if(ii == 3){
+			/*
 			if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y<310 ){
 				ObjCtrFix[0].x = ObjCtrFix[0].x*0.86022+33.9785;
 				ObjCtrFix[0].y = ObjCtrFix[0].y*0.8955-22.3881;
@@ -497,7 +498,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y>=310){
 				ObjCtrFix[0].x = ObjCtrFix[0].x*0.967742-75.48387;
 				ObjCtrFix[0].y = ObjCtrFix[0].y*1.17936+0.00024;
-			}
+			}*/
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				//cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
 				redX =(int)ObjCtrFix[0].x;
@@ -508,6 +509,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				redY =(int)ObjCtrFix[0].y;
 			}
 		}else if(ii == 4){
+			/*
 			if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y<310 ){
 				ObjCtrFix[0].x = ObjCtrFix[0].x*0.86022+33.9785;
 				ObjCtrFix[0].y = ObjCtrFix[0].y*0.8955-22.3881;
@@ -520,7 +522,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y>=310){
 				ObjCtrFix[0].x = ObjCtrFix[0].x*0.967742-75.48387;
 				ObjCtrFix[0].y = ObjCtrFix[0].y*1.17936+0.00024;
-			}
+			}*/
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
