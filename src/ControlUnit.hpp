@@ -15,6 +15,7 @@ using namespace std;
 #define PI 3.1415926
 #define ANGLE_TOLERANCE 5
 #define CYCLE_DISTANCE 49
+#define ADJUST_FREQUENCY 3000
 
 /*
  *  STATES:
@@ -42,15 +43,15 @@ class ControlUnit{
     // Call after brain analyse()
     void adjust(Map aMap, Location aTarget){
 	// Make sure it gives sometime to robot to adjust
-	cout << "\n(Control)Control counter: "<<this->controlCounter<<"\n";
+	//cout << "\n(Control)Control counter: "<<this->controlCounter<<"\n";
 
-	if( this->controlCounter % 2 == 0 ){
+	if( this->controlCounter % ADJUST_FREQUENCY == 0 ){
 	    this->map = aMap;
 	    this->target = aTarget;
 	    // Check if angle is too different
 	    Robot ourRobot = this->map.getOurRobot();
 	    double angle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), aTarget);
-	    cout << "\n(Control)Angle difference: "<<angle<<"\n";
+	    //cout << "\n(Control)Angle difference: "<<angle<<"\n";
 	    // See if it is out of path, we need update the robot the right angle
 	    if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE){
 		int distance = getDistance(ourRobot.getLocation(), aTarget);
