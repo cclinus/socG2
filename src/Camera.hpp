@@ -22,8 +22,8 @@
 using namespace cv;
 using namespace std;
 
-#define CAMERANO1 0
-#define CAMERANO2 1
+#define CAMERANO1 1
+#define CAMERANO2 2
 
 int thresh = 228, N = 1;
 
@@ -310,7 +310,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 
     
     void getObj(int i, Mat H){
-	if(cameraNo == CAMERANO1){
+	//if(cameraNo == CAMERANO1){
 		if(i == 1){
 			HuethresH =89; HuethresL =65;
 			SatthresL =65; SatthresH = 255;
@@ -320,11 +320,11 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			blurSize = 7;
 		}else if(i == 2){
 			HuethresH =45; HuethresL =0;
-			SatthresL =74; SatthresH = 255;
+			SatthresL =85; SatthresH = 255;
 			ValthresL =78; ValthresH = 255;
 			erosionCount = 1;
 			diaCount = 3;
-			blurSize = 7;
+			blurSize = 0;
 		}else if(i == 3){
 			HuethresH =163; HuethresL =104;
 			SatthresL =106; SatthresH = 255;
@@ -340,7 +340,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			diaCount = 3;
 			blurSize = 0;
 		}
-	}else if(cameraNo == CAMERANO2){
+/*	}else if(cameraNo == CAMERANO2){
 		if(i == 1){
 			HuethresH =89; HuethresL =69;
 			SatthresL =85; SatthresH = 255;
@@ -371,7 +371,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			blurSize = 0;
 		}
 	}	
-	
+*/	
 	split(hsvImage,slices);
 	slices[0].copyTo (hue);
 	slices[1].copyTo(sat);
@@ -485,7 +485,19 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				this->map.addObstacle(aObstacle);	
 			}
 		}else if(ii == 3){
-			ObjCtrFix[0].y = ObjCtrFix[0].y*0.929+82.0354;
+			if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y<310 ){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.86022+33.9785;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.8955-22.3881;
+			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y<310){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*1.10092-23.66972;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.79339-18.64463;
+			}else if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y>=310){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.7767+60.97087;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.81356+1.62712;
+			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y>=310){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.967742-75.48387;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*1.17936+0.00024;
+			}
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				//cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
 				redX =(int)ObjCtrFix[0].x;
@@ -496,7 +508,19 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				redY =(int)ObjCtrFix[0].y;
 			}
 		}else if(ii == 4){
-			ObjCtrFix[0].y = ObjCtrFix[0].y*0.929+82.0354;
+			if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y<310 ){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.86022+33.9785;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.8955-22.3881;
+			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y<310){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*1.10092-23.66972;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.79339-18.64463;
+			}else if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y>=310){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.7767+60.97087;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.81356+1.62712;
+			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y>=310){
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.967742-75.48387;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*1.17936+0.00024;
+			}
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
