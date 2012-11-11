@@ -17,7 +17,7 @@ Brain brain;
 void updateGui(Map map){
 
 	ofstream guiFile;
-	guiFile.open ("/home/opencvdev/workplace6/socG2/server/data");
+	guiFile.open ("/home/cclinus/workplace/375/socG2/server/data");
 
 	// Add to gui
 	// Add Balls
@@ -26,8 +26,7 @@ void updateGui(Map map){
 		Ball ball = ballVector.at(i);
 		Location ballLocation = ball.getLocation();
 		guiFile<<""<<ballLocation.getX()<<"b"<<ballLocation.getY()<<"\n";
-	}
-	// Add obstacles
+	} // Add obstacles
 	vector<Obstacle> obsVector = map.getObstacles();
 	for(int i=0; i<obsVector.size();i++){
 		Obstacle obs = obsVector.at(i);
@@ -53,15 +52,15 @@ void updateGui(Map map){
 int main () {
 
 	//srand(time(NULL));
-	Camera cameraOne(1);
-	//Camera cameraTwo(2);
+	Camera cameraOne(0);
+	Camera cameraTwo(1);
 	//Map map = getMap();
 	//map.addRobot(ourRobot);
 	int cornerFlag;
 	ControlUnit control;
 	//for(int j=0;j<100;j++){
 	while(1){
-		//cornerFlag = cameraOne.initMap();
+		cornerFlag = cameraOne.initMap();
 		cornerFlag = cameraTwo.initMap();
 		//if(cornerFlag == 1)
 			//break;

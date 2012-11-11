@@ -43,7 +43,7 @@ void updateGui(Map map){
     // Fake the locationB of the robot
     //ourRobot.addLocationB(ourRobot.getLocation().getX(), ourRobot.getLocation().getY());
 
-    cout << "--->Robot Location in Test: (" << ourRobot.getLocationB().getX() << "," << ourRobot.getLocationB().getY() << ")\n";
+    //cout << "--->Robot Location in Test: (" << ourRobot.getLocationB().getX() << "," << ourRobot.getLocationB().getY() << ")\n";
     guiFile<<ourRobot.getLocation().getX()<<"r"<<ourRobot.getLocation().getY()<<"\n";
     guiFile<<ourRobot.getLocationB().getX()<<"n"<<ourRobot.getLocationB().getY()<<"\n";
 
@@ -56,7 +56,7 @@ int main () {
     Camera cameraTwo(1);
     int cornerFlag;
     ControlUnit control;
-  //  while(1){
+
     for(int j=0;j<100;j++){
 	cornerFlag = cameraOne.initMap();
 	cornerFlag = cameraTwo.initMap();
@@ -68,13 +68,13 @@ int main () {
 	Map map(480,480);
 	map = cameraOne.updateMap(map);
 	map = cameraTwo.updateMap(map);
-	//brain.analyse(map);
-	//Location target = brain.getTarget();
-	//int state = brain.getState();
+	brain.analyse(map);
+	Location target = brain.getTarget();
+	int state = brain.getState();
 	// We only need adjust path with state 1 or 3
-	//if(state==1 or state==3){
-	    //control.adjust(map, target);
-	//}
+	if(state==1 or state==3){
+	    control.adjust(map, target);
+	}
 
 	updateGui(map);
 

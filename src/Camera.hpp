@@ -22,8 +22,8 @@
 using namespace cv;
 using namespace std;
 
-#define CAMERANO1 1
-#define CAMERANO2 2
+#define CAMERANO1 0
+#define CAMERANO2 1
 
 int thresh = 228, N = 1;
 
@@ -150,7 +150,7 @@ class Camera {
 
 	//looping thru the to update each object 1=ball, 2=obstacle, 3=robot_color1, 4=robot_color2
 	for(int i=1; i<=4; i++){
-		printf("round %i\n",i);
+		//printf("round %i\n",i);
 		getObj(i,H);
 	}
 	return this->map;
@@ -187,7 +187,7 @@ class Camera {
 		drawSquares(camImage, corners);
 		imshow("camImage",camImage);
 		for(int i=0; i <corners[0].size();i++){
-			cout<<i<<"( "<<corners[0][i].x<<" "<<corners[0][i].y<<" ) ";
+			//cout<<i<<"( "<<corners[0][i].x<<" "<<corners[0][i].y<<" ) ";
 			//if(corners[0].size()>0)
 			//break;
 		}
@@ -457,7 +457,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 	    			this->map.addBall(aBall);
 			}
 	    	}else if(ii == 2){
-			cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
+			//cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
 			if(ObjCtrFix[0].x<254.544 && ObjCtrFix[0].y<299.014 ){
 				ObjCtrFix[0].x = ObjCtrFix[0].x*0.70654+64.1237;
 				ObjCtrFix[0].y = ObjCtrFix[0].y*0.6105+87.631;
