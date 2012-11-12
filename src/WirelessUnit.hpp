@@ -46,7 +46,7 @@ class WirelessUnit{
 	    return SendBuf(cport_nr, msg, 6);
 	}
 
-	unsigned char* receive(void){
+	unsigned char receive(void){
 	    int i, n,
 		cport_nr=16,        /* /dev/ttyS0 (COM1 on windows) */
 		bdrate=57600;       /* 9600 baud */
@@ -59,10 +59,10 @@ class WirelessUnit{
 		    if(n > 0){
 			buf[n] = 0;   /* always put a "null" at the end of a string! */
 			//printf("received %i bytes: %s\n", n, (char *)buf);
+			return buf[0];
 		    }
 		}
 	    }
-	    return (unsigned char *)buf;
 	}
 
 };
