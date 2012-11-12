@@ -56,14 +56,15 @@ Map getMap(){
     map.addObstacle(bObstacle);
     Obstacle cObstacle(random_in_range(30,450), random_in_range(160,320));
     map.addObstacle(cObstacle);
-/*
-    Ball aBall(171,320,1);
+
+    /*
+    Ball aBall(100,450,1);
     map.addBall(aBall);
-    Ball bBall(300,240,2);
-    map.addBall(bBall);
-    Obstacle aObs(339,188);
+    //Ball bBall(300,240,2);
+    //map.addBall(bBall);
+    Obstacle aObs(100,420);
     map.addObstacle(aObs);
-*/
+    */
 //    Robot ourRobot(250,10,1);
 //    map.addRobot(ourRobot);
 //    Obstacle aObstacle(380,170);

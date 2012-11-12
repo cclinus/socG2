@@ -63,7 +63,7 @@ class Brain{
 		while( getAngle(ourRobot.getLocation(), ourRobot.getLocationB(),this->targetBall) > 5 ){
 		    double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
 		    this->xbee.send(finalAngle,0);	
-		    sleep(1.5);
+		    usleep(1500000);//delay 1.5s
 		}
 
 		this->state = 2;
@@ -87,11 +87,11 @@ class Brain{
 	    // Set the gate as target and adjust angle when arrived
 	    int distanceToGate = getDistance(this->map.getGateLocation(), ourRobot.getLocation());
 	    if( distanceToGate <= SHOOTING_DISTANCE){
-		//FIXME we need final adjust the angle before update to state 2
+		//FIXME we need final adjust the angle before update to state 4
 		while( getAngle(ourRobot.getLocation(), ourRobot.getLocationB(),this->targetBall) > 5 ){
 		    double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
 		    this->xbee.send(finalAngle,0);
-		    sleep(1.5);
+		    usleep(1500000);
 		}
 		this->state = 4;
 		sendState(this->state);
@@ -99,7 +99,7 @@ class Brain{
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
-	    sleep(5);
+	    sleep(7);
 	    this->state = 1;
 
 	}
@@ -201,6 +201,12 @@ class Brain{
 		    int yw = SAFE_WALKAROUND*sinA;
 		    int xd, yd;
 
+		    // Check if it is out of field
+		    if(isOutOfField(nextTarget)){
+			xw = -xw;
+			yw = -yw;
+		    }
+
 		    if(alpha1>=90 and alpha1<180){
 			if(ourRobot.getLocation().getX()<nextTarget.getX()){
 			    if(k3>k1){
@@ -271,10 +277,10 @@ class Brain{
 
     // Check if the point is out of field
     bool isOutOfField(Location aPoint){
-	if(aPoint.getX()>480 
-		or aPoint.getY()>480
-		or aPoint.getX()<0
-		or aPoint.getY()<0){
+	if(aPoint.getX()>460 
+		or aPoint.getY()>460
+		or aPoint.getX()<20
+		or aPoint.getY()<20){
 	    return true;
 	}else{
 	    return false;
