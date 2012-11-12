@@ -63,6 +63,7 @@ class Brain{
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
 		if(finalAngle > 5){
 		    this->xbee.send(finalAngle,0);	
+		    cout << "Adjust angle and prepare to state 2\n";
 		}else{
 		    this->state = 2;
 		    sendState(this->state);
@@ -77,7 +78,7 @@ class Brain{
 	    if(msg == '1'){
 		this->state = 3;
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
-	    }else{
+	    }else if(msg == '0' or msg == '2'){
 		this->state = 1; // Fail to grab the ball, go to state 1 agin
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
@@ -90,6 +91,7 @@ class Brain{
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
 		if(finalAngle > 5){
 		    this->xbee.send(finalAngle,0);
+		    cout << "Adjust angle and prepare to state 4\n";
 		}else{
 		    this->state = 4;
 		    sendState(this->state);

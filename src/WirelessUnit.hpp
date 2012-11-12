@@ -55,12 +55,12 @@ class WirelessUnit{
 		printf("Can not open comport\n");
 	    }else{
 		//while(1){
-		for(int i=0;i<1000;i++){ //Timeout for 10s
-		    sleep(0.01);
+		for(int i=0;i<100;i++){ //Timeout for 10s
+		    usleep(100000);
 		    n = PollComport(cport_nr, buf, 1);
 		    if(n > 0){
 			buf[n] = 0;   /* always put a "null" at the end of a string! */
-			//printf("received %i bytes: %s\n", n, (char *)buf);
+			printf("received %i bytes: %s\n", n, (char *)buf);
 			return buf[0];
 		    }
 		}
