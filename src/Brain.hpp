@@ -60,15 +60,14 @@ class Brain{
 		// If the current robot location is closed to the ball, update the state to 2
 
 		//FIXME we need final adjust the angle before update to state 2
-		while( getAngle(ourRobot.getLocation(), ourRobot.getLocationB(),this->targetBall) > 5 ){
-		    double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
+		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
+		if(finalAngle > 5){
 		    this->xbee.send(finalAngle,0);	
-		    usleep(1500000);//delay 1.5s
+		}else{
+		    this->state = 2;
+		    sendState(this->state);
+		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 		}
-
-		this->state = 2;
-		sendState(this->state);
-		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
 	}else if( this->state == 2){
 	    // See if the ball is grabbed
@@ -88,14 +87,14 @@ class Brain{
 	    int distanceToGate = getDistance(this->map.getGateLocation(), ourRobot.getLocation());
 	    if( distanceToGate <= SHOOTING_DISTANCE){
 		//FIXME we need final adjust the angle before update to state 4
-		while( getAngle(ourRobot.getLocation(), ourRobot.getLocationB(),this->targetBall) > 5 ){
-		    double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
+		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
+		if(finalAngle > 5){
 		    this->xbee.send(finalAngle,0);
-		    usleep(1500000);
+		}else{
+		    this->state = 4;
+		    sendState(this->state);
+		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 		}
-		this->state = 4;
-		sendState(this->state);
-		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
