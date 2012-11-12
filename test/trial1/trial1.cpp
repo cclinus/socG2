@@ -56,12 +56,20 @@ int main () {
     Camera cameraTwo(2);
     int cornerFlag;
     ControlUnit control;
-    for(int j=0;j<100;j++){
-	cornerFlag = cameraOne.initMap();
-	cornerFlag = cameraTwo.initMap();
-    }
+   //while(1){
+//	cornerFlag = cameraOne.initMap();
+//	cornerFlag = cameraTwo.initMap();
+//    }
 
     // Test control unit
+
+    Map map(480,480);
+    map = cameraOne.updateMap(map);
+    map = cameraTwo.updateMap(map);
+
+    sleep(5);
+    cout << "Camera is ready\n";
+
     while(1){
 
 	Map map(480,480);
@@ -77,7 +85,7 @@ int main () {
 
 	updateGui(map);
 
-	sleep(0.1);
+	usleep(100000);
     }
 
     return 0;

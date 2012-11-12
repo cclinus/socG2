@@ -13,10 +13,10 @@
 using namespace std;
 
 #define PI 3.1415926
-#define ANGLE_TOLERANCE 5 // This value is used to tell whether wee need adjust robot
-#define DISTANCE_TOLERANCE 20 //This value is used to tell whether we need adjust robot
+#define ANGLE_TOLERANCE 25 // This value is used to tell whether wee need adjust robot
+#define DISTANCE_TOLERANCE 15 //This value is used to tell whether we need adjust robot
 #define CYCLE_DISTANCE 49 // This is the scale between pixel and wheel cycle
-#define ADJUST_FREQUENCY 70 // This value is used to control how frequent we adjust robot
+#define ADJUST_FREQUENCY 30// This value is used to control how frequent we adjust robot
 
 /*
  *  STATES:
@@ -56,10 +56,11 @@ class ControlUnit{
 	    //cout << "\n(Control)Angle difference: "<<angle<<"\n";
 	    // See if it is out of path, we need update the robot the right angle
 	    if(angle > ANGLE_TOLERANCE or angle < (-1)*ANGLE_TOLERANCE
-		or distance < DISTANCE_TOLERANCE 
+		or distance > DISTANCE_TOLERANCE 
 		){
 		int cycle = distance/CYCLE_DISTANCE;
-		cout << "\n(Control)distance,cycle:"<<distance<<","<<cycle<<"\n";
+		if(cycle == 0) cycle = 1;
+		cout << "\n(Control)angle,cycle:"<<angle<<","<<cycle<<"\n";
 		// We need convert the negative value
 		if(angle<0) angle += 360;
 		send(angle,cycle);
