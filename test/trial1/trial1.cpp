@@ -56,11 +56,6 @@ int main () {
     Camera cameraTwo(2);
     int cornerFlag;
     ControlUnit control;
-<<<<<<< HEAD
-
-=======
-  //while(1){
->>>>>>> 9e1375e7c82c2a0c245b592bfb308b79027c51f0
     for(int j=0;j<100;j++){
 	cornerFlag = cameraOne.initMap();
 	cornerFlag = cameraTwo.initMap();

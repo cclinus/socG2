@@ -8,8 +8,5 @@ using namespace std;
 int main () {
     WirelessUnit xbee;
 
-    while(1){
-	cout << xbee.receive() << "\n";
-	sleep(0.1);
-    }
+    cout << xbee.receive() << "\n";
 }

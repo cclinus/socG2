@@ -54,7 +54,9 @@ class WirelessUnit{
 	    if(OpenComport(cport_nr, bdrate)){
 		printf("Can not open comport\n");
 	    }else{
-		while(1){
+		//while(1){
+		for(int i=0;i<1000;i++){ //Timeout for 10s
+		    sleep(0.01);
 		    n = PollComport(cport_nr, buf, 1);
 		    if(n > 0){
 			buf[n] = 0;   /* always put a "null" at the end of a string! */
@@ -63,6 +65,8 @@ class WirelessUnit{
 		    }
 		}
 	    }
+
+	    return '2'; //2: Nothing received;
 	}
 
 };

@@ -12,7 +12,7 @@
 #define SAFE_WALKAROUND 80 // This value is used to walk around a obstacle without any collision
 #define DANGER_DISTANCE 25 // This value is used to tell whether the robot is too closed to any obstacles
 #define GRABBING_BALL_DISTANCE 25 // This value is used to tell the robot is already to grab a ball
-#define SHOOTING_DISTANCE 10 // This value is used to tell the robot is to shoot when it arrives to the gate
+#define SHOOTING_DISTANCE 25 // This value is used to tell the robot is to shoot when it arrives to the gate
 
 using namespace std;
 
@@ -24,15 +24,12 @@ class Brain{
     int targetLock; // A temp value used in analyse() to see if need change target
     int state; // The state need to look at in analyse() and will return to outside the brain class
     WirelessUnit xbee;
-    int brainCounter2, brainCounter4;
 
     public:
 
     Brain(){
 	this->targetLock = 0;
 	this->state = 0;
-	this->brainCounter2 = 0;
-	this->brainCounter4 = 0;
     }
 
     void sendState(int state){
@@ -57,10 +54,18 @@ class Brain{
 	if( this->state == 1){
 	    int distanceToBall = getDistance(this->targetBall, ourRobot.getLocation());
 	    if( distanceToBall <= GRABBING_BALL_DISTANCE){
-		cout << "Target Ball position:"<<this->targetBall.getX()<<","<<this->targetBall.getY()<<"\n";
-		cout << "Ball count:"<<this->map.countBalls()<<"\n";
-		cout << "Distance to ball:" << distanceToBall << "\n";
+		//cout << "Target Ball position:"<<this->targetBall.getX()<<","<<this->targetBall.getY()<<"\n";
+		//cout << "Ball count:"<<this->map.countBalls()<<"\n";
+		//cout << "Distance to ball:" << distanceToBall << "\n";
 		// If the current robot location is closed to the ball, update the state to 2
+
+		//FIXME we need final adjust the angle before update to state 2
+		while( getAngle(ourRobot.getLocation(), ourRobot.getLocationB(),this->targetBall) > 5 ){
+		    double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
+		    this->xbee.send(finalAngle,0);	
+		    sleep(1.5);
+		}
+
 		this->state = 2;
 		sendState(this->state);
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
@@ -69,46 +74,34 @@ class Brain{
 	    // See if the ball is grabbed
 	    // See the target ball is moved or disappeared
 	    // FIXME need confirm the ball is in
-	    for(int i=0; i<100; i++){
-		sleep(0.01);
-		unsigned char* msg = this->xbee.receive();
-		if(msg[0] == '2'){
-		    this->state = 3;
-		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
-		}
-
+	    unsigned char msg = this->xbee.receive(); // 1:Ball is in; 0:Ball is not in. TIMEOUT for this is 10s in WirelessUnit
+	    if(msg == '1'){
+		this->state = 3;
+		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+	    }else{
+		this->state = 1; // Fail to grab the ball, go to state 1 agin
+		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
-
-	    //FIXME need set a timeout
-	    if(this->brainCounter2 == 30){
-		this->brainCounter2 = 1;
-		this->state = 1;
-	    }
-	    this->brainCounter2++;
 
 	}else if( this->state == 3){
 	    // Set the gate as target and adjust angle when arrived
 	    int distanceToGate = getDistance(this->map.getGateLocation(), ourRobot.getLocation());
 	    if( distanceToGate <= SHOOTING_DISTANCE){
+		//FIXME we need final adjust the angle before update to state 2
+		while( getAngle(ourRobot.getLocation(), ourRobot.getLocationB(),this->targetBall) > 5 ){
+		    double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
+		    this->xbee.send(finalAngle,0);
+		    sleep(1.5);
+		}
 		this->state = 4;
 		sendState(this->state);
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
-	    for(int i=0; i<100; i++){
-		sleep(0.01);
-		unsigned char* msg = this->xbee.receive();
-		if(msg[0] == 4){
-		    this->state = 1;
-		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
-		}
-	    }
-	    if(this->brainCounter4 == 30){
-		this->brainCounter4 = 0;
-		this->state = 1;
-	    }
-	    this->brainCounter4++;
+	    sleep(5);
+	    this->state = 1;
+
 	}
 
     }
@@ -134,7 +127,7 @@ class Brain{
 	if(this->state == 1){
 	    nextTarget = getNearestBall();
 	    if(nextTarget.getX() < 0 or nextTarget.getY() < 0){
-	    	return;
+		return;
 	    }
 	}else if(this->state == 3){
 	    nextTarget = this->map.getGateLocation();
@@ -298,11 +291,11 @@ class Brain{
 	    Robot ourRobot = this->map.getOurRobot();
 	    Location robotLocation = ourRobot.getLocation();
 	    if(ballLocation.getX() >= 0 and ballLocation.getY() >= 0){
-	    	int distance = getDistance(ballLocation, robotLocation);
-	    	if(distance < shortestDistance){
-			shortestDistance = distance;
-			shortestLocation = someBall.getLocation();
-	    	}
+		int distance = getDistance(ballLocation, robotLocation);
+		if(distance < shortestDistance){
+		    shortestDistance = distance;
+		    shortestLocation = someBall.getLocation();
+		}
 	    }else{
 		printf("Found negative ball\n");
 	    }
@@ -371,14 +364,28 @@ class Brain{
 	return sqrt(xp+yp);                                                           
     }   
 
-    double getAngle(Location A, Location B, Location C){
-	double k1 = getSlop(C,B);
-	double k2 = getSlop(B,A);
-	double tanAngle = (k1-k2)/(1+k1*k2);
-	if(tanAngle<0) tanAngle = tanAngle*(-1);
-	double angle = atan(tanAngle);
-	return angle;
+    // rA and rB are robot direction, C is the target location
+    // Return the angle difference between robot direction and robot-target
+    double getAngle(Location rA, Location rB, Location C){
+	double x1 = rA.getX();
+	//cout<<"\nx1:"<<x1<<"\n";
+	double y1 = rA.getY();
+	//cout<<"\ny1:"<<y1<<"\n";
+	double x2 = rB.getX();
+	//cout<<"\nx2:"<<x2<<"\n";
+	double y2 = rB.getY();
+	//cout<<"\ny2:"<<y2<<"\n";
+	double x3 = C.getX();
+	//cout<<"\nx3:"<<x3<<"\n";
+	double y3 = C.getY();
+	//cout<<"\ny3:"<<y3<<"\n";
+	double a1 = atan2(y1-y2,x1-x2)*180/PI;
+	if(a1<0) a1=360+a1;
+	double a2 = atan2(y3-y1,x3-x1)*180/PI;
+	if(a2<0) a2=360+a2;
+	return a1-a2;
     }
+
 };
 
 #endif
