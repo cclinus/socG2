@@ -11,8 +11,9 @@
 
 #define SAFE_WALKAROUND 80 // This value is used to walk around a obstacle without any collision
 #define DANGER_DISTANCE 25 // This value is used to tell whether the robot is too closed to any obstacles
-#define GRABBING_BALL_DISTANCE 25 // This value is used to tell the robot is already to grab a ball
-#define SHOOTING_DISTANCE 25 // This value is used to tell the robot is to shoot when it arrives to the gate
+#define GRABBING_BALL_DISTANCE 45 // This value is used to tell the robot is already to grab a ball
+#define SHOOTING_DISTANCE 30 // This value is used to tell the robot is to shoot when it arrives to the gate
+#define PREPARATION_FREQUENCY 30 // This value is used to tell how frequent we update the preparation of adjusting angle when it is about state 2
 
 using namespace std;
 
@@ -23,6 +24,7 @@ class Brain{
     Location targetBall; // A temp value used in analyse(), basically this holds the ball we want to reach
     int targetLock; // A temp value used in analyse() to see if need change target
     int state; // The state need to look at in analyse() and will return to outside the brain class
+    int preparationCounter;
     WirelessUnit xbee;
 
     public:
@@ -30,6 +32,7 @@ class Brain{
     Brain(){
 	this->targetLock = 0;
 	this->state = 0;
+	this->preparationCounter = 0;
     }
 
     void sendState(int state){
@@ -61,9 +64,13 @@ class Brain{
 
 		//FIXME we need final adjust the angle before update to state 2
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
-		if(finalAngle > 5){
-		    this->xbee.send(finalAngle,0);	
-		    cout << "Adjust angle and prepare to state 2\n";
+		if(finalAngle > 10){
+		    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
+		    	this->xbee.send(finalAngle,0);	
+		    	cout << "Adjust angle and prepare to state 2\n";
+			this->preparationCounter = 0;
+		    }
+		    this->preparationCounter++;
 		}else{
 		    this->state = 2;
 		    sendState(this->state);
@@ -88,10 +95,16 @@ class Brain{
 	    int distanceToGate = getDistance(this->map.getGateLocation(), ourRobot.getLocation());
 	    if( distanceToGate <= SHOOTING_DISTANCE){
 		//FIXME we need final adjust the angle before update to state 4
-		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
-		if(finalAngle > 5){
-		    this->xbee.send(finalAngle,0);
-		    cout << "Adjust angle and prepare to state 4\n";
+		//FIXME need avoid hard code of this location
+		Location gateCenter(240,0);
+		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), gateCenter);
+		if(finalAngle > 10){
+                    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
+                        cout << "Adjust angle and prepare to state 4\n";
+                        this->xbee.send(finalAngle,0);
+                        this->preparationCounter = 0;
+                    }
+                    this->preparationCounter++;
 		}else{
 		    this->state = 4;
 		    sendState(this->state);
@@ -100,9 +113,11 @@ class Brain{
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
-	    sleep(7);
-	    this->state = 1;
-
+            if(this->preparationCounter % 100 == 0){
+	    	    this->state = 1;
+                    this->preparationCounter = 0;
+            }
+            this->preparationCounter++;
 	}
 
     }

@@ -23,7 +23,7 @@ class Map {
 
     Map(){
         this->gate.setX(240);
-        this->gate.setY(10);
+        this->gate.setY(40);
     }
 
     Map(int w, int h){
@@ -31,7 +31,7 @@ class Map {
         height = h;
         //FIXME: what is gate coordinates?
         this->gate.setX(240);
-        this->gate.setY(10);
+        this->gate.setY(20);
     }
 
     void addBall(Ball aBall){
