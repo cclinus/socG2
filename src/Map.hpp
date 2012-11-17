@@ -37,6 +37,15 @@ class Map {
         this->gate.setY(20);
     }
 
+    bool isNormal(){
+	Robot ourRobot = getOurRobot();
+	if(ourRobot.getLocation().getX()<0 or ourRobot.getLocation().getY()<0){
+	    // Lost robot
+	    return false;
+	}
+	return true;
+    }
+
     // Gate 1 is defaul gate near (0,0)
     void changeGate(int gateNo){
 	if(gateNo == 2){

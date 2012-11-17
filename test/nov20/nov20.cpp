@@ -149,23 +149,23 @@ int main () {
     string line;
     ifstream colorfile ("../../server/setting");
     if (colorfile.is_open()){
-	int i=0;
-	while ( colorfile.good() ){
-	    getline (colorfile,line);
-	    if(i==0) gate = atoi(&line);
-	    if(i==1) ourHead = atoi(&line);
-	    if(i==2) ourTail = atoi(&line);
-	    if(i==3) enemyHead = atoi(&line);
-	    if(i==4) enemyTail = atoi(&line);
-	    i++;
-	}
-	colorfile.close();
+    int i=0;
+    while ( colorfile.good() ){
+    getline (colorfile,line);
+    if(i==0) gate = atoi(&line);
+    if(i==1) ourHead = atoi(&line);
+    if(i==2) ourTail = atoi(&line);
+    if(i==3) enemyHead = atoi(&line);
+    if(i==4) enemyTail = atoi(&line);
+    i++;
+    }
+    colorfile.close();
     }
 
     // Set colors of robots
     cameraOne.setOurHead(ourHead);
     cameraTwo.setOurHead(ourHead);
-    */
+     */
 
     cameraOne.setOurHead(1);
     cameraTwo.setOurHead(1);
@@ -188,14 +188,15 @@ int main () {
 	map = cameraOne.updateMap(map);
 	map = cameraTwo.updateMap(map);
 
-	brain.analyse(map);
-	Location target = brain.getTarget();
-	int state = brain.getState();
-	// We only need adjust path with state 1 or 3
-	if(state==1 or state==3){
-	    control.adjust(map, target);
+	if(map.isNormal()){
+	    brain.analyse(map);
+	    Location target = brain.getTarget();
+	    int state = brain.getState();
+	    // We only need adjust path with state 1 or 3
+	    if(state==1 or state==3){
+		control.adjust(map, target);
+	    }
 	}
-
 	updateGui(map);
 
 	usleep(100000);
