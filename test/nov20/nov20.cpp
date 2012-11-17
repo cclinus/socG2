@@ -126,13 +126,14 @@ bool isStart(){
 int main () {
 
     // robot colors
-    int ourHead, ourTail, enemyHead, enemyTail;
+    int ourHead, ourTail, enemyHead, enemyTail, gate;
 
     srand(time(NULL));
     Camera cameraOne(1);
     Camera cameraTwo(2);
 
     // Init camera
+    Map map(480, 480);
     map = cameraOne.updateMap(map);
     cout<<"Initializing camera one.\n";
     sleep(3);
@@ -182,6 +183,8 @@ int main () {
 	}
 
 	Map map(480,480);
+
+	map.changeGate(gate);
 	map = cameraOne.updateMap(map);
 	map = cameraTwo.updateMap(map);
 

@@ -97,6 +97,10 @@ class Brain{
 		//FIXME we need final adjust the angle before update to state 4
 		//FIXME need avoid hard code of this location
 		Location gateCenter(240,0);
+		if(this->map.getGateNo()==2){
+		    Location gateCenter(240,480);
+		}
+
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), gateCenter);
 		if(finalAngle > 10){
                     if(this->preparationCounter % PREPARATION_FREQUENCY == 0){

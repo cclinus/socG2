@@ -14,6 +14,7 @@ using namespace std;
 
 class Map {
     int width, height;
+    int gateNo;
     Location gate;
     vector<Ball> ballVector;
     vector<Obstacle> obstacleVector;
@@ -23,15 +24,32 @@ class Map {
 
     Map(){
         this->gate.setX(240);
-        this->gate.setY(40);
+        this->gate.setY(20);
+	this->gateNo = 1;
     }
 
     Map(int w, int h){
         width = w;
         height = h;
         //FIXME: what is gate coordinates?
+	this->gateNo = 1;
         this->gate.setX(240);
         this->gate.setY(20);
+    }
+
+    // Gate 1 is defaul gate near (0,0)
+    void changeGate(int gateNo){
+	if(gateNo == 2){
+	    this->gate.setX(240);
+	    this->gate.setY(460);
+	}else if(gateNo == 1){
+	    this->gate.setX(240);
+	    this->gate.setY(20);
+	}
+    }
+
+    int getGateNo(){
+	return this->gateNo;
     }
 
     void addBall(Ball aBall){
