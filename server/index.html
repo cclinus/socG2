@@ -232,8 +232,11 @@
 
 	    function setRobot(){
 	      var gate_select = $("#gate_select").val();
-	      console.log(gate_select);
-	      $.post("setRobot.php",{gate:"gate",ourHead:"oh",ourTail:"ot",enemyHead:"eh",enemyTail:"et"});
+	      var ourHead_select = $("#ourHead_select").val();
+	      var ourTail_select = $("#ourTail_select").val();
+	      var enemyHead_select = $("#enemyHead_select").val();
+	      var enemyTail_select = $("#enemyTail_select").val();
+	      $.get("setRobot.php",{gate:gate_select,ourHead:ourHead_select,ourTail:ourTail_select,enemyHead:enemyHead_select,enemyTail:enemyTail_select});
 	    }
 
 	</script>
@@ -270,12 +273,12 @@
 			<option value="3" style="color:blue;">Our Robot Tail: Blue</option>
 		    </select>
 		    <br/><br/>
-		    <select class='color-selector' id='enemyHead'>
+		    <select class='color-selector' id='enemyHead_select'>
 			<option value="1"  style="color:red;">Enemy Robot Head: Red</option>
 			<option value="2"  style="color:green;">Enemy Robot Head: Green</option>
 			<option value="3"  style="color:blue;">Enemy Robot Head: Blue</option>
 		    </select>
-		    <select class='color-selector' id='enemyTail'>
+		    <select class='color-selector' id='enemyTail_select'>
 			<option value="1" style="color:red;">Enemy Robot Tail: Red</option>
 			<option value="2" style="color:green;">Enemy Robot Tail: Green</option>
 			<option value="3" style="color:blue;">Enemy Robot Tail: Blue</option>

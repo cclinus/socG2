@@ -148,9 +148,10 @@ int main () {
     string line;
     ifstream colorfile ("../../server/setting");
     if (colorfile.is_open()){
-	int i=1;
+	int i=0;
 	while ( colorfile.good() ){
 	    getline (colorfile,line);
+	    if(i==0) gate = atoi(&line);
 	    if(i==1) ourHead = atoi(&line);
 	    if(i==2) ourTail = atoi(&line);
 	    if(i==3) enemyHead = atoi(&line);
