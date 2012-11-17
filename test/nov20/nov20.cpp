@@ -12,12 +12,74 @@
 using namespace std;
 
 Brain brain;
-//Robot ourRobot(240,0,240,10,1);
+Robot ourRobot(240,0,240,10,1);
+
+int random_in_range (unsigned int min, unsigned int max){
+    int base_random = rand(); /* in [0, RAND_MAX] */
+    if (RAND_MAX == base_random) return random_in_range(min, max);
+    /* now guaranteed to be in [0, RAND_MAX) */
+    int range       = max - min,
+	remainder   = RAND_MAX % range,
+	bucket      = RAND_MAX / range;
+    /* There are range buckets, plus one smaller interval
+       within remainder of RAND_MAX */
+    if (base_random < RAND_MAX - remainder) {
+	return min + base_random/bucket;
+    } else {
+	return random_in_range (min, max);
+    }
+}
+
+// Set random map for test
+Map getMap(){
+
+    Map map(480,480);
+
+    Ball aBall(random_in_range(30,450), random_in_range(400,450), 1);
+    map.addBall(aBall);
+    Ball bBall(random_in_range(30,450), random_in_range(400,450),2);
+    map.addBall(bBall);
+
+    Obstacle aObs(random_in_range(30,450), random_in_range(160,320));
+    map.addObstacle(aObs);
+
+    Ball cBall(random_in_range(30,450), random_in_range(320,450), 3);
+    map.addBall(cBall);
+
+    Ball dBall(random_in_range(30,450), random_in_range(320,450),4);
+    map.addBall(dBall);
+
+    Obstacle aObstacle(random_in_range(30,450), random_in_range(160,320));
+    map.addObstacle(aObstacle);
+
+    Obstacle bObstacle(random_in_range(30,450), random_in_range(160,320));
+    map.addObstacle(bObstacle);
+    Obstacle cObstacle(random_in_range(30,450), random_in_range(160,320));
+    map.addObstacle(cObstacle);
+
+    /*
+       Ball aBall(100,450,1);
+       map.addBall(aBall);
+    //Ball bBall(300,240,2);
+    //map.addBall(bBall);
+    Obstacle aObs(100,420);
+    map.addObstacle(aObs);
+     */
+    //    Robot ourRobot(250,10,1);
+    //    map.addRobot(ourRobot);
+    //    Obstacle aObstacle(380,170);
+    //    map.addObstacle(aObstacle);
+
+    //    Obstacle bObstacle(240,50);
+    //    map.addObstacle(bObstacle);
+
+    return map;
+}
 
 void updateGui(Map map){
 
     ofstream guiFile;
-    guiFile.open ("/home/opencvdev/workplace6/socG2/server/data");
+    guiFile.open ("/home/cclinus/workplace/375/socG2/server/data");
 
     // Add to gui
     // Add Balls
@@ -39,42 +101,96 @@ void updateGui(Map map){
     guiFile<<target.getX()<<"t"<<target.getY()<<"\n";
 
     // Add robot and locationB
-    Robot ourRobot = map.getOurRobot();
+    ourRobot = map.getOurRobot();
     // Fake the locationB of the robot
     //ourRobot.addLocationB(ourRobot.getLocation().getX(), ourRobot.getLocation().getY());
 
-    //cout << "--->Robot Location in Test: (" << ourRobot.getLocationB().getX() << "," << ourRobot.getLocationB().getY() << ")\n";
+    //cout << "--->Robot Location in Test: (" << ourRobot.getLocation().getX() << "," << ourRobot.getLocation().getY() << ")\n";
     guiFile<<ourRobot.getLocation().getX()<<"r"<<ourRobot.getLocation().getY()<<"\n";
     guiFile<<ourRobot.getLocationB().getX()<<"n"<<ourRobot.getLocationB().getY()<<"\n";
 
     guiFile.close();
 }
 
-int main () {
-
+void initCamera(){
+    Map map;
     Camera cameraOne(1);
     Camera cameraTwo(2);
-    int cornerFlag;
-    ControlUnit control;
-   //while(1){
-//	cornerFlag = cameraOne.initMap();
-//	cornerFlag = cameraTwo.initMap();
-//    }
-
-    // Test control unit
-
-    Map map(480,480);
     map = cameraOne.updateMap(map);
+    cout<<"Initializing camera one.\n";
+    sleep(3);
     map = cameraTwo.updateMap(map);
+    cout<<"Initializing camera two.\n";
+    sleep(3);
+    cout<<"Cameras are ready. \n";
+}
 
-    sleep(5);
-    cout << "Camera is ready\n";
+// This function is to check whether stop or start the game
+bool isStart(){
+    // Check start file
+    if (fopen("../../server/start", "r") == NULL) {
+	return false;
+    }
+    else {
+	return true;
+    }
+}
+
+int main () {
+
+    // robot colors
+    int ourHead, ourTail, enemyHead, enemyTail;
+
+    srand(time(NULL));
+    Camera cameraOne(1);
+    Camera cameraTwo(2);
+
+    // Init camera
+    initCamera();
+
+    /*
+    // Read and init robot colors
+    // Lines: ourHead, ourTail, enemyHead, enemyTail
+    // Color: 1.red; 2.green; 3.blue;
+    string line;
+    ifstream colorfile ("../../server/color");
+    if (colorfile.is_open()){
+	int i=1;
+	while ( colorfile.good() ){
+	    getline (colorfile,line);
+	    if(i==1) ourHead = atoi(&line);
+	    if(i==2) ourTail = atoi(&line);
+	    if(i==3) enemyHead = atoi(&line);
+	    if(i==4) enemyTail = atoi(&line);
+	    i++;
+	}
+	colorfile.close();
+    }
+
+    // Set colors of robots
+    cameraOne.setOurHead(ourHead);
+    cameraTwo.setOurHead(ourHead);
+    */
+
+    cameraOne.setOurHead(1);
+    cameraTwo.setOurHead(1);
+    cameraOne.setOurTail(2);
+    cameraTwo.setOurTail(2);
+
+    ControlUnit control;
 
     while(1){
+
+	//Check start and stop command
+	while(!isStart()){
+	    cou << "Waiting to start\n";
+	    sleep(1);
+	}
 
 	Map map(480,480);
 	map = cameraOne.updateMap(map);
 	map = cameraTwo.updateMap(map);
+
 	brain.analyse(map);
 	Location target = brain.getTarget();
 	int state = brain.getState();

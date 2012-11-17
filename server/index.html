@@ -1,315 +1,328 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="../lib/jquery/jquery-1.7.1.js"></script>
+	<script src="../lib/jquery/jquery-1.7.1.js"></script>
 
-        <style> 
-            #sog{
-              margin:40px;
-            }
+	<style> 
+	    #sog{
+	      margin:40px;
+	    }
 
-            #btn_restart{
-              margin-left:40px;
-              width:200px;
-              height:50px;
-            }
+	    #btn_restart{
+	      margin-left:40px;
+	      width:200px;
+	      height:50px;
+	    }
 
-            #hero-box{
-              display:table;
-              margin:auto;
-              width:85%;
-              height:600px;
-            }
+	    #hero-box{
+	      display:table;
+	      margin:auto;
+	      width:85%;
+	      height:600px;
+	    }
 
-            #left-box{
-              width:50%;
-              display:table-cell;
-            }
+	    #left-box{
+	      width:50%;
+	      display:table-cell;
+	    }
 
-            #right-box{
-              width:220px;
-              display:table-cell;
-            }
+	    #right-box{
+	      width:220px;
+	      display:table-cell;
+	    }
 
-            #color-box{
-              width:180px;
-              height:255px;
-              position:absolute;
-              top:50px;
-              border:1px solid #ddd;
-              padding:10px;
-            }
+	    #color-box{
+	      width:180px;
+	      height:315px;
+	      position:absolute;
+	      top:50px;
+	      border:1px solid #ddd;
+	      padding:10px;
+	    }
 
-            .color-selector{
-              width: 175px;
-            }
+	    .color-selector{
+	      width: 175px;
+	    }
 
-            #button-box{
-              width: 180px;
-              height: 160px;
-              border:1px solid #DDD;
-              position: absolute;
-              top:350px;
-              padding:10px;
-            }
+	    #button-box{
+	      width: 180px;
+	      height: 110px;
+	      border:1px solid #DDD;
+	      position: absolute;
+	      top:400px;
+	      padding:10px;
+	    }
 
-            .command-btn{
-              width:80%;
-              height:40px;
-              margin-top: 10px;
-              margin-left: 15px;
-            }
+	    .command-btn{
+	      width:80%;
+	      height:40px;
+	      margin-top: 10px;
+	      margin-left: 15px;
+	    }
 
-            #side-box{
-              width:180px;
-              height:460px;
-              display:table-cell;
-              top:50px;
-              position:absolute;
-              padding:10px;
-              border:1px solid #ddd;
-            }
+	    #side-box{
+	      width:180px;
+	      height:460px;
+	      display:table-cell;
+	      top:50px;
+	      position:absolute;
+	      padding:10px;
+	      border:1px solid #ddd;
+	    }
 
-            #status-box{
-              width:150px;
-              height:100px;
-              padding:15px;
-            }
+	    #status-box{
+	      width:150px;
+	      height:100px;
+	      padding:15px;
+	    }
 
-            #event-box{
-              width:150px;
-              height:100px;
-              padding:15px;
-              margin-top:25px;
-            }
+	    #event-box{
+	      width:150px;
+	      height:100px;
+	      padding:15px;
+	      margin-top:25px;
+	    }
 
-            /*
-            button, select{
-              border-radius:5px;
-            }*/
+	    /*
+	    button, select{
+	      border-radius:5px;
+	    }*/
 
-        </style>
+	</style>
 
-        <script>
-            function drawBall(x,y,w,h){
-              ctx.beginPath();
-              ctx.fillStyle = "green";
-              ctx.arc(x, y, w, h, Math.PI*2, true); 
-              ctx.closePath();
-              ctx.fill();
-              ctx.fillStyle = "black";
-              ctx.fillText("("+x+","+y+")", x, y);
-            }
+	<script>
+	    function drawBall(x,y,w,h){
+	      ctx.beginPath();
+	      ctx.fillStyle = "green";
+	      ctx.arc(x, y, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+x+","+y+")", x, y);
+	    }
 
-            function drawTarget(x,y,w,h){
-              ctx.beginPath();
-              ctx.fillStyle = "blue";
-              ctx.arc(x, y, w, h, Math.PI*2, true); 
-              ctx.closePath();
-              ctx.fill();
-              ctx.fillStyle = "black";
-              ctx.fillText("("+x+","+y+")", x, y);
-            }
+	    function drawTarget(x,y,w,h){
+	      ctx.beginPath();
+	      ctx.fillStyle = "blue";
+	      ctx.arc(x, y, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+x+","+y+")", x, y);
+	    }
 
-            function drawObs(x,y,w,h){
-              ctx.beginPath();
-              ctx.fillStyle = "yellow";
-              ctx.arc(x, y, w, h, Math.PI*2, true); 
-              ctx.closePath();
-              ctx.fill();
-              ctx.fillStyle = "black";
-              ctx.fillText("("+x+","+y+")", x, y);
-            }
+	    function drawObs(x,y,w,h){
+	      ctx.beginPath();
+	      ctx.fillStyle = "yellow";
+	      ctx.arc(x, y, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+x+","+y+")", x, y);
+	    }
 
-            function drawArrow(fromx, fromy, tox, toy){
-              ctx.beginPath();
-              var headlen = 10;   // length of head in pixels
-              var angle = Math.atan2(toy-fromy,tox-fromx);
-              ctx.moveTo(fromx, fromy);
-              ctx.lineTo(tox, toy);
-              ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
-              ctx.moveTo(tox, toy);
-              ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6));
-              ctx.stroke();
-            }
+	    function drawArrow(fromx, fromy, tox, toy){
+	      ctx.beginPath();
+	      var headlen = 10;   // length of head in pixels
+	      var angle = Math.atan2(toy-fromy,tox-fromx);
+	      ctx.moveTo(fromx, fromy);
+	      ctx.lineTo(tox, toy);
+	      ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
+	      ctx.moveTo(tox, toy);
+	      ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6));
+	      ctx.stroke();
+	    }
 
-            function drawRobot(xa,ya,xb,yb,w,h){
-              //ctx.fillStyle = "red";
-              //ctx.fillRect(x, y, w, h);
-              //ctx.fillStyle = "black";
-              //ctx.fillText("("+x+","+y+")", x, y);
-              ctx.beginPath();
-              ctx.fillStyle = "red";
-              ctx.arc(xa, ya, w, h, Math.PI*2, true); 
-              ctx.closePath();
-              ctx.fill();
-              ctx.fillStyle = "black";
-              ctx.fillText("("+xa+","+ya+")", xa, ya);
+	    function drawRobot(xa,ya,xb,yb,w,h){
+	      //ctx.fillStyle = "red";
+	      //ctx.fillRect(x, y, w, h);
+	      //ctx.fillStyle = "black";
+	      //ctx.fillText("("+x+","+y+")", x, y);
+	      ctx.beginPath();
+	      ctx.fillStyle = "red";
+	      ctx.arc(xa, ya, w, h, Math.PI*2, true); 
+	      ctx.closePath();
+	      ctx.fill();
+	      ctx.fillStyle = "black";
+	      ctx.fillText("("+xa+","+ya+")", xa, ya);
 
-              // Draw the direction of the robot
-              drawArrow(xb,yb,xa,ya);
-            }
+	      // Draw the direction of the robot
+	      drawArrow(xb,yb,xa,ya);
+	    }
 
-            function updateMap(){
-            console.log("Updating ... ");
-            sog = document.getElementById("sog");
-            ctx = sog.getContext("2d");
-            ctx.clearRect ( 0, 0, 480, 480);
+	    function updateMap(){
+	      //console.log("Updating ... ");
+	      sog = document.getElementById("sog");
+	      ctx = sog.getContext("2d");
+	      ctx.clearRect ( 0, 0, 480, 480);
 
-            $.ajax({
-            url: 'server.php',
-            type: "json",
-            success: function(data) {
-            console.log(data);
-            var json = jQuery.parseJSON(data);
-            $.each(json, function(key, val){
-            console.log(val);
-            //Print each obj to map
-            $.each(val, function(key2, val2){
+	      $.ajax({
+		url: 'server.php',
+		type: "json",
+		success: function(data) {
+		  //console.log(data);
+		  var json = jQuery.parseJSON(data);
+		  $.each(json, function(key, val){
+		    //console.log(val);
+		    //Print each obj to map
+		    $.each(val, function(key2, val2){
 
-            if(val2.indexOf('r') != -1){
-            // It's robot
-            var position = val2.split("r");
-            robotPosition = position;
-            //drawRobot(position[0], position[1], 20, 20);
-            }
+		      if(val2.indexOf('r') != -1){
+			// It's robot
+			var position = val2.split("r");
+			robotPosition = position;
+			//drawRobot(position[0], position[1], 20, 20);
+		      }
 
-            if(val2.indexOf('n') != -1){
-            // It's robot locationB
-            var position = val2.split("n");
-            drawRobot(robotPosition[0],robotPosition[1],position[0], position[1], 20, 20);
-            }
+		      if(val2.indexOf('n') != -1){
+			// It's robot locationB
+			var position = val2.split("n");
+			drawRobot(robotPosition[0],robotPosition[1],position[0], position[1], 20, 20);
+		      }
 
-            if(val2.indexOf('b' != -1)){
-            // It's ball
-            var position = val2.split("b");
-            console.log(position[0]);
-            drawBall(position[0], position[1], 7, 0);
-            }
+		      if(val2.indexOf('b' != -1)){
+			// It's ball
+			var position = val2.split("b");
+			//console.log(position[0]);
+			drawBall(position[0], position[1], 7, 0);
+		      }
 
-            if(val2.indexOf('o' != -1)){
-            // It's obstacle
-            var position = val2.split("o");
-            drawObs(position[0], position[1], 14, 0);
-            }
+		      if(val2.indexOf('o' != -1)){
+			// It's obstacle
+			var position = val2.split("o");
+			drawObs(position[0], position[1], 14, 0);
+		      }
 
-            if(val2.indexOf('t' != -1)){
-            // It's target point
-            var position = val2.split("t");
-            drawTarget(position[0], position[1], 2, 0);
-            drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
-            }
+		      if(val2.indexOf('t' != -1)){
+			// It's target point
+			var position = val2.split("t");
+			drawTarget(position[0], position[1], 2, 0);
+			drawArrow(robotPosition[0], robotPosition[1], position[0], position[1]);
+		      }
 
-            });
-            });
-            }
-            });
+		    });
+		  });
+		}
+	      });
 
-            ctx.strokeStyle = "black";
-            ctx.strokeRect(150,0,180,60);
+	      ctx.strokeStyle = "black";
+	      ctx.strokeRect(150,0,180,60);
 
-            ctx.strokeStyle = "black";
-            ctx.strokeRect(150,420,180,60);
+	      ctx.strokeStyle = "black";
+	      ctx.strokeRect(150,420,180,60);
 
-            ctx.fillStyle = "green";
-            ctx.fillRect(210,0,60,5);
+	      ctx.fillStyle = "green";
+	      ctx.fillRect(210,0,60,5);
 
-            ctx.fillStyle = "green";
-            ctx.fillRect(210,475,60,5);
-            }
+	      ctx.fillStyle = "green";
+	      ctx.fillRect(210,475,60,5);
+	    }
 
-            function restart(){
-            $.ajax({
-            url: 'restart.php'
-            });
-            }
+	    function start(){
+	      $.ajax({
+		url: 'start.php'
+	      });
+	    }
 
-        </script>
+	    function stop(){
+	      $.ajax({
+		url: 'stop.php'
+	      });
+	    }
+
+	</script>
     </head>
     <body>
 
-        <div id='hero-box'>
-            <div id='left-box'>
-                <canvas id="sog" width="480" height="480" style="border:2px solid black;">
-                Your browser does not support the HTML5 canvas tag.
-                </canvas>
-            </div>
+	<div id='hero-box'>
+	    <div id='left-box'>
+		<canvas id="sog" width="480" height="480" style="border:2px solid black;">
+		Your browser does not support the HTML5 canvas tag.
+		</canvas>
+	    </div>
 
-            <div id='right-box'>
+	    <div id='right-box'>
 
-                <div id='color-box'>
-                    <h5 style="font-style:italic;">Robot Colors</h5>
-                    <select class='color-selector'>
-                        <option value="1"  style="color:red;">Our Robot Head: Red</option>
-                        <option value="2"  style="color:green;">Our Robot Head: Green</option>
-                        <option value="3"  style="color:blue;">Our Robot Head: Blue</option>
-                    </select>
-                    <select class='color-selector'>
-                        <option value="1" style="color:red;">Our Robot Tail: Red</option>
-                        <option value="2" style="color:green;">Our Robot Tail: Green</option>
-                        <option value="3" style="color:blue;">Our Robot Tail: Blue</option>
-                    </select>
-                    <br/><br/>
-                    <select class='color-selector'>
-                        <option value="1"  style="color:red;">Enemy Robot Head: Red</option>
-                        <option value="2"  style="color:green;">Enemy Robot Head: Green</option>
-                        <option value="3"  style="color:blue;">Enemy Robot Head: Blue</option>
-                    </select>
-                    <select class='color-selector'>
-                        <option value="1" style="color:red;">Enemy Robot Tail: Red</option>
-                        <option value="2" style="color:green;">Enemy Robot Tail: Green</option>
-                        <option value="3" style="color:blue;">Enemy Robot Tail: Blue</option>
-                    </select>
-                    <br/><br/>
-                    <button>Confirm</button>
-                    <br/><br/>
-                </div>
+		<div id='color-box'>
+		    <h5 style="font-style:italic;">Target Gate</h5>
+
+		    <select class='color-selector'>
+			<option value="1">North Gate</option>
+			<option value="2">South Gate</option>
+		    </select><br/><br/>
+
+		    <h5 style="font-style:italic;">Robot Colors</h5>
+
+		    <select class='color-selector'>
+			<option value="1"  style="color:red;">Our Robot Head: Red</option>
+			<option value="2"  style="color:green;">Our Robot Head: Green</option>
+			<option value="3"  style="color:blue;">Our Robot Head: Blue</option>
+		    </select>
+		    <select class='color-selector'>
+			<option value="1" style="color:red;">Our Robot Tail: Red</option>
+			<option value="2" style="color:green;">Our Robot Tail: Green</option>
+			<option value="3" style="color:blue;">Our Robot Tail: Blue</option>
+		    </select>
+		    <br/><br/>
+		    <select class='color-selector'>
+			<option value="1"  style="color:red;">Enemy Robot Head: Red</option>
+			<option value="2"  style="color:green;">Enemy Robot Head: Green</option>
+			<option value="3"  style="color:blue;">Enemy Robot Head: Blue</option>
+		    </select>
+		    <select class='color-selector'>
+			<option value="1" style="color:red;">Enemy Robot Tail: Red</option>
+			<option value="2" style="color:green;">Enemy Robot Tail: Green</option>
+			<option value="3" style="color:blue;">Enemy Robot Tail: Blue</option>
+		    </select>
+		    <br/><br/>
+		    <button>Confirm</button>
+		    <br/><br/>
+		</div>
 
 
-                <div id='button-box'>
-                    <button class='command-btn'> Start </button><br/>
-                    <button class='command-btn'> Stop </button><br/>
-                    <button class='command-btn'> Restart </button>
-                </div>
+		<div id='button-box'>
+		    <button class='command-btn' onclick="start();"> Start </button><br/>
+		    <button class='command-btn' onclick="stop();"> Stop </button><br/>
+		</div>
 
-            </div>
+	    </div>
 
-            <div id='side-box'>
-                <h5 style="font-style:italic;">Robot Status</h5>
+	    <div id='side-box'>
+		<h5 style="font-style:italic;">Robot Status</h5>
 
-                <div id='status-box'>
-                    <img src='image/stall.jpg' width=150 height=100 />
-                    <h5 align=center>Navigating to the ball</h5>
-                </div>
+		<div id='status-box'>
+		    <img src='image/stall.jpg' width=150 height=100 />
+		    <h5 align=center>Navigating to the ball</h5>
+		</div>
 
-                <div id='event-box'>
-                    <h5>Ball Count:
-                        <div id='ball-count'>4</div>
-                    </h5>
+		<div id='event-box'>
+		    <h5>Ball Count:
+			<div id='ball-count'>4</div>
+		    </h5>
 
-                    <h5>Obstacle Count:
-                        <div id='obstacle-count'>4</div>
-                    </h5>
+		    <h5>Obstacle Count:
+			<div id='obstacle-count'>4</div>
+		    </h5>
 
-                    <h5>Shooting Attempts:
-                        <div id='shooting-attempts'>0</div>
-                    </h5>
+		    <h5>Shooting Attempts:
+			<div id='shooting-attempts'>0</div>
+		    </h5>
 
-                    <h5>Time Left:
-                        <div id='time-left'>0:00</div>
-                    </h5>
+		    <h5>Time Left:
+			<div id='time-left'>0:00</div>
+		    </h5>
 
-                </div>
-            </div>
+		</div>
+	    </div>
 
-        </div>
+	</div>
 
-        <script>
-            var sog;
-            var ctx;
-            var robotPosition;
-            setInterval("updateMap();", 300);
-        </script>
+	<script>
+	    var sog;
+	    var ctx;
+	    var robotPosition;
+	    setInterval("updateMap();", 300);
+	</script>
 
     </body>
 </html>
