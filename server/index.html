@@ -230,6 +230,12 @@
 	      });
 	    }
 
+	    function setRobot(){
+	      var gate_select = $("#gate_select").val();
+	      console.log(gate_select);
+	      $.post("setRobot.php",{gate:"gate",ourHead:"oh",ourTail:"ot",enemyHead:"eh",enemyTail:"et"});
+	    }
+
 	</script>
     </head>
     <body>
@@ -246,36 +252,36 @@
 		<div id='color-box'>
 		    <h5 style="font-style:italic;">Target Gate</h5>
 
-		    <select class='color-selector'>
+		    <select class='color-selector' id='gate_select' >
 			<option value="1">North Gate</option>
 			<option value="2">South Gate</option>
 		    </select><br/><br/>
 
 		    <h5 style="font-style:italic;">Robot Colors</h5>
 
-		    <select class='color-selector'>
+		    <select class='color-selector' id='ourHead_select'>
 			<option value="1"  style="color:red;">Our Robot Head: Red</option>
 			<option value="2"  style="color:green;">Our Robot Head: Green</option>
 			<option value="3"  style="color:blue;">Our Robot Head: Blue</option>
 		    </select>
-		    <select class='color-selector'>
+		    <select class='color-selector' id='ourTail_select'>
 			<option value="1" style="color:red;">Our Robot Tail: Red</option>
 			<option value="2" style="color:green;">Our Robot Tail: Green</option>
 			<option value="3" style="color:blue;">Our Robot Tail: Blue</option>
 		    </select>
 		    <br/><br/>
-		    <select class='color-selector'>
+		    <select class='color-selector' id='enemyHead'>
 			<option value="1"  style="color:red;">Enemy Robot Head: Red</option>
 			<option value="2"  style="color:green;">Enemy Robot Head: Green</option>
 			<option value="3"  style="color:blue;">Enemy Robot Head: Blue</option>
 		    </select>
-		    <select class='color-selector'>
+		    <select class='color-selector' id='enemyTail'>
 			<option value="1" style="color:red;">Enemy Robot Tail: Red</option>
 			<option value="2" style="color:green;">Enemy Robot Tail: Green</option>
 			<option value="3" style="color:blue;">Enemy Robot Tail: Blue</option>
 		    </select>
 		    <br/><br/>
-		    <button>Confirm</button>
+		    <button onclick="setRobot();">Confirm</button>
 		    <br/><br/>
 		</div>
 

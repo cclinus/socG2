@@ -112,19 +112,6 @@ void updateGui(Map map){
     guiFile.close();
 }
 
-void initCamera(){
-    Map map;
-    Camera cameraOne(1);
-    Camera cameraTwo(2);
-    map = cameraOne.updateMap(map);
-    cout<<"Initializing camera one.\n";
-    sleep(3);
-    map = cameraTwo.updateMap(map);
-    cout<<"Initializing camera two.\n";
-    sleep(3);
-    cout<<"Cameras are ready. \n";
-}
-
 // This function is to check whether stop or start the game
 bool isStart(){
     // Check start file
@@ -146,14 +133,20 @@ int main () {
     Camera cameraTwo(2);
 
     // Init camera
-    initCamera();
+    map = cameraOne.updateMap(map);
+    cout<<"Initializing camera one.\n";
+    sleep(3);
+    map = cameraTwo.updateMap(map);
+    cout<<"Initializing camera two.\n";
+    sleep(3);
+    cout<<"Cameras are ready. \n";
 
     /*
     // Read and init robot colors
     // Lines: ourHead, ourTail, enemyHead, enemyTail
     // Color: 1.red; 2.green; 3.blue;
     string line;
-    ifstream colorfile ("../../server/color");
+    ifstream colorfile ("../../server/setting");
     if (colorfile.is_open()){
 	int i=1;
 	while ( colorfile.good() ){
@@ -183,7 +176,7 @@ int main () {
 
 	//Check start and stop command
 	while(!isStart()){
-	    cou << "Waiting to start\n";
+	    cout << "Waiting to start\n";
 	    sleep(1);
 	}
 
