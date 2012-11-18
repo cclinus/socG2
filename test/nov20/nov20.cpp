@@ -65,8 +65,7 @@ Map getMap(){
     Obstacle aObs(100,420);
     map.addObstacle(aObs);
      */
-    //    Robot ourRobot(250,10,1);
-    //    map.addRobot(ourRobot);
+        map.addRobot(ourRobot);
     //    Obstacle aObstacle(380,170);
     //    map.addObstacle(aObstacle);
 
@@ -129,11 +128,17 @@ int main () {
     int ourHead, ourTail, enemyHead, enemyTail, gate;
 
     srand(time(NULL));
+
+    /*
     Camera cameraOne(1);
     Camera cameraTwo(2);
+    */
 
     // Init camera
     Map map(480, 480);
+    map = getMap();
+
+    /*
     map = cameraOne.updateMap(map);
     cout<<"Initializing camera one.\n";
     sleep(3);
@@ -141,37 +146,37 @@ int main () {
     cout<<"Initializing camera two.\n";
     sleep(3);
     cout<<"Cameras are ready. \n";
+    */
 
-    /*
     // Read and init robot colors
     // Lines: ourHead, ourTail, enemyHead, enemyTail
     // Color: 1.red; 2.green; 3.blue;
     string line;
     ifstream colorfile ("../../server/setting");
     if (colorfile.is_open()){
-    int i=0;
-    while ( colorfile.good() ){
-    getline (colorfile,line);
-    if(i==0) gate = atoi(&line);
-    if(i==1) ourHead = atoi(&line);
-    if(i==2) ourTail = atoi(&line);
-    if(i==3) enemyHead = atoi(&line);
-    if(i==4) enemyTail = atoi(&line);
-    i++;
+	int i=0;
+	while ( colorfile.good() ){
+	    getline(colorfile,line);
+	    if(i==0) gate = atoi(line.c_str());
+	    if(i==1) ourHead = atoi(line.c_str());
+	    if(i==2) ourTail = atoi(line.c_str());
+	    if(i==3) enemyHead = atoi(line.c_str());
+	    if(i==4) enemyTail = atoi(line.c_str());
+	    i++;
+	}
+	colorfile.close();
     }
-    colorfile.close();
-    }
+    cout << gate<<ourHead<<ourTail<<enemyHead<<enemyTail<<"\n";
 
     // Set colors of robots
-    cameraOne.setOurHead(ourHead);
-    cameraTwo.setOurHead(ourHead);
+    //cameraOne.setOurHead(ourHead);
+    //cameraTwo.setOurHead(ourHead);
+    /*
+       cameraOne.setOurHead(1);
+       cameraTwo.setOurHead(1);
+       cameraOne.setOurTail(2);
+       cameraTwo.setOurTail(2);
      */
-
-    cameraOne.setOurHead(1);
-    cameraTwo.setOurHead(1);
-    cameraOne.setOurTail(2);
-    cameraTwo.setOurTail(2);
-
     ControlUnit control;
 
     while(1){
@@ -182,11 +187,11 @@ int main () {
 	    sleep(1);
 	}
 
-	Map map(480,480);
+	//Map map(480,480);
 
-	map.changeGate(gate);
-	map = cameraOne.updateMap(map);
-	map = cameraTwo.updateMap(map);
+	map.setGate(gate);
+	//map = cameraOne.updateMap(map);
+	//map = cameraTwo.updateMap(map);
 
 	if(map.isNormal()){
 	    brain.analyse(map);
@@ -196,6 +201,7 @@ int main () {
 	    if(state==1 or state==3){
 		control.adjust(map, target);
 	    }
+	    map.moveRobot(target);
 	}
 	updateGui(map);
 

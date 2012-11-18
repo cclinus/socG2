@@ -24,7 +24,7 @@ class Map {
 
     Map(){
         this->gate.setX(240);
-        this->gate.setY(20);
+        this->gate.setY(30);
 	this->gateNo = 1;
     }
 
@@ -34,7 +34,7 @@ class Map {
         //FIXME: what is gate coordinates?
 	this->gateNo = 1;
         this->gate.setX(240);
-        this->gate.setY(20);
+        this->gate.setY(30);
     }
 
     bool isNormal(){
@@ -47,13 +47,14 @@ class Map {
     }
 
     // Gate 1 is defaul gate near (0,0)
-    void changeGate(int gateNo){
-	if(gateNo == 2){
+    void setGate(int gateNumber){
+	this->gateNo = gateNumber;
+	if(this->gateNo == 2){
 	    this->gate.setX(240);
-	    this->gate.setY(460);
-	}else if(gateNo == 1){
+	    this->gate.setY(450);
+	}else if(this->gateNo == 1){
 	    this->gate.setX(240);
-	    this->gate.setY(20);
+	    this->gate.setY(30);
 	}
     }
 

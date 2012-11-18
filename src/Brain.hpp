@@ -96,9 +96,13 @@ class Brain{
 	    if( distanceToGate <= SHOOTING_DISTANCE){
 		//FIXME we need final adjust the angle before update to state 4
 		//FIXME need avoid hard code of this location
-		Location gateCenter(240,480);
-		if(this->map.getGateNo()==2){
-		    Location gateCenter(240,480);
+		Location gateCenter;
+		if(this->map.getGateNo()==1){
+		    gateCenter.setX(240);
+		    gateCenter.setY(0);
+		}else if(this->map.getGateNo()==2){
+		    gateCenter.setX(240);
+		    gateCenter.setY(480);
 		}
 
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), gateCenter);

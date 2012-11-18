@@ -124,7 +124,7 @@ int main () {
     while(1){
 
 	// For random testing
-	map.changeGate(2);
+	map.setGate(1);
 	brain.analyse(map);
 	Location target = brain.getTarget();
 	int state = brain.getState();
