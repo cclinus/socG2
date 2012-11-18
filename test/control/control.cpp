@@ -115,7 +115,6 @@ void updateGui(Map map){
 int main () {
 
     srand(time(NULL));
-    //Camera cameraOne(0);
     Map map = getMap();
     map.addRobot(ourRobot);
 
@@ -125,8 +124,7 @@ int main () {
     while(1){
 
 	// For random testing
-	//map = cameraOne.updateMap(map);
-
+	map.changeGate(2);
 	brain.analyse(map);
 	Location target = brain.getTarget();
 	int state = brain.getState();
@@ -140,7 +138,7 @@ int main () {
 
 	updateGui(map);
 
-	sleep(1);
+	usleep(1000000);
     }
 
     return 0;

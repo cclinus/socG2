@@ -37,7 +37,7 @@ class Brain{
 
     void sendState(int state){
 	int dataSize = this->xbee.send(400+state, 0);
-	cout << "\n$$$$$\nXbee send to update state: " << dataSize << "\n$$$$$\n";
+	cout << "\n$$$$$\nXbee send to update state: " << state << "\n$$$$$\n";
     }
 
     // Update the state of the robot based on the events, locations from the map obj
@@ -64,10 +64,10 @@ class Brain{
 
 		//FIXME we need final adjust the angle before update to state 2
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
-		if(finalAngle > 10){
+		if(finalAngle > 10 and finalAngle < 350){
 		    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
-		    	this->xbee.send(finalAngle,0);	
-		    	cout << "Adjust angle and prepare to state 2\n";
+			this->xbee.send(finalAngle,0);	
+			cout << "Adjust angle and prepare to state 2: Need turn "<<finalAngle<<"\n";
 			this->preparationCounter = 0;
 		    }
 		    this->preparationCounter++;
@@ -85,8 +85,8 @@ class Brain{
 	    if(msg == '1'){
 		this->state = 3;
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
-	    }else if(msg == '0' or msg == '2'){
-		this->state = 1; // Fail to grab the ball, go to state 1 agin
+	    }else{
+		this->state = 3; // Fail to grab the ball, go to state 1 agin
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
 
@@ -96,20 +96,21 @@ class Brain{
 	    if( distanceToGate <= SHOOTING_DISTANCE){
 		//FIXME we need final adjust the angle before update to state 4
 		//FIXME need avoid hard code of this location
-		Location gateCenter(240,0);
+		Location gateCenter(240,480);
 		if(this->map.getGateNo()==2){
 		    Location gateCenter(240,480);
 		}
 
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), gateCenter);
-		if(finalAngle > 10){
-                    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
-                        cout << "Adjust angle and prepare to state 4\n";
-                        this->xbee.send(finalAngle,0);
-                        this->preparationCounter = 0;
-                    }
-                    this->preparationCounter++;
+		if(finalAngle > 10 and finalAngle < 350){
+		    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
+			cout << "Adjust angle and prepare to state 4: Need turn "<<finalAngle<<"\n";
+			this->xbee.send(finalAngle,0);
+			this->preparationCounter = 0;
+		    }
+		    this->preparationCounter++;
 		}else{
+		    cout << "\nFinal Angle before state 4: " << finalAngle << "\n";
 		    this->state = 4;
 		    sendState(this->state);
 		    cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
@@ -117,11 +118,11 @@ class Brain{
 	    }
 	}else if( this->state == 4){
 	    // Trigger the shooting mechanism and return to state 1 at the end
-            if(this->preparationCounter % 100 == 0){
-	    	    this->state = 1;
-                    this->preparationCounter = 0;
-            }
-            this->preparationCounter++;
+	    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
+		  this->state = 1;
+	          this->preparationCounter = 0;
+	    }
+	    this->preparationCounter++;
 	}
 
     }
@@ -409,7 +410,8 @@ class Brain{
 	if(a1<0) a1=360+a1;
 	double a2 = atan2(y3-y1,x3-x1)*180/PI;
 	if(a2<0) a2=360+a2;
-	return a1-a2;
+	//When check angle differences in brain, we need abs value
+	return abs(a1-a2);
     }
 
 };
