@@ -64,7 +64,7 @@ class Brain{
 
 		//FIXME we need final adjust the angle before update to state 2
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), this->targetBall);
-		if(finalAngle > 10 and finalAngle < 350){
+		if( (finalAngle>10 and finalAngle<350) or (finalAngle<-10 and finalAngle>-350) ){
 		    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
 			this->xbee.send(finalAngle,0);	
 			cout << "Adjust angle and prepare to state 2: Need turn "<<finalAngle<<"\n";
@@ -86,7 +86,7 @@ class Brain{
 		this->state = 3;
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }else{
-		this->state = 3; // Fail to grab the ball, go to state 1 agin
+		this->state = 1; // Fail to grab the ball, go to state 1 agin
 		cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
 	    }
 
@@ -106,7 +106,7 @@ class Brain{
 		}
 
 		double finalAngle = getAngle(ourRobot.getLocation(), ourRobot.getLocationB(), gateCenter);
-		if(finalAngle > 10 and finalAngle < 350){
+		if( (finalAngle>10 and finalAngle<350) or (finalAngle<-10 and finalAngle>-350) ){
 		    if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
 			cout << "Adjust angle and prepare to state 4: Need turn "<<finalAngle<<"\n";
 			this->xbee.send(finalAngle,0);
@@ -414,8 +414,8 @@ class Brain{
 	if(a1<0) a1=360+a1;
 	double a2 = atan2(y3-y1,x3-x1)*180/PI;
 	if(a2<0) a2=360+a2;
-	//When check angle differences in brain, we need abs value
-	return abs(a1-a2);
+	//When check angle differences in brain, we need check this value later
+	return a1-a2;
     }
 
 };

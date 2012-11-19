@@ -166,7 +166,7 @@ int main () {
 	}
 	colorfile.close();
     }
-    cout << gate<<ourHead<<ourTail<<enemyHead<<enemyTail<<"\n";
+    cout <<"Configuration bits:"<< gate<<ourHead<<ourTail<<enemyHead<<enemyTail<<"\n";
 
     // Set colors of robots
     //cameraOne.setOurHead(ourHead);

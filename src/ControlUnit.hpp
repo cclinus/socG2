@@ -61,7 +61,8 @@ class ControlUnit{
 		int cycle = distance/CYCLE_DISTANCE;
 		if(cycle == 0) cycle = 1;
 		// We need convert the negative value
-		if(angle<0) angle += 360;
+		// We try to handle this in WirelessUnit level
+		//if(angle<0) angle += 360;
 		send(angle,cycle);
 		cout << "\n(Control)angle,cycle:"<<angle<<","<<cycle<<"\n";
 	    }

@@ -17,6 +17,9 @@ class WirelessUnit{
 
 	int send(int angle, int cycle){
 
+	    // Convert negative angle
+	    if(angle<0) angle += 360;
+
 	    int i, n,
 		cport_nr=16,        /* /dev/ttyS0 (COM1 on windows) */
 		bdrate = 57600;       /* 57600 baud */
