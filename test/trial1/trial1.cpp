@@ -56,10 +56,10 @@ int main () {
     Camera cameraTwo(2);
     int cornerFlag;
     ControlUnit control;
-   //while(1){
+   while(1){
 //	cornerFlag = cameraOne.initMap();
-//	cornerFlag = cameraTwo.initMap();
-//    }
+	cornerFlag = cameraTwo.initMap();
+    }
 
     // Test control unit
 

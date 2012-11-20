@@ -24,6 +24,9 @@ using namespace std;
 
 #define CAMERANO1 1
 #define CAMERANO2 2
+#define ROBOT_RED 1
+#define ROBOT_BLUE 3
+#define ROBOT_GREEN 2
 
 int thresh = 228, N = 1;
 
@@ -74,6 +77,8 @@ class Camera {
 	int redY;
 	int greX;
 	int greY;
+	//FIXME
+	int ourRobotHead,ourRobotTail,enemyRobotHead,enemyRobotTail;
     public:
 
     // The Camera obj has to be atteched to the map obj
@@ -99,6 +104,23 @@ class Camera {
 	diaCount = 3;
 	blurSize = 7;
     }
+
+	//FIXME
+	void setOurHead(int color){
+		this->ourRobotHead = color;
+	}
+	
+	void setOurTail(int color){
+		this->ourRobotTail = color;
+	}
+	
+	void setEnemyHead(int color){
+		this->enemyRobotHead = color;
+	}
+
+	void setEnemyTail(int color){
+		this->enemyRobotTail = color;
+	}
     
     // Core processing function, init all balls, obstacles, robots to the map obj.
     // Feel free to create additional func within this class.
@@ -119,10 +141,10 @@ class Camera {
 		cornersOff[2].x = this->offset[0][1].x; cornersOff[2].y = this->offset[0][1].y;
 		cornersOff[3].x = this->offset[0][0].x; cornersOff[3].y = this->offset[0][0].y;
 		*/
-		cornersOff[0].x = 205; cornersOff[0].y = 73;
-		cornersOff[1].x = 376; cornersOff[1].y = 59;
-		cornersOff[2].x = 210; cornersOff[2].y = 107;
-		cornersOff[3].x = 388; cornersOff[3].y = 89;
+		cornersOff[0].x = 220; cornersOff[0].y = 101;
+		cornersOff[1].x = 385; cornersOff[1].y = 110;
+		cornersOff[2].x = 212; cornersOff[2].y = 133;
+		cornersOff[3].x = 385; cornersOff[3].y = 142;
 
 		cornersReal[0].x = 155; cornersReal[0].y = 5;
 		cornersReal[1].x = 325; cornersReal[1].y = 5;
@@ -136,10 +158,10 @@ class Camera {
 		cornersOff[2].x = this->offset[0][3].x; cornersOff[2].y = this->offset[0][3].y;
 		cornersOff[3].x = this->offset[0][2].x; cornersOff[3].y = this->offset[0][2].y;
 		*/
-		cornersOff[0].x = 405; cornersOff[0].y = 110;
-		cornersOff[1].x = 218; cornersOff[1].y = 115;
-		cornersOff[2].x = 399; cornersOff[2].y = 75;
-		cornersOff[3].x = 223; cornersOff[3].y = 79;
+		cornersOff[0].x = 411; cornersOff[0].y = 115;
+		cornersOff[1].x = 212; cornersOff[1].y = 107;
+		cornersOff[2].x = 410; cornersOff[2].y = 73;
+		cornersOff[3].x = 221; cornersOff[3].y = 67;
 
 		cornersReal[0].x = 155; cornersReal[0].y = 415;
 		cornersReal[1].x = 325; cornersReal[1].y = 415;
@@ -160,6 +182,7 @@ class Camera {
 
 
 	//looping thru the to update each object 1=ball, 2=obstacle, 3=robot_color1, 4=robot_color2
+	//we need to get robots first then get ball, obstacle since camera may misread robot color as ball or obstacle
 	for(int i=1; i<=4; i++){
 		//printf("round %i\n",i);
 		getObj(i,H);
@@ -323,65 +346,138 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
     void getObj(int i, Mat H){
 	//if(cameraNo == CAMERANO1){
 	 	if(i == 1){
-			HuethresH =90; HuethresL =58;
-			SatthresL =60; SatthresH = 255;
-			ValthresL =78; ValthresH = 255;
+			HuethresH =103; HuethresL =58;
+			SatthresL =70; SatthresH = 255;
+			ValthresL =91; ValthresH = 255;
 			erosionCount = 2;
 			diaCount = 3;
-			blurSize = 7;
+			blurSize = 5;
 		}else if(i == 2){
-			HuethresH =45; HuethresL =0;
-			SatthresL =61; SatthresH = 255;
-			ValthresL =78; ValthresH = 255;
-			erosionCount = 1;
-			diaCount = 3;
-			blurSize = 7;
-		}else if(i == 3){
-			HuethresH =163; HuethresL =104;
-			SatthresL =106; SatthresH = 255;
-			ValthresL =78; ValthresH = 255;
-			erosionCount = 1;
+			HuethresH =38; HuethresL =0;
+			SatthresL =34; SatthresH = 255;
+			ValthresL =76; ValthresH = 255;
+			erosionCount = 2;
 			diaCount = 3;
 			blurSize = 4;
-		}else if(i == 4){
-			HuethresH =73; HuethresL =21;
-			SatthresL =93; SatthresH = 255;
-			ValthresL =43; ValthresH = 255;
-			erosionCount = 1;
-			diaCount = 3;
-			blurSize = 0;
+		}else if(i == 3){//GET OUR ROBOT HEAD COLOR
+			if(ourRobotHead == ROBOT_RED){
+				HuethresH =163; HuethresL =104;
+				SatthresL =106; SatthresH = 255;
+				ValthresL =78; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 4;
+			}else if(ourRobotHead == ROBOT_BLUE){
+				//FIXME
+				HuethresH =33; HuethresL =0;
+				SatthresL =35; SatthresH = 255;
+				ValthresL =53; ValthresH = 255;
+				erosionCount = 3;
+				diaCount = 3;
+				blurSize = 7;
+			}else if(ourRobotHead == ROBOT_GREEN){
+				//FIXME
+				HuethresH =73; HuethresL =21;
+				SatthresL =93; SatthresH = 255;
+				ValthresL =43; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 0;
+			}
+		}else if(i == 4){//GET OUR ROBOT TAIL COLOR
+			if(ourRobotTail == ROBOT_GREEN){
+				HuethresH =73; HuethresL =21;
+				SatthresL =93; SatthresH = 255;
+				ValthresL =43; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 0;
+			}else if(ourRobotTail == ROBOT_BLUE){
+				//FIXME
+				HuethresH =33; HuethresL =0;
+				SatthresL =35; SatthresH = 255;
+				ValthresL =53; ValthresH = 255;
+				erosionCount = 3;
+				diaCount = 3;
+				blurSize = 7;
+				//FIXME
+			}else if(ourRobotTail == ROBOT_RED){
+				//FIXME
+				HuethresH =163; HuethresL =104;
+				SatthresL =106; SatthresH = 255;
+				ValthresL =78; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 4;
+			}
 		}
-/*	}else if(cameraNo == CAMERANO2){
-		if(i == 1){
-			HuethresH =89; HuethresL =69;
-			SatthresL =85; SatthresH = 255;
-			ValthresL =78; ValthresH = 255;
+/*
+	 	if(i == 1){
+			HuethresH =106; HuethresL =61;
+			SatthresL =44; SatthresH = 255;
+			ValthresL =80; ValthresH = 255;
 			erosionCount = 2;
 			diaCount = 3;
 			blurSize = 7;
 		}else if(i == 2){
-			HuethresH =32; HuethresL =0;
-			SatthresL =85; SatthresH = 255;
-			ValthresL =78; ValthresH = 255;
-			erosionCount = 1;
+			HuethresH =38; HuethresL =0;
+			SatthresL =34; SatthresH = 255;
+			ValthresL =76; ValthresH = 255;
+			erosionCount = 2;
 			diaCount = 3;
-			blurSize = 0;
-		}else if(i == 3){
-			HuethresH =148; HuethresL =103;
-			SatthresL =96; SatthresH = 255;
-			ValthresL =101; ValthresH = 255;
-			erosionCount = 1;
-			diaCount = 3;
-			blurSize = 3;
-		}else if(i == 4){
-			HuethresH =70; HuethresL =20;
-			SatthresL =72; SatthresH = 255;
-			ValthresL =66; ValthresH = 255;
-			erosionCount = 1;
-			diaCount = 2;
-			blurSize = 0;
+			blurSize = 4;
+		}else if(i == 3){//GET OUR ROBOT HEAD COLOR
+			if(ourRobotHead == ROBOT_RED){
+				HuethresH =163; HuethresL =104;
+				SatthresL =106; SatthresH = 255;
+				ValthresL =78; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 4;
+			}else if(ourRobotHead == ROBOT_BLUE){
+				//FIXME
+				HuethresH =33; HuethresL =0;
+				SatthresL =35; SatthresH = 255;
+				ValthresL =53; ValthresH = 255;
+				erosionCount = 3;
+				diaCount = 3;
+				blurSize = 7;
+			}else if(ourRobotHead == ROBOT_GREEN){
+				//FIXME
+				HuethresH =73; HuethresL =21;
+				SatthresL =93; SatthresH = 255;
+				ValthresL =43; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 0;
+			}
+		}else if(i == 4){//GET OUR ROBOT TAIL COLOR
+			if(ourRobotTail == ROBOT_GREEN){
+				HuethresH =73; HuethresL =21;
+				SatthresL =93; SatthresH = 255;
+				ValthresL =43; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 0;
+			}else if(ourRobotTail == ROBOT_BLUE){
+				//FIXME
+				HuethresH =33; HuethresL =0;
+				SatthresL =35; SatthresH = 255;
+				ValthresL =53; ValthresH = 255;
+				erosionCount = 3;
+				diaCount = 3;
+				blurSize = 7;
+				//FIXME
+			}else if(ourRobotTail == ROBOT_RED){
+				//FIXME
+				HuethresH =163; HuethresL =104;
+				SatthresL =106; SatthresH = 255;
+				ValthresL =78; ValthresH = 255;
+				erosionCount = 1;
+				diaCount = 3;
+				blurSize = 4;
+			}
 		}
-	}	
 */	
 	split(hsvImage,slices);
 	slices[0].copyTo (hue);
@@ -430,6 +526,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 
 	findContours(threshold_out, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
 	int contoursSize;
+	int dropFlag;
 	contoursSize=contours.size();
 	/// Approximate contours to polygons + get bounding rects and circles
 	vector<vector<Point> > contours_poly( contours.size() );
@@ -439,7 +536,12 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 	vector<Point2f>ObjCtr( 1 );
 	vector<Point2f>ObjCtrFix( 1 );
 	int cnt=1;
+	float tempX[2];
+	float tempY[2];
+	int findUpper=0;
+	int findLower=0;
 	for( int i = 0; i < contoursSize; i++ ){ 
+		
 	    approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
 	    //boundRect[i] = boundingRect( Mat(contours_poly[i]) );
 	    minEnclosingCircle( contours_poly[i], center[i], radius[i] );
@@ -470,87 +572,43 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			}
 			}
 	    	}else if(ii == 2){
-			//cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
-			if(cameraNo == CAMERANO1 && ObjCtrFix[0].x<254.544 && ObjCtrFix[0].y<299.014 ){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.70654+64.1237;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.6105+87.631;
-			}else if(cameraNo == CAMERANO1 && ObjCtrFix[0].x>=254.544 && ObjCtrFix[0].y<299.014){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.9267+9.3198;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.6807+93.2176;
-			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].x<254.544 && ObjCtrFix[0].y>=299.014){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.5492+102.518;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.5586+100.3243;
-			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].x>=254.544 && ObjCtrFix[0].y>=299.014){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.9293+7.356;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.5941+111.885;
-			}
-			//cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
-			
-			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
-				//if(ObjCtrFix[0].x <= 213){
-				//}
+			if(cameraNo == CAMERANO1){
+				//	cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
+				ObjCtrFix[0].x = ObjCtrFix[0].x*0.8623+22.4596;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.9217+91.8793;
+				
 				Obstacle aObstacle((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y);
 				this->map.addObstacle(aObstacle);
-			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>240){
-				//if(ObjCtrFix[0].x <= 213){
-				//}
-				Obstacle aObstacle((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y);
-				this->map.addObstacle(aObstacle);	
-			}
+			}	
 		}else if(ii == 3){
-			
-		/*	if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y<310 ){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.86022+33.9785;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.8955-22.3881;
-			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y<310){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*1.10092-23.66972;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.79339-18.64463;
-			}else if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y>=310){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.7767+60.97087;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.81356+1.62712;
-			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y>=310){
-			
-				ObjCtrFix[0].x = ObjCtrFix[0].x*1.17936-31.8425;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.967742-75.48387;
-			}*/
-			ObjCtrFix[0].x=ObjCtrFix[0].x*0.8889+16.0093;
-			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8028+46.5529;
+			//cout<<"objctrfix red"<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<endl;
+
+			ObjCtrFix[0].x=ObjCtrFix[0].x*0.9372+15.3142;
+			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+23.6617;
 			//cout<<"objctrfix red"<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<endl;
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
-				if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
-					ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
-				}
+				//if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
+				//	ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
+				//}
 				redX =(int)ObjCtrFix[0].x;
 				redY =(int)ObjCtrFix[0].y;
 			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>240){
 				//cout<<"objctrfix red"<<ObjCtrFix[0].x<<endl;
-				if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
-					ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
-				}
+				//==if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
+				//	ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
+				//}
 				redX =(int)ObjCtrFix[0].x;
 				redY =(int)ObjCtrFix[0].y;
 			}
 		}else if(ii == 4){
-			/*
-			if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y<310 ){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.86022+33.9785;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.8955-22.3881;
-			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y<310){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*1.10092-23.66972;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.79339-18.64463;
-			}else if(ObjCtrFix[0].x<232 && ObjCtrFix[0].y>=310){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*0.7767+60.97087;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.81356+1.62712;
-			}else if(ObjCtrFix[0].x>=232 && ObjCtrFix[0].y>=310){
-				ObjCtrFix[0].x = ObjCtrFix[0].x*1.17936-31.8425;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.967742-75.48387;
-			}*/
-			ObjCtrFix[0].x=ObjCtrFix[0].x*0.8889+16.0093;
-			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8028+46.5529;
+			
+			//cout<<"objctrfix green"<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<endl;
+			ObjCtrFix[0].x=ObjCtrFix[0].x*0.9372+15.3142;
+			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+23.6617;
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
-				if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
-					ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
-				}
+				//if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
+				//	ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
+				//}
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
 			
@@ -558,9 +616,9 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				Robot aRobot(redX, redY, greX, greY, cnt);
 				this->map.addRobot(aRobot);
 			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>240){
-				if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
-					ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
-				}
+				//if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
+				//	ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
+				//}
 				greX = (int)ObjCtrFix[0].x; 
 				greY = (int)ObjCtrFix[0].y;
 			
@@ -569,8 +627,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				this->map.addRobot(aRobot);
 			}			
 			//cout<<aRobot.getLocationB().getX()<<" get "<<aRobot.getLocationB().getY()<<"\n";			
-		}
-		
+		}		
 		
 		cnt++;
 	    }
