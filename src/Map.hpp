@@ -13,123 +13,128 @@
 using namespace std;
 
 class Map {
-    int width, height;
-    int gateNo;
-    Location gate;
-    vector<Ball> ballVector;
-    vector<Obstacle> obstacleVector;
-    vector<Robot> robotVector;
+	int width, height;
+	int gateNo;
+	Location gate;
+	vector<Ball> ballVector;
+	vector<Obstacle> obstacleVector;
+	vector<Robot> robotVector;
 
-    public:
+	public:
 
-    Map(){
-        this->gate.setX(240);
-        this->gate.setY(40);
-	this->gateNo = 1;
-    }
-
-    Map(int w, int h){
-        width = w;
-        height = h;
-        //FIXME: what is gate coordinates?
-	this->gateNo = 1;
-        this->gate.setX(240);
-        this->gate.setY(40);
-    }
-
-    bool isNormal(){
-	Robot ourRobot = getOurRobot();
-	if(ourRobot.getLocation().getX()<0 or ourRobot.getLocation().getY()<0){
-	    // Lost robot
-	    return false;
+	Map(){
+		this->gate.setX(240);
+		this->gate.setY(40);
+		this->gateNo = 1;
 	}
-	return true;
-    }
 
-    // Gate 1 is defaul gate near (0,0)
-    void setGate(int gateNumber){
-	this->gateNo = gateNumber;
-	if(this->gateNo == 2){
-	    this->gate.setX(240);
-	    this->gate.setY(440);
-	}else if(this->gateNo == 1){
-	    this->gate.setX(240);
-	    this->gate.setY(40);
+	Map(int w, int h){
+		width = w;
+		height = h;
+		//FIXME: what is gate coordinates?
+		this->gateNo = 1;
+		this->gate.setX(240);
+		this->gate.setY(40);
 	}
-    }
 
-    int getGateNo(){
-	return this->gateNo;
-    }
+	bool isNormal(){
+		Robot ourRobot = getOurRobot();
+		if(ourRobot.getLocation().getX()<0 or ourRobot.getLocation().getY()<0){
+			// Lost robot
+			return false;
+		}
+		return true;
+	}
 
-    void addBall(Ball aBall){
-        this->ballVector.push_back(aBall);
-    }
+	// Gate 1 is defaul gate near (0,0)
+	void setGate(int gateNumber){
+		this->gateNo = gateNumber;
+		if(this->gateNo == 2){
+			this->gate.setX(240);
+			this->gate.setY(445);
+		}else if(this->gateNo == 1){
+			this->gate.setX(240);
+			this->gate.setY(40);
+		}
+	}
 
-    void addObstacle(Obstacle anObstacle){
-        this->obstacleVector.push_back(anObstacle);
-    }
+	int getGateNo(){
+		return this->gateNo;
+	}
 
-    void addRobot(Robot aRobot){
-        this->robotVector.push_back(aRobot);
-    }
+	void addBall(Ball aBall){
+		this->ballVector.push_back(aBall);
+	}
 
-    vector<Ball> getBalls(void){
-        return this->ballVector;
-    }
+	void addObstacle(Obstacle anObstacle){
+		this->obstacleVector.push_back(anObstacle);
+	}
 
-    vector<Obstacle> getObstacles(void){
-        return this->obstacleVector;
-    }
+	void addRobot(Robot aRobot){
+		this->robotVector.push_back(aRobot);
+	}
 
-    // For testing
-    void moveRobot(Location target){
-        for(int i = 0; i < this->robotVector.size(); i++){
-            // Our robot NO. is 1
-            if( this->robotVector.at(i).getNo() == 1 ){
-                this->robotVector.at(i).moveHalf(target);
-            }
-        }
-    }
+	vector<Ball> getBalls(void){
+		return this->ballVector;
+	}
 
-    Robot getOurRobot(void){
-        for(int i = 0; i < this->robotVector.size(); i++){
-            // Our robot NO. is 1
-            Robot robot = this->robotVector.at(i);
-            if(robot.getNo() == 1){
-                return this->robotVector.at(i);
-            }
-        }
-    }
+	vector<Obstacle> getObstacles(void){
+		return this->obstacleVector;
+	}
 
-    Robot getEnemyRobot(void){
-        for(int i = 0; i < this->robotVector.size(); i++){
-            // Enemy robot NO. is 2
-            Robot robot = this->robotVector.at(i);
-            if(robot.getNo() == 2){
-                return this->robotVector.at(i);
-            }
-        }
-    }
+	// For testing
+	void moveRobot(Location target){
+		for(int i = 0; i < this->robotVector.size(); i++){
+			// Our robot NO. is 1
+			if( this->robotVector.at(i).getNo() == 1 ){
+				this->robotVector.at(i).moveHalf(target);
+			}
+		}
+	}
 
-    void clearMap(void){
-        this->ballVector.clear();
-        this->obstacleVector.clear();
-        this->robotVector.clear();
-    }
+	Robot getOurRobot(void){
+		for(int i = 0; i < this->robotVector.size(); i++){
+			// Our robot NO. is 1
+			Robot robot = this->robotVector.at(i);
+			if(robot.getNo() == 1){
+				return this->robotVector.at(i);
+			}
+		}
+	}
 
-    // Return the location of target gate
-    Location getGateLocation(void){
-        return this->gate;
-    }
+	Robot getEnemyRobot(void){
+		for(int i = 0; i < this->robotVector.size(); i++){
+			// Enemy robot NO. is 2
+			Robot robot = this->robotVector.at(i);
+			if(robot.getNo() == 2){
+				return this->robotVector.at(i);
+			}
+		}
+	}
 
-    int countBalls(void){
-        return this->ballVector.size();
-    }
+	void clearMap(void){
+		this->ballVector.clear();
+		this->obstacleVector.clear();
+		this->robotVector.clear();
+	}
 
-    int countObstacles(void){
-        return this->obstacleVector.size();
-    }
+	void clearBallsNRobot(void){
+		this->ballVector.clear();
+		//this->robotVector.clear();
+	}
+
+	// Return the location of target gate
+	Location getGateLocation(void){
+		return this->gate;
+	}
+
+	int countBalls(void){
+		return this->ballVector.size();
+	}
+
+	int countObstacles(void){
+		return this->obstacleVector.size();
+	}
 
 };
 

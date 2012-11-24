@@ -57,8 +57,8 @@ int main () {
     int cornerFlag;
     ControlUnit control;
    while(1){
-//	cornerFlag = cameraOne.initMap();
-	cornerFlag = cameraTwo.initMap();
+	cornerFlag = cameraOne.initMap();
+//	cornerFlag = cameraTwo.initMap();
     }
 
     // Test control unit

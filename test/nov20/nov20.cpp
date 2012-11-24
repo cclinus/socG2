@@ -55,8 +55,7 @@ Map getMap(){
 	Obstacle bObstacle(random_in_range(30,450), random_in_range(160,320));
 	map.addObstacle(bObstacle);
 	Obstacle cObstacle(random_in_range(30,450), random_in_range(160,320));
-	map.addObstacle(cObstacle);
-
+	map.addObstacle(cObstacle); 
 	/*
 	   Ball aBall(100,450,1);
 	   map.addBall(aBall);
@@ -168,10 +167,10 @@ int main () {
 	// Set colors of robots
 	//cameraOne.setOurHead(ourHead);
 	//cameraTwo.setOurHead(ourHead);
-	cameraOne.setOurHead(1);
-	cameraTwo.setOurHead(1);
-	cameraOne.setOurTail(2);
-	cameraTwo.setOurTail(2);
+	cameraOne.setOurHead(ourHead);
+	cameraTwo.setOurHead(ourHead);
+	cameraOne.setOurTail(ourTail);
+	cameraTwo.setOurTail(ourTail);
 
 	ControlUnit control;
 
@@ -185,11 +184,10 @@ int main () {
 
 
 		Map map(480,480);
-
-		map.setGate(1);
+		map.setGate(gate);
 		map = cameraOne.updateMap(map);
 		map = cameraTwo.updateMap(map);
-
+		map = control.filter(map);
 		if(map.isNormal()){
 			brain.analyse(map);
 			Location target = brain.getTarget();

@@ -141,10 +141,10 @@ class Camera {
 		cornersOff[2].x = this->offset[0][1].x; cornersOff[2].y = this->offset[0][1].y;
 		cornersOff[3].x = this->offset[0][0].x; cornersOff[3].y = this->offset[0][0].y;
 		*/
-		cornersOff[0].x = 220; cornersOff[0].y = 101;
-		cornersOff[1].x = 385; cornersOff[1].y = 110;
-		cornersOff[2].x = 212; cornersOff[2].y = 133;
-		cornersOff[3].x = 385; cornersOff[3].y = 142;
+		cornersOff[0].x = 196; cornersOff[0].y = 10;
+		cornersOff[1].x = 364; cornersOff[1].y = 8;
+		cornersOff[2].x = 196; cornersOff[2].y = 48;
+		cornersOff[3].x = 369; cornersOff[3].y = 47;
 
 		cornersReal[0].x = 155; cornersReal[0].y = 5;
 		cornersReal[1].x = 325; cornersReal[1].y = 5;
@@ -158,10 +158,10 @@ class Camera {
 		cornersOff[2].x = this->offset[0][3].x; cornersOff[2].y = this->offset[0][3].y;
 		cornersOff[3].x = this->offset[0][2].x; cornersOff[3].y = this->offset[0][2].y;
 		*/
-		cornersOff[0].x = 411; cornersOff[0].y = 115;
-		cornersOff[1].x = 212; cornersOff[1].y = 107;
-		cornersOff[2].x = 410; cornersOff[2].y = 73;
-		cornersOff[3].x = 221; cornersOff[3].y = 67;
+		cornersOff[0].x = 402; cornersOff[0].y = 106;
+		cornersOff[1].x = 226; cornersOff[1].y = 101;
+		cornersOff[2].x = 399; cornersOff[2].y = 69;
+		cornersOff[3].x = 229; cornersOff[3].y = 64;
 
 		cornersReal[0].x = 155; cornersReal[0].y = 415;
 		cornersReal[1].x = 325; cornersReal[1].y = 415;
@@ -345,6 +345,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
     
     void getObj(int i, Mat H){
 	//if(cameraNo == CAMERANO1){
+	
 	 	if(i == 1){
 			HuethresH =103; HuethresL =58;
 			SatthresL =70; SatthresH = 255;
@@ -360,14 +361,15 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			diaCount = 3;
 			blurSize = 4;
 		}else if(i == 3){//GET OUR ROBOT HEAD COLOR
-			if(ourRobotHead == ROBOT_RED){
+			//cout<<this->ourRobotHead<<endl;
+			if(this->ourRobotHead == ROBOT_RED){
 				HuethresH =163; HuethresL =104;
 				SatthresL =106; SatthresH = 255;
 				ValthresL =78; ValthresH = 255;
 				erosionCount = 1;
 				diaCount = 3;
 				blurSize = 4;
-			}else if(ourRobotHead == ROBOT_BLUE){
+			}else if(this->ourRobotHead == ROBOT_BLUE){
 				//FIXME
 				HuethresH =33; HuethresL =0;
 				SatthresL =35; SatthresH = 255;
@@ -375,8 +377,9 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				erosionCount = 3;
 				diaCount = 3;
 				blurSize = 7;
-			}else if(ourRobotHead == ROBOT_GREEN){
+			}else if(this->ourRobotHead == ROBOT_GREEN){
 				//FIXME
+				//cout<<"head"<<endl;
 				HuethresH =73; HuethresL =21;
 				SatthresL =93; SatthresH = 255;
 				ValthresL =43; ValthresH = 255;
@@ -385,14 +388,14 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				blurSize = 0;
 			}
 		}else if(i == 4){//GET OUR ROBOT TAIL COLOR
-			if(ourRobotTail == ROBOT_GREEN){
+			if(this->ourRobotTail == ROBOT_GREEN){
 				HuethresH =73; HuethresL =21;
 				SatthresL =93; SatthresH = 255;
 				ValthresL =43; ValthresH = 255;
 				erosionCount = 1;
 				diaCount = 3;
 				blurSize = 0;
-			}else if(ourRobotTail == ROBOT_BLUE){
+			}else if(this->ourRobotTail == ROBOT_BLUE){
 				//FIXME
 				HuethresH =33; HuethresL =0;
 				SatthresL =35; SatthresH = 255;
@@ -401,8 +404,9 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				diaCount = 3;
 				blurSize = 7;
 				//FIXME
-			}else if(ourRobotTail == ROBOT_RED){
+			}else if(this->ourRobotTail == ROBOT_RED){
 				//FIXME
+				//cout<<"tail"<<endl;
 				HuethresH =163; HuethresL =104;
 				SatthresL =106; SatthresH = 255;
 				ValthresL =78; ValthresH = 255;
@@ -413,9 +417,9 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 		}
 /*
 	 	if(i == 1){
-			HuethresH =106; HuethresL =61;
-			SatthresL =44; SatthresH = 255;
-			ValthresL =80; ValthresH = 255;
+			HuethresH =106; HuethresL =58;
+			SatthresL =79; SatthresH = 255;
+			ValthresL =72; ValthresH = 255;
 			erosionCount = 2;
 			diaCount = 3;
 			blurSize = 7;
@@ -468,7 +472,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				diaCount = 3;
 				blurSize = 7;
 				//FIXME
-			}else if(ourRobotTail == ROBOT_RED){
+			}else if(ourRobotTail == ROBOT_RED){/
 				//FIXME
 				HuethresH =163; HuethresL =104;
 				SatthresL =106; SatthresH = 255;
@@ -551,15 +555,25 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 		perspectiveTransform(ObjCtr, ObjCtrFix, hm);
 		if(ii == 1){
 			if(radius[i]<=15){
-			if(cameraNo==CAMERANO1 && ObjCtrFix[0].y<=240){
+			
+			//if(cameraNo==CAMERANO1){// && ObjCtrFix[0].y<=240){
+			//cout<<"x "<<ObjCtrFix[0].x<<"y "<<ObjCtrFix[0].y<<endl;
+
+			if(cameraNo==CAMERANO2 && ObjCtrFix[0].y<=240){
+				ObjCtrFix[0].x=ObjCtrFix[0].x*0.97826-7.01073;
+				ObjCtrFix[0].y=ObjCtrFix[0].y*0.962567+44.117647;
+			}	
 				if(ObjCtrFix[0].x <0){
 					ObjCtrFix[0].x=5;
 				}else if(ObjCtrFix[0].y<0){
 					ObjCtrFix[0].y=5;
 				}
+			//	if(cameraNo == CAMERANO01 && ObjCtrFix[0].y<=240){
 				Ball aBall((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y,cnt);
 	    			this->map.addBall(aBall);
-			}else if(cameraNo==CAMERANO2 && ObjCtrFix[0].y>240){
+			}	
+					
+			/*}else if(cameraNo==CAMERANO2 && ObjCtrFix[0].y>240){
 				//FIXME
 				//cout<<"ball ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
 				if(ObjCtrFix[0].x <0){
@@ -569,13 +583,16 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 				}
 				Ball aBall((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y,cnt);
 	    			this->map.addBall(aBall);
-			}
-			}
+			}*/
+			//}
 	    	}else if(ii == 2){
 			if(cameraNo == CAMERANO1){
 				//	cout<<"obstacle ("<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<")"<<endl;
+				//ObjCtrFix[0].x = ObjCtrFix[0].x*0.8623+22.4596;
+				//ObjCtrFix[0].y = ObjCtrFix[0].y*0.9217+91.8793;
+				
 				ObjCtrFix[0].x = ObjCtrFix[0].x*0.8623+22.4596;
-				ObjCtrFix[0].y = ObjCtrFix[0].y*0.9217+91.8793;
+				ObjCtrFix[0].y = ObjCtrFix[0].y*0.9217+61.8793;
 				
 				Obstacle aObstacle((int)ObjCtrFix[0].x, (int)ObjCtrFix[0].y);
 				this->map.addObstacle(aObstacle);
@@ -584,7 +601,8 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			//cout<<"objctrfix red"<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<endl;
 
 			ObjCtrFix[0].x=ObjCtrFix[0].x*0.9372+15.3142;
-			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+23.6617;
+			//ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+23.6617;
+			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+33.6617;
 			//cout<<"objctrfix red"<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<endl;
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				//if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
@@ -604,7 +622,8 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 			
 			//cout<<"objctrfix green"<<ObjCtrFix[0].x<<" "<<ObjCtrFix[0].y<<endl;
 			ObjCtrFix[0].x=ObjCtrFix[0].x*0.9372+15.3142;
-			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+23.6617;
+			//ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+23.6617;
+			ObjCtrFix[0].y=ObjCtrFix[0].y*0.8771+33.6617;
 			if(cameraNo == CAMERANO1 && ObjCtrFix[0].y<=240){
 				//if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
 				//	ObjCtrFix[0].y = ObjCtrFix[0].y + 20;

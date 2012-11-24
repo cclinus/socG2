@@ -1,6 +1,5 @@
 #ifndef BRAIN_HPP
 #define BRAIN_HPP
-
 #include <math.h>
 #include "ControlUnit.hpp"
 #include "Map.hpp"
@@ -9,11 +8,11 @@
 #include "Obstacle.hpp"
 #include "Robot.hpp"
 
-#define SAFE_WALKAROUND 90 // This value is used to walk around a obstacle without any collision
-#define DANGER_DISTANCE 40 // This value is used to tell whether the robot is too closed to any obstacles
+#define SAFE_WALKAROUND 65 // This value is used to walk around a obstacle without any collision
+#define DANGER_DISTANCE 35 // This value is used to tell whether the robot is too closed to any obstacles
 #define GRABBING_BALL_DISTANCE 45 // This value is used to tell the robot is already to grab a ball
 #define SHOOTING_DISTANCE 10 // This value is used to tell the robot is to shoot when it arrives to the gate
-#define PREPARATION_FREQUENCY 60 // This value is used to tell how frequent we update the preparation of adjusting angle when it is about state 2
+#define PREPARATION_FREQUENCY 50 // This value is used to tell how frequent we update the preparation of adjusting angle when it is about state 2
 
 using namespace std;
 
@@ -33,7 +32,7 @@ class Brain{
 	Brain(){
 		this->targetLock = 0;
 		this->state = 0;
-		this->preparationCounter = 0;
+		this->preparationCounter = 1;
 		this->grab_counter = 1;
 	}
 
@@ -70,7 +69,7 @@ class Brain{
 					if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
 						this->xbee.send(finalAngle,0);	
 						cout << "Adjust angle and prepare to state 2: Need turn "<<finalAngle<<"\n";
-						this->preparationCounter = 0;
+						this->preparationCounter = 1;
 					}
 					this->preparationCounter++;
 				}else{
@@ -131,7 +130,7 @@ class Brain{
 				if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
 					cout << "Adjust angle and prepare to state 4: Need turn "<<finalAngle<<"\n";
 					this->xbee.send(finalAngle,0);
-					this->preparationCounter = 0;
+					this->preparationCounter = 1;
 				}
 				this->preparationCounter++;
 			}else{
