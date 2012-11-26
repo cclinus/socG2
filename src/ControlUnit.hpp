@@ -119,37 +119,7 @@ class ControlUnit{
 
 	Map filter(Map aMap){
 		Map renderedMap = aMap;
-		/*
-		aMap.clearBallsNRobot();
-		//cout << "Count balls on rendered map: " << renderedMap.countBalls() << "\n";
-		//cout << "If aMap is clear: " << aMap.countBalls() << "\n";
 
-		vector<Ball> allBalls = renderedMap.getBalls();
-		int cnt=0;
-		for(int i=0;i<renderedMap.countBalls();i++){
-			for(int j=i; j<renderedMap.countBalls();j++){
-				//sleep(1);
-				if(j != i){
-					int distance = getDistance(allBalls[i].getLocation(),allBalls[j].getLocation());
-					if(distance <= 25){
-						int x = (allBalls[i].getLocation().getX() + allBalls[j].getLocation().getX())/2;
-						int y = (allBalls[i].getLocation().getY() + allBalls[j].getLocation().getY())/2;
-						Ball aBall(x, y, cnt);
-						aMap.addBall(aBall);
-						cnt++;
-
-						
-					}else{
-						Ball aBall(allBalls[i].getLocation().getX(), allBalls[i].getLocation().getY(), cnt);
-						aMap.addBall(aBall);
-						cnt++;
-
-					}	
-
-				}
-			}
-		}
-		*/	
 		vector<Location> headPositions = renderedMap.getHeadPositions();
 		vector<Location> tailPositions = renderedMap.getTailPositions();
 		int minDistance = 10000;
@@ -170,6 +140,24 @@ class ControlUnit{
 
 		Robot ourRobot(realHead.getX(), realHead.getY(), realTail.getX(), realTail.getY(),1);
 		aMap.addRobot(ourRobot);
+
+		vector<Ball> ballVector = aMap.getBalls();
+		vector<Ball> newBallVector;
+		for(int i=0; i < ballVector.size(); i++){
+			for(int j=0; j < ballVector.size(); j++){
+				// Check two adjust balls
+				if( getDistance(ballVector[i].getLocation(), ballVector[j].getLocation() ) < 25 ){
+					// Add i ball since i and j should be the same
+					newBallVector.push_back( ballVector[i] );
+					// Remove j from ballVector
+					ballVector.erase(ballVector.begin()+j);
+					break;
+				}
+			}
+		}
+		aMap.clearBalls();
+		aMap.setBallVector(newBallVector);
+	
 		return aMap;	
 
 	}

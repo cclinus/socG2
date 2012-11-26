@@ -47,6 +47,10 @@ class Map {
 		}
 		return true;
 	}
+	
+	void setBallVector(vector<Ball> newBallVector){
+		this->ballVector = newBallVector;
+	}
 
 	// Gate 1 is defaul gate near (0,0)
 	void setGate(int gateNumber){
@@ -136,9 +140,8 @@ class Map {
 		this->robotVector.clear();
 	}
 
-	void clearBallsNRobot(void){
+	void clearBalls(void){
 		this->ballVector.clear();
-		//this->robotVector.clear();
 	}
 
 	// Return the location of target gate
