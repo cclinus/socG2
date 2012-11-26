@@ -73,7 +73,7 @@ class Brain{
 					}
 					this->preparationCounter++;
 				}else{
-					if(this->preparationCounter % 5 == 0){
+					if(this->preparationCounter % 20 == 0){
 						this->state = 2;
 						sendState(this->state);
 						cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
@@ -109,14 +109,7 @@ class Brain{
 			}
 
 		}else if( this->state == 4){
-			/*
 			// Trigger the shooting mechanism and return to state 1 at the end
-			if(this->preparationCounter % PREPARATION_FREQUENCY == 0){
-			this->state = 1;
-			this->preparationCounter = 0;
-			}
-			this->preparationCounter++;
-			 */
 			// Set the gate as target and adjust angle when arrived
 			//FIXME we need final adjust the angle before update to state 4
 			//FIXME need avoid hard code of this location
@@ -138,7 +131,7 @@ class Brain{
 				}
 				this->preparationCounter++;
 			}else{
-				if(this->preparationCounter % 5 == 0){
+				if(this->preparationCounter % 20 == 0){
 					cout << "\nFinal Angle before state 4: " << finalAngle << "\n";
 					sendState(this->state);
 					cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";

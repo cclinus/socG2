@@ -140,6 +140,30 @@ class ControlUnit{
 
 		Robot ourRobot(realHead.getX(), realHead.getY(), realTail.getX(), realTail.getY(),1);
 		aMap.addRobot(ourRobot);
+		
+		vector<Location> enemyHeadPositions = renderedMap.getEnemyHeadPositions();
+		vector<Location> enemyTailPositions = renderedMap.getEnemyTailPositions();
+		
+		minDistance = 10000;
+		Location enemyRealHead;
+		Location enemyRealTail;
+		
+		for(int i=0; i<enemyHeadPositions.size();i++){
+			cout<<enemyHeadPositions.size()<<endl;
+			for(int j=0; j<enemyTailPositions.size();j++){
+				int distance = getDistance(enemyHeadPositions[i],enemyTailPositions[j]);
+					//cout<<distance<<endl;
+				if(distance < minDistance){
+					minDistance = distance;
+					enemyRealHead = enemyHeadPositions[i];
+					enemyRealTail = enemyTailPositions[j];
+				}
+			}
+		}
+
+		cout<<" "<<enemyRealHead.getX()<<" "<<enemyRealHead.getY()<<" "<<endl;
+		Robot enemyRobot(enemyRealHead.getX(), enemyRealHead.getY(), enemyRealTail.getX(), enemyRealTail.getY(),2);
+		aMap.addRobot(enemyRobot);
 
 		vector<Ball> ballVector = aMap.getBalls();
 		vector<Ball> newBallVector;

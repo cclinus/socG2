@@ -21,7 +21,8 @@ class Map {
 	vector<Robot> robotVector;
 	vector<Location> headVector;
 	vector<Location> tailVector;
-
+	vector<Location> enemyHeadVector;
+	vector<Location> enemyTailVector;
 	public:
 
 	Map(){
@@ -88,12 +89,26 @@ class Map {
 		this->tailVector.push_back(tail);
 	}
 	
+	void addEnemyHeadPositions(Location head){
+		this->enemyHeadVector.push_back(head);
+	}
+	void addEnemyTailPositions(Location tail){
+		this->enemyTailVector.push_back(tail);
+	}	
 	vector<Location> getHeadPositions(void){
 		return this->headVector;
 	}
 
 	vector<Location> getTailPositions(void){
 		return this->tailVector;
+	}
+
+	vector<Location> getEnemyHeadPositions(void){
+		return this->enemyHeadVector;
+	}
+	
+	vector<Location> getEnemyTailPositions(void){
+		return this->enemyTailVector;
 	}
 
 	vector<Ball> getBalls(void){

@@ -7,6 +7,7 @@ $objArray = array();
 $ballArray = array();
 $robotArray = array();
 $robotBArray = array();
+$enemyArray = array();
 $obsArray = array();
 $targetArray = array();
 
@@ -32,6 +33,9 @@ foreach($convert as $key=>$element){
   }else if(strpbrk($element, 'n')){
     //It's locationB of the robot
     $robotBArray[] = $element;
+  }else if(strpbrk($element, 'e')){
+    //It's enemy robot location
+    $enemyArray[] = $element;
   }
 
   $objArray['r'] = $robotArray;
@@ -39,7 +43,7 @@ foreach($convert as $key=>$element){
   $objArray['b'] = $ballArray;
   $objArray['o'] = $obsArray;
   $objArray['t'] = $targetArray;
-
+  $objArray['e'] = $enemyArray;
 }
 
 echo json_encode($objArray);

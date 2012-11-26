@@ -19,6 +19,8 @@ class WirelessUnit{
 
 	    // Convert negative angle
 	    if(angle<0) angle += 360;
+	    
+            cout << "Xbee layer print angle: " << angle << ", " << cycle << "\n";
 
 	    int i, n,
 		cport_nr=16,        /* /dev/ttyS0 (COM1 on windows) */
