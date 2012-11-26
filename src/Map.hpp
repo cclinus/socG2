@@ -19,6 +19,8 @@ class Map {
 	vector<Ball> ballVector;
 	vector<Obstacle> obstacleVector;
 	vector<Robot> robotVector;
+	vector<Location> headVector;
+	vector<Location> tailVector;
 
 	public:
 
@@ -72,6 +74,22 @@ class Map {
 
 	void addRobot(Robot aRobot){
 		this->robotVector.push_back(aRobot);
+	}
+	
+	void addHeadPositions(Location head){
+		this->headVector.push_back(head);
+	}
+		
+	void addTailPositions(Location tail){
+		this->tailVector.push_back(tail);
+	}
+	
+	vector<Location> getHeadPositions(void){
+		return this->headVector;
+	}
+
+	vector<Location> getTailPositions(void){
+		return this->tailVector;
 	}
 
 	vector<Ball> getBalls(void){

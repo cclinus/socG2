@@ -11,7 +11,7 @@
 #define SAFE_WALKAROUND 65 // This value is used to walk around a obstacle without any collision
 #define DANGER_DISTANCE 35 // This value is used to tell whether the robot is too closed to any obstacles
 #define GRABBING_BALL_DISTANCE 45 // This value is used to tell the robot is already to grab a ball
-#define SHOOTING_DISTANCE 10 // This value is used to tell the robot is to shoot when it arrives to the gate
+#define SHOOTING_DISTANCE 5 // This value is used to tell the robot is to shoot when it arrives to the gate
 #define PREPARATION_FREQUENCY 50 // This value is used to tell how frequent we update the preparation of adjusting angle when it is about state 2
 
 using namespace std;

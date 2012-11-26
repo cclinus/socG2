@@ -13,7 +13,7 @@
 using namespace std;
 
 #define PI 3.1415926
-#define ANGLE_TOLERANCE 25 // This value is used to tell whether wee need adjust robot
+#define ANGLE_TOLERANCE 15 // This value is used to tell whether wee need adjust robot
 #define DISTANCE_TOLERANCE 15 //This value is used to tell whether we need adjust robot
 #define CYCLE_DISTANCE 70 // This is the scale between pixel and wheel cycle
 #define ADJUST_FREQUENCY 30// This value is used to control how frequent we adjust robot
@@ -59,7 +59,7 @@ class ControlUnit{
 					or distance > DISTANCE_TOLERANCE 
 			  ){
 				int cycle = distance/CYCLE_DISTANCE;
-				if(cycle == 0) cycle = 1;
+				if(cycle == 0) cycle = 99;
 				// We need convert the negative value
 				// We try to handle this in WirelessUnit level
 				//if(angle<0) angle += 360;
@@ -119,6 +119,7 @@ class ControlUnit{
 
 	Map filter(Map aMap){
 		Map renderedMap = aMap;
+		/*
 		aMap.clearBallsNRobot();
 		//cout << "Count balls on rendered map: " << renderedMap.countBalls() << "\n";
 		//cout << "If aMap is clear: " << aMap.countBalls() << "\n";
@@ -148,6 +149,27 @@ class ControlUnit{
 				}
 			}
 		}
+		*/	
+		vector<Location> headPositions = renderedMap.getHeadPositions();
+		vector<Location> tailPositions = renderedMap.getTailPositions();
+		int minDistance = 10000;
+		Location realHead;
+		Location realTail;
+
+		for(int i=0; i<headPositions.size();i++){
+			for(int j=0; j<tailPositions.size();j++){
+				int distance = getDistance(headPositions[i],tailPositions[j]);
+					//cout<<distance<<endl;
+				if(distance < minDistance){
+					minDistance = distance;
+					realHead = headPositions[i];
+					realTail = tailPositions[j];
+				}
+			}
+		}
+
+		Robot ourRobot(realHead.getX(), realHead.getY(), realTail.getX(), realTail.getY(),1);
+		aMap.addRobot(ourRobot);
 		return aMap;	
 
 	}

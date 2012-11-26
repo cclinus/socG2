@@ -188,6 +188,7 @@ int main () {
 		map = cameraOne.updateMap(map);
 		map = cameraTwo.updateMap(map);
 		map = control.filter(map);
+
 		if(map.isNormal()){
 			brain.analyse(map);
 			Location target = brain.getTarget();
@@ -196,9 +197,9 @@ int main () {
 			if(state==1 or state==3){	
 				control.adjust(map, target);
 			}
-		}else{
-			dead_counter++;
+			dead_counter = 1;
 		}
+		dead_counter++;
 
 		if(dead_counter % 100 == 0){
 			cout<<"Dead robot is awake!!!\n";
