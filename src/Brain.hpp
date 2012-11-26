@@ -73,9 +73,13 @@ class Brain{
 					}
 					this->preparationCounter++;
 				}else{
-					this->state = 2;
-					sendState(this->state);
-					cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+					if(this->preparationCounter % 5 == 0){
+						this->state = 2;
+						sendState(this->state);
+						cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+						this->preparationCounter = 1;
+					}
+					this->preparationCounter++;
 				}
 			}
 		}else if( this->state == 2){
@@ -134,10 +138,13 @@ class Brain{
 				}
 				this->preparationCounter++;
 			}else{
-				cout << "\nFinal Angle before state 4: " << finalAngle << "\n";
-				sendState(this->state);
-				cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
-				this->state = 1;
+				if(this->preparationCounter % 5 == 0){
+					cout << "\nFinal Angle before state 4: " << finalAngle << "\n";
+					sendState(this->state);
+					cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
+					this->state = 1;
+				}
+				this->preparationCounter++;
 			}
 		}
 
