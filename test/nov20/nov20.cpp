@@ -124,11 +124,20 @@ bool isStart(){
 	}
 }
 
+bool isStop(){
+	if(fopen("../../server/stop", "r") == NULL){
+		return false;
+	}else{
+		return true;
+	}
+}
+
 int main () {
 
 	// robot colors
 	int ourHead, ourTail, enemyHead, enemyTail, gate;
 	int dead_counter = 1;
+	int stop_counter = 1;
 
 	srand(time(NULL));
 
@@ -211,6 +220,15 @@ int main () {
 		}
 
 		updateGui(map);
+
+		if(stop_counter % 20 == 0){
+			if(isStop()){
+				stop_counter = 0;
+				return 0;
+			}
+		}
+		stop_counter++;
+			
 
 		usleep(50000);
 	}

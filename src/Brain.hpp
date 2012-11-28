@@ -8,7 +8,7 @@
 #include "Obstacle.hpp"
 #include "Robot.hpp"
 
-#define SAFE_WALKAROUND 65 // This value is used to walk around a obstacle without any collision
+#define SAFE_WALKAROUND 70 // This value is used to walk around a obstacle without any collision
 #define DANGER_DISTANCE 35 // This value is used to tell whether the robot is too closed to any obstacles
 #define GRABBING_BALL_DISTANCE 45 // This value is used to tell the robot is already to grab a ball
 #define SHOOTING_DISTANCE 5 // This value is used to tell the robot is to shoot when it arrives to the gate
@@ -73,7 +73,7 @@ class Brain{
 					}
 					this->preparationCounter++;
 				}else{
-					if(this->preparationCounter % 20 == 0){
+					if(this->preparationCounter % 30 == 0){
 						this->state = 2;
 						sendState(this->state);
 						cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";
@@ -131,7 +131,7 @@ class Brain{
 				}
 				this->preparationCounter++;
 			}else{
-				if(this->preparationCounter % 20 == 0){
+				if(this->preparationCounter % 30 == 0){
 					cout << "\nFinal Angle before state 4: " << finalAngle << "\n";
 					sendState(this->state);
 					cout << "\n*****\n" << "Update State to: " << this->state << "\n*****\n";

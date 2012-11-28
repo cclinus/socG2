@@ -141,10 +141,10 @@ class Camera {
 		cornersOff[2].x = this->offset[0][1].x; cornersOff[2].y = this->offset[0][1].y;
 		cornersOff[3].x = this->offset[0][0].x; cornersOff[3].y = this->offset[0][0].y;
 		*/
-		cornersOff[0].x = 255; cornersOff[0].y = 13;
-		cornersOff[1].x = 420; cornersOff[1].y = 12;
-		cornersOff[2].x = 250; cornersOff[2].y = 50;
-		cornersOff[3].x = 420; cornersOff[3].y = 50;
+		cornersOff[0].x = 297; cornersOff[0].y = 95;
+		cornersOff[1].x = 459; cornersOff[1].y = 121;
+		cornersOff[2].x = 285; cornersOff[2].y = 128;
+		cornersOff[3].x = 452; cornersOff[3].y = 159;
 
 		cornersReal[0].x = 155; cornersReal[0].y = 5;
 		cornersReal[1].x = 325; cornersReal[1].y = 5;
@@ -158,10 +158,10 @@ class Camera {
 		cornersOff[2].x = this->offset[0][3].x; cornersOff[2].y = this->offset[0][3].y;
 		cornersOff[3].x = this->offset[0][2].x; cornersOff[3].y = this->offset[0][2].y;
 		*/
-		cornersOff[0].x = 434; cornersOff[0].y = 50;
-		cornersOff[1].x = 255; cornersOff[1].y = 50;
-		cornersOff[2].x = 429; cornersOff[2].y = 12;
-		cornersOff[3].x = 256; cornersOff[3].y = 14;
+		cornersOff[0].x = 400; cornersOff[0].y = 66;
+		cornersOff[1].x = 232; cornersOff[1].y = 79;
+		cornersOff[2].x = 392; cornersOff[2].y = 29;
+		cornersOff[3].x = 230; cornersOff[3].y = 41;
 
 		cornersReal[0].x = 155; cornersReal[0].y = 415;
 		cornersReal[1].x = 325; cornersReal[1].y = 415;
@@ -347,12 +347,12 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 	//if(cameraNo == CAMERANO1){
 	
 	 	if(i == 1){
-			HuethresH =103; HuethresL =58;
+			HuethresH =89; HuethresL =58;
 			SatthresL =70; SatthresH = 255;
-			ValthresL =91; ValthresH = 255;
+			ValthresL =102; ValthresH = 255;
 			erosionCount = 2;
 			diaCount = 3;
-			blurSize = 5;
+			blurSize = 7;
 		}else if(i == 2){
 			HuethresH =103; HuethresL =58;
 			SatthresL =70; SatthresH = 255;
@@ -616,6 +616,11 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 					ObjCtrFix[0].x=ObjCtrFix[0].x*0.97826-7.01073;
 					ObjCtrFix[0].y=ObjCtrFix[0].y*0.962567+64.117647;
 				}	
+				
+				if(cameraNo==CAMERANO1 && ObjCtrFix[0].y>240){
+					ObjCtrFix[0].x=ObjCtrFix[0].x*0.97826-7.01073;
+					ObjCtrFix[0].y=ObjCtrFix[0].y*0.962567+64.117647;
+				}	
 				if(ObjCtrFix[0].x <0){
 					ObjCtrFix[0].x=5;
 				}else if(ObjCtrFix[0].y<0){
@@ -714,7 +719,7 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 					
 				Location tail(greX,greY);
 				this->map.addTailPositions(tail);
-			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>240){
+			}else if(cameraNo == CAMERANO2 && ObjCtrFix[0].y>250){
 				//if(ObjCtrFix[0].y <0 && ObjCtrFix[0].y > -20){
 				//	ObjCtrFix[0].y = ObjCtrFix[0].y + 20;
 				//}

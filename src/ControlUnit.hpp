@@ -15,7 +15,7 @@ using namespace std;
 #define PI 3.1415926
 #define ANGLE_TOLERANCE 15 // This value is used to tell whether wee need adjust robot
 #define DISTANCE_TOLERANCE 15 //This value is used to tell whether we need adjust robot
-#define CYCLE_DISTANCE 70 // This is the scale between pixel and wheel cycle
+#define CYCLE_DISTANCE 63 // This is the scale between pixel and wheel cycle
 #define ADJUST_FREQUENCY 30// This value is used to control how frequent we adjust robot
 
 /*
@@ -149,7 +149,7 @@ class ControlUnit{
 		Location enemyRealTail;
 		
 		for(int i=0; i<enemyHeadPositions.size();i++){
-			cout<<enemyHeadPositions.size()<<endl;
+			//cout<<enemyHeadPositions.size()<<endl;
 			for(int j=0; j<enemyTailPositions.size();j++){
 				int distance = getDistance(enemyHeadPositions[i],enemyTailPositions[j]);
 					//cout<<distance<<endl;
@@ -161,7 +161,7 @@ class ControlUnit{
 			}
 		}
 
-		cout<<" "<<enemyRealHead.getX()<<" "<<enemyRealHead.getY()<<" "<<endl;
+		//cout<<" "<<enemyRealHead.getX()<<" "<<enemyRealHead.getY()<<" "<<endl;
 		Robot enemyRobot(enemyRealHead.getX(), enemyRealHead.getY(), enemyRealTail.getX(), enemyRealTail.getY(),2);
 		aMap.addRobot(enemyRobot);
 
