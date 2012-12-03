@@ -1,1 +1,335 @@
-# This is the main on board arduino program
+
+//EECE 474 On-board control program   by Peng Zhang   last modified: nov,27
+//h-bridge pin8 voltage input 7.7v
+
+#include "SoftwareSerial.h"
+#include <Servo.h>
+
+uint8_t pinRx=0, pinTx=1; //setup pins for xbee
+char gotChar;
+SoftwareSerial mySerial(pinRx,pinTx);
+
+Servo myservo; // create servo object
+int pos =0;    //servo position
+
+int leftEncoderA = 2;  //channel A to pin with interrupt *** YELLOW wire
+int leftEncoderB = A0; //channel B *** WHITE wire
+int rightEncoderA =3;  //channel A to pin with interrupt *** YELLOW wire
+int rightEncoderB = A1; //channle B *** WHITE wire
+
+int leftPin1 = A2;    //connect to hbridge pin2,  pin3 to ornage wire
+int leftPin2 = A3;    //connect to hbridge  pin7, pin 6 to yellow wire
+int leftEnable = 5;       //PWM for left motor
+
+int rightPin1 = A4;    //connect to hbridge pin15, pin 14 to red wire
+int rightPin2 = A5;     //connect to hbridge pin10, pin 11 to black wire
+int rightEnable = 6;         //PWM for right motor
+
+int servo = 9; //signal pin for servo motor
+
+//blue wire to Vcc, green wire to Trig, yellow wire to Echo, white wire to ground
+int TP = 7; //triger pin of the sensor
+int EP = 8; //echo pin of the sensor
+
+volatile signed int encoderPosL = 0;
+volatile signed int encoderPosR = 0;
+volatile signed int countLeft = 0;
+volatile signed int countRight = 0;
+
+boolean topSensor = false;
+boolean bottomSensor = true;
+
+
+void setup(){
+
+  Serial.begin(57600);
+  //Serial.println("BEST ROBOT!!!");
+
+  //mySerial.begin(57600); //declear the xbee serial
+
+  myservo.attach(servo); //declear the servo control
+  myservo.write(140);
+
+  //define encoder signals as inputs
+  pinMode(leftEncoderA, INPUT);
+  pinMode(leftEncoderB, INPUT);
+  pinMode(rightEncoderA, INPUT);
+  pinMode(rightEncoderA, INPUT);
+
+  //pinmode for left motor
+  pinMode(leftPin1, OUTPUT);
+  pinMode(leftPin2, OUTPUT);
+  pinMode(leftEnable, OUTPUT);
+
+  //pinmode for right motor
+  pinMode(rightPin1, OUTPUT);
+  pinMode(rightPin2, OUTPUT);
+  pinMode(rightEnable,  OUTPUT);
+
+  pinMode(TP, OUTPUT);
+  pinMode(EP, INPUT);
+
+  //pull up resistors for unused pins
+  pinMode(10,INPUT);
+  pinMode(11,INPUT);
+  pinMode(4,INPUT);
+  pinMode(12,INPUT);
+  pinMode(13,INPUT);
+  digitalWrite(4,HIGH);
+  digitalWrite(10,HIGH);
+  digitalWrite(11,HIGH);
+  digitalWrite(12,HIGH);
+  digitalWrite(13,HIGH);
+
+}
+
+
+void loop(){
+
+  while (Serial.available() == 0);
+
+  // look for the next valid integer in the incoming serial stream: 
+  int angle = Serial.parseInt();  //looks for an ASCII string of comma-separated value
+  int distance = Serial.parseInt();
+
+  Serial.flush();
+  // State 1 and 3
+  if(angle<400){
+    if(angle>180){
+      angle=angle-360;
+    }
+    
+    navigateRobot(distance, angle);
+  }
+    if(angle==402){
+        //state 2 function
+        grabBall();
+      }
+    if(angle==404){
+        //state 4 function
+        shootBall();
+      }
+
+}
+
+
+void forward(int pwmL, int pwmR){
+  //left motor moving forward in 100% pwm
+  analogWrite(leftEnable, pwmL); 
+  digitalWrite(leftPin1, LOW);
+  digitalWrite(leftPin2, HIGH);
+  //right motor moving forward in 100% pwm
+  //NEED PID HERE SET LEFT MOTOR AS MASTER, RIGHT MOTOR AS SLAVE
+  analogWrite(rightEnable, pwmR);
+  digitalWrite(rightPin1, LOW);
+  digitalWrite(rightPin2, HIGH);   
+}
+
+void turnLeft(int pwmL, int pwmR){
+  //left motor reverse
+  analogWrite(leftEnable,pwmL);
+  digitalWrite(leftPin1, HIGH);
+  digitalWrite(leftPin2, LOW);
+  //right motor forward
+  analogWrite(rightEnable,pwmR);
+  digitalWrite(rightPin1, LOW);
+  digitalWrite(rightPin2, HIGH);
+}
+
+void turnRight(int pwmL, int pwmR){
+  //left motor forward
+  analogWrite(leftEnable,pwmL);
+  digitalWrite(leftPin1, LOW);
+  digitalWrite(leftPin2, HIGH);
+  //right motor reverse
+  analogWrite(rightEnable,pwmR);
+  digitalWrite(rightPin1, HIGH);
+  digitalWrite(rightPin2, LOW);
+}
+
+void slowStop(){
+  analogWrite(leftEnable,0); //pwm = 0
+  analogWrite(rightEnable,0);      
+}
+
+void quickStop(){
+  digitalWrite(leftPin1,LOW);
+  digitalWrite(leftPin2,LOW);
+  digitalWrite(rightPin1,LOW);
+  digitalWrite(rightPin2,LOW);
+}
+
+void reverse(int pwmL, int pwmR){
+  analogWrite(leftEnable,pwmL);
+  digitalWrite(leftPin1, HIGH);
+  digitalWrite(leftPin2, LOW);
+
+  analogWrite(rightEnable,pwmR);
+  digitalWrite(rightPin1, HIGH);
+  digitalWrite(rightPin2, LOW);
+}
+
+// interrupt when left channel A is at rising edge
+void leftEncoder(){  
+  encoderPosL++;
+  if(encoderPosL == 810){ //old 900
+    countLeft++;
+    //    Serial.print("left:");
+    //    Serial.println(countLeft);
+    encoderPosL=0;
+  }
+  /*if(encoderPosL%12 == 0){
+   Serial.print("Left motor:");
+   Serial.println(encoderPosL/12, DEC); 
+   }*/
+} 
+
+//interrupt when right motor channel A is at rising edge
+void rightEncoder(){
+  encoderPosR++;
+  if(encoderPosR == 810){  //old 900
+    countRight++;
+    //    Serial.print("right:");
+    //    Serial.println(countRight);
+    encoderPosR=0;
+  }
+  /*if(encoderPosR%12 == 0){
+   Serial.print("Right motor:");
+   Serial.println(encoderPosR/12, DEC);
+   }*/
+}
+
+
+//move the robot in desired distance
+void navigateRobot(int distance, int angle){
+
+  //setup the two interrupt pins for encoder, call in rising edge
+  attachInterrupt(0, leftEncoder, RISING);
+  attachInterrupt(1, rightEncoder, RISING);
+  
+  int master = 255;
+  int slave  = 255;
+  int signed error  = 0;
+  int Kp = 15;
+
+  //myservo.write(180);
+
+  while(angle < 0){
+    turnRight(230,230); //250
+    delay(10); //old 13
+    countLeft=0;
+    countRight=0;
+    angle=angle+1;
+  }
+  while(angle > 0){
+    turnLeft(230,230);
+    delay(10); //old 13
+    countLeft=0;
+    countRight=0;
+    angle=angle-1;
+  }   
+
+  while( countLeft != distance){   
+    forward(master,slave);
+    if(encoderPosL=400){
+    error = encoderPosL - encoderPosR ;
+    slave = slave + (error/Kp); 
+    }
+    if(Serial.available()){ //if receive new data from xbee, break back to loop
+      break;
+    }
+  }   
+  Serial.flush();
+  //check the top sensor, see if theres obstacles>
+  slowStop();
+  detachInterrupt(0);
+  detachInterrupt(1);
+  countLeft=0;
+  countRight=0;
+}
+
+//grab the ball
+void grabBall(){
+
+  int object;
+  //start to grab ball
+  myservo.write(120); //open the door to grab the ball
+  delay(500);
+  forward(250,250);
+  delay(1200);  //old 1600
+  slowStop();
+  myservo.write(150); //close the door to secure the ball
+  delay(500);
+  
+  object = sensor();
+  delay(100);
+  
+  if(object>1000){   //if the ball is not inside robot
+    Serial.print("1");
+  }
+  else{
+    forward(250,250);
+    delay(500);
+    slowStop();
+    object=sensor();
+    delay(100);
+    if(object>1000)
+    Serial.print("1"); //if the ball is inside robot
+    else{
+      Serial.print("0");
+    }
+  }
+    
+  Serial.flush();
+}
+
+
+//shoot the ball to the goal
+void shootBall(){
+
+  myservo.write(90); //shoot the ball
+  delay(1000);
+  myservo.write(135);
+  delay(500);
+  reverse(240,240);
+  delay(1000);
+  turnRight(250,250);
+  delay(1000);
+  slowStop();
+}
+
+//return the distance detected from bottom sensor
+int sensor(){
+  unsigned long duration;
+  int object;
+
+  digitalWrite(TP, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TP, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TP, LOW);
+
+  duration = pulseIn(EP,HIGH);
+  object = duration/29/2; //get the distance to the object in CM
+
+  return object;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
